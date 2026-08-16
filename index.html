@@ -297,6 +297,65 @@ body.dark-mode .watch-card.target-hit{background:#153021!important;border-color:
 @media(max-width:480px){.watch-add-row{grid-template-columns:1fr}.watch-metrics{grid-template-columns:1fr 1fr}}
 </style>
 
+
+<style id="sell-watch-readable-v2">
+/* 売却ウォッチを縦に広くして一覧性を改善 */
+#simList.sim-list{
+  max-height:680px!important;
+  min-height:260px;
+  overflow-y:auto;
+  padding-right:3px;
+  gap:12px!important;
+}
+.watch-card{padding:13px!important}
+.watch-name{font-size:16px!important}
+.watch-metrics{gap:8px!important}
+.watch-metric{padding:9px 10px!important}
+
+/* 現在価格を青系で強調 */
+.watch-metric.current-price{
+  background:#e9f4ff!important;
+  border:1px solid #b8d9fb;
+}
+.watch-metric.current-price span{color:#3974a8!important;font-weight:750}
+.watch-metric.current-price b{
+  color:#0867b2!important;
+  font-size:20px!important;
+  font-weight:900!important;
+}
+
+/* 利益率：プラスは緑、マイナスは赤、未入力は通常 */
+.watch-metric.profit-rate.positive{
+  background:#eaf8ef!important;
+  border:1px solid #b9e2c7;
+}
+.watch-metric.profit-rate.positive span{color:#3c7b51!important;font-weight:750}
+.watch-metric.profit-rate.positive b{color:#17813d!important;font-size:20px!important;font-weight:900!important}
+.watch-metric.profit-rate.negative{
+  background:#fff0f1!important;
+  border:1px solid #efc2c6;
+}
+.watch-metric.profit-rate.negative span{color:#9a5057!important;font-weight:750}
+.watch-metric.profit-rate.negative b{color:#c93642!important;font-size:20px!important;font-weight:900!important}
+
+/* ダークモード */
+body.dark-mode .watch-metric.current-price{background:#112b42!important;border-color:#27567c!important}
+body.dark-mode .watch-metric.current-price span{color:#8fc8f5!important}
+body.dark-mode .watch-metric.current-price b{color:#62b8ff!important}
+body.dark-mode .watch-metric.profit-rate.positive{background:#153221!important;border-color:#326746!important}
+body.dark-mode .watch-metric.profit-rate.positive span{color:#8dd3a5!important}
+body.dark-mode .watch-metric.profit-rate.positive b{color:#63df8d!important}
+body.dark-mode .watch-metric.profit-rate.negative{background:#381c22!important;border-color:#75404a!important}
+body.dark-mode .watch-metric.profit-rate.negative span{color:#e3a0a8!important}
+body.dark-mode .watch-metric.profit-rate.negative b{color:#ff7c88!important}
+
+@media(max-width:640px){
+  #simList.sim-list{max-height:72vh!important;min-height:340px}
+  .watch-card{padding:12px!important}
+  .watch-metric.current-price b,.watch-metric.profit-rate b{font-size:19px!important}
+}
+</style>
+
 </head><body><div class="app">
 <header><div><h1>📚 トレカ管理</h1><div class="sub">抽選 → 仕入れ → 在庫 → 開封 → 売却 → 資産</div></div><div class="sub">元画像スタンプ背景透明版 2026/8/16</div></header>
 <div class="tabs"><button class="tab active" data-view="lottery">🗓 抽選</button><button class="tab" data-view="sealed">📦 未開封</button><button class="tab" data-view="cards">🃏 カード</button><button class="tab" data-view="sales">💰 売却</button><button class="tab" data-view="assets">📊 資産</button></div>
@@ -781,10 +840,10 @@ function renderSellSimulator(){
     return `<div class="watch-card ${hit?'target-hit':''}">
       <div class="watch-top"><div><div class="watch-name">${esc(x.name)}</div><div class="small">${x.type==='card'?'🃏 カード':'📦 BOX'}｜在庫 ${x.qty}${w.added?'｜監視開始 '+w.added:''}</div></div><button class="watch-remove" onclick="removeSellWatch('${x.key}')">削除</button></div>
       <div class="watch-metrics">
-        <div class="watch-metric"><span>現在相場</span><b>${cur==null?'未入力':yen(cur)}</b></div>
+        <div class="watch-metric current-price"><span>現在相場</span><b>${cur==null?'未入力':yen(cur)}</b></div>
         <div class="watch-metric"><span>取得原価/個</span><b>${yen(x.cost)}</b></div>
         <div class="watch-metric"><span>含み益/個</span><b>${profit==null?'—':yen(profit)}</b></div>
-        <div class="watch-metric"><span>利益率</span><b>${rate==null?'—':rate.toFixed(1)+'%'}</b></div>
+        <div class="watch-metric profit-rate ${rate==null?'':rate>=0?'positive':'negative'}"><span>利益率</span><b>${rate==null?'—':rate.toFixed(1)+'%'}</b></div>
       </div>
       <div class="watch-target"><input type="number" min="0" value="${w.target??''}" placeholder="目標売却価格" onchange="updateSellWatchTarget('${x.key}',this.value)"><span class="target-badge">${hit?'🎯 目標達成':''}</span></div>
     </div>`;
