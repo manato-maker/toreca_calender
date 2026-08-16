@@ -385,6 +385,19 @@ body.dark-mode #watchAddBtn{background:#17304a!important;border-color:#315c83!im
 }
 </style>
 
+
+<style id="watch-collapsed-v1">
+.watch-picker-wrap{border:0!important}
+.watch-picker-toggle{
+  cursor:pointer;list-style:none;padding:10px 12px;border:1px solid var(--line);
+  border-radius:11px;font-weight:850;font-size:14px;background:var(--card);
+}
+.watch-picker-toggle::-webkit-details-marker{display:none}
+.watch-picker-wrap[open] .watch-picker-toggle{margin-bottom:8px}
+.watch-picker-wrap:not([open]) .watch-picker{display:none}
+body.dark-mode .watch-picker-toggle{background:#151e2b!important;border-color:#2b394c!important;color:#e7edf6!important}
+</style>
+
 </head><body><div class="app">
 <header><div><h1>📚 トレカ管理</h1><div class="sub">抽選 → 仕入れ → 在庫 → 開封 → 売却 → 資産</div></div><div class="sub">元画像スタンプ背景透明版 2026/8/16</div></header>
 <div class="tabs"><button class="tab active" data-view="lottery">🗓 抽選</button><button class="tab" data-view="sealed">📦 未開封</button><button class="tab" data-view="cards">🃏 カード</button><button class="tab" data-view="sales">💰 売却</button><button class="tab" data-view="assets">📊 資産</button></div>
@@ -449,7 +462,9 @@ body.dark-mode #watchAddBtn{background:#17304a!important;border-color:#315c83!im
     <div class="tool-card">
       <h3>👀 売却ウォッチ</h3>
       <div class="small">売りたい商品だけを登録してモニタリング。現在相場・含み益・利益率・目標価格を確認できます。</div>
-      <div class="watch-picker" style="margin-top:10px">
+      <details class="watch-picker-wrap" style="margin-top:10px">
+        <summary class="watch-picker-toggle">＋ 売却ウォッチに商品を追加</summary>
+        <div class="watch-picker">
         <div class="watch-tabs">
           <button type="button" class="watch-tab active" data-watch-tab="box">📦 BOX</button>
           <button type="button" class="watch-tab" data-watch-tab="card">🃏 カード</button>
@@ -461,7 +476,8 @@ body.dark-mode #watchAddBtn{background:#17304a!important;border-color:#315c83!im
           <button type="button" id="watchAddBtn">＋ 選択した商品を追加</button>
         </div>
         <div id="watchPickerList" class="watch-picker-list"></div>
-      </div>
+        </div>
+      </details>
       <div id="simList" class="sim-list" style="margin-top:10px"></div>
       <div id="simSummary" class="summary" style="margin-top:10px"></div>
     </div>
