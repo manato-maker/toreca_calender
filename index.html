@@ -80,6 +80,23 @@ body.dark-mode .theme-toggle{background:#1d2a3b;color:#f5f7fb;border-color:#3b4b
 body.dark-mode .pokekachi-link{color:#7db6ff}
 </style>
 
+
+<style id="asset-tools-v1">
+.asset-tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.tool-card{background:var(--card,#fff);border:1px solid var(--line,#d9e1ee);border-radius:16px;padding:12px}
+.tool-card h3{margin:0 0 8px}
+.asset-chart{width:100%;height:240px;display:block}
+.sim-list{display:grid;gap:8px;max-height:360px;overflow:auto}
+.sim-row{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:8px;border:1px solid var(--line,#d9e1ee);border-radius:10px}
+.compare-table{width:100%;border-collapse:collapse}
+.compare-table th,.compare-table td{padding:8px;border-bottom:1px solid var(--line,#d9e1ee);text-align:left;font-size:13px}
+.best-price{font-weight:800}
+body.dark-mode .tool-card{background:#151e2b!important;border-color:#2b394c!important}
+body.dark-mode .sim-row{border-color:#2b394c!important}
+body.dark-mode .compare-table th,body.dark-mode .compare-table td{border-color:#2b394c!important}
+@media(max-width:700px){.asset-tools-grid{grid-template-columns:1fr}}
+</style>
+
 </head><body><div class="app">
 <header><div><h1>📚 トレカ管理</h1><div class="sub">抽選 → 仕入れ → 在庫 → 開封 → 売却 → 資産</div></div><div class="sub">元画像スタンプ背景透明版 2026/8/16</div></header>
 <div class="tabs"><button class="tab active" data-view="lottery">🗓 抽選</button><button class="tab" data-view="sealed">📦 未開封</button><button class="tab" data-view="cards">🃏 カード</button><button class="tab" data-view="sales">💰 売却</button><button class="tab" data-view="assets">📊 資産</button></div>
@@ -120,7 +137,35 @@ body.dark-mode .pokekachi-link{color:#7db6ff}
 </select></div>
 <div id="cardList" class="list"></div></div></section>
 <section id="sales" class="view"><div class="box"><div id="salesSummary" class="summary"></div><div id="salesList" class="list"></div></div></section>
-<section id="assets" class="view"><div id="assetStats" class="grid"></div><div class="grid" style="margin-top:10px"><div class="box"><h3>🔥 ポケカチ買取 上昇ランキング</h3><div class="small">同じ商品の前回入力値と今回入力値を比較</div><div id="upRank" class="rank" style="margin-top:8px"></div></div><div class="box"><h3>📉 ポケカチ買取 下落ランキング</h3><div class="small">価格履歴が2件以上ある商品だけ表示</div><div id="downRank" class="rank" style="margin-top:8px"></div></div></div><div class="box"><h3>相場について</h3><div class="small">カードは登録全件を型番・レアリティまで再照合し、ポケカチの素体買取を反映。仕様が確定できないカードは相場未取得のまま表示します。BOX・未開封商品は買取ミミとAMTFを手入力し、別履歴で保存します。相場を更新するたび履歴を保存し、上昇・下落ランキングを自動計算します。相場未入力の商品は推定総資産・含み損益・ランキングから除外します。相場ソース：ポケカチ掲載の買取価格。型番・レアリティ・未開封条件を確認できた値だけ登録します。</div></div></section>
+<section id="assets" class="view"><div id="assetStats" class="grid"></div><div class="grid" style="margin-top:10px"><div class="box"><h3>🔥 ポケカチ買取 上昇ランキング</h3><div class="small">同じ商品の前回入力値と今回入力値を比較</div><div id="upRank" class="rank" style="margin-top:8px"></div></div><div class="box"><h3>📉 ポケカチ買取 下落ランキング</h3><div class="small">価格履歴が2件以上ある商品だけ表示</div><div id="downRank" class="rank" style="margin-top:8px"></div></div></div><div class="box"><h3>相場について</h3><div class="small">カードは登録全件を型番・レアリティまで再照合し、ポケカチの素体買取を反映。仕様が確定できないカードは相場未取得のまま表示します。BOX・未開封商品は買取ミミとAMTFを手入力し、別履歴で保存します。相場を更新するたび履歴を保存し、上昇・下落ランキングを自動計算します。相場未入力の商品は推定総資産・含み損益・ランキングから除外します。相場ソース：ポケカチ掲載の買取価格。型番・レアリティ・未開封条件を確認できた値だけ登録します。</div></div>
+<div id="assetExtras">
+  <div class="tool-card">
+    <h3>📈 資産推移</h3>
+    <div class="small">この端末で資産ページを開いた時点の評価額を保存して推移表示</div>
+    <div id="assetTrendChart"></div>
+  </div>
+
+  <div class="asset-tools-grid">
+    <div class="tool-card">
+      <h3>💸 売却シミュレーター</h3>
+      <div class="small">売りたいものを選ぶと、現在相場ベースの売却見込額・原価・利益を計算</div>
+      <div id="simList" class="sim-list" style="margin-top:10px"></div>
+      <div id="simSummary" class="summary" style="margin-top:10px"></div>
+    </div>
+
+    <div class="tool-card">
+      <h3>🏪 BOX買取比較</h3>
+      <div class="small">買取ミミ / AMTF の高い方を採用。差額も表示</div>
+      <div style="overflow:auto;margin-top:8px">
+        <table class="compare-table">
+          <thead><tr><th>BOX</th><th>ミミ</th><th>AMTF</th><th>高い方</th><th>差額</th></tr></thead>
+          <tbody id="boxCompareBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <div class="toolbar"><button id="backup">バックアップ</button><label class="btn">読込<input id="restore" type="file" accept=".json" hidden></label></div>
 <div class="footer">GitHub Pages上のアプリ本体を更新しても、同じブラウザの端末内データは引き継ぐ設計です。大きな更新前にはバックアップ推奨。</div>
@@ -172,7 +217,7 @@ if(!state){
  }
  localStorage.setItem(KEY,JSON.stringify(state));
 }
-for(const k of ['lotteries','sealed','cards','sales']) if(!state[k])state[k]=[];
+for(const k of ['lotteries','sealed','cards','sales']) if(!state[k])state[k]=[]; if(!state.assetHistory)state.assetHistory=[];
 let marketHistory=state.marketHistory||{},boxMarketHistory=state.boxMarketHistory||{},globalMimiDate=state.globalMimiDate||'',globalAmtfDate=state.globalAmtfDate||'',hideLost=state.hideLost||false,viewMonth=new Date(2026,7,1),selectedDate=null,lfilter='all';
 const $=s=>document.querySelector(s),yen=n=>'¥'+Math.round(Number(n||0)).toLocaleString('ja-JP');
 function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
@@ -330,7 +375,91 @@ function renderAssets(){
  $('#upRank').innerHTML=up.map((x,i)=>`<div class="rankrow up"><span>${i+1}. ${x.url?`<a class="pokekachi-link" href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)} ↗</a>`:esc(x.name)}</span><b>+${yen(x.diff)} (+${x.pct.toFixed(1)}%)</b></div>`).join('')||'<div class="small">価格履歴を2回以上入力すると表示されます</div>';
  $('#downRank').innerHTML=down.map((x,i)=>`<div class="rankrow down"><span>${i+1}. ${x.url?`<a class="pokekachi-link" href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)} ↗</a>`:esc(x.name)}</span><b>${yen(x.diff)} (${x.pct.toFixed(1)}%)</b></div>`).join('')||'<div class="small">価格履歴を2回以上入力すると表示されます</div>';
 }
-function renderAll(){renderLottery();renderSealed();renderCards();renderSales();renderAssets();if($('#globalMimiDate'))$('#globalMimiDate').value=globalMimiDate;if($('#globalAmtfDate'))$('#globalAmtfDate').value=globalAmtfDate;}
+
+function currentBoxAssetUnit(x){
+  const vals=[x.mimiPrice,x.amtfPrice].filter(v=>v!=null);
+  return vals.length?Math.max(...vals):null;
+}
+function currentAssetSnapshot(){
+  const cardAsset=(state.cards||[]).filter(x=>x.qty>0&&x.domestic!=null).reduce((s,x)=>s+x.domestic*x.qty,0);
+  const boxAsset=(state.sealed||[]).filter(x=>x.qty>0&&currentBoxAssetUnit(x)!=null).reduce((s,x)=>s+currentBoxAssetUnit(x)*x.qty,0);
+  return {cardAsset,boxAsset,total:cardAsset+boxAsset};
+}
+function saveAssetSnapshot(){
+  state.assetHistory=state.assetHistory||[];
+  const snap=currentAssetSnapshot();
+  const d=new Date().toISOString().slice(0,10);
+  const last=state.assetHistory[state.assetHistory.length-1];
+  if(last&&last.date===d){last.total=snap.total;last.cardAsset=snap.cardAsset;last.boxAsset=snap.boxAsset;}
+  else state.assetHistory.push({date:d,total:snap.total,cardAsset:snap.cardAsset,boxAsset:snap.boxAsset});
+  if(state.assetHistory.length>365)state.assetHistory=state.assetHistory.slice(-365);
+  localStorage.setItem(KEY,JSON.stringify(state));
+}
+function renderAssetTrend(){
+  const el=$('#assetTrendChart'); if(!el)return;
+  const h=state.assetHistory||[];
+  if(!h.length){el.innerHTML='<div class="small" style="padding:20px">履歴はまだありません</div>';return;}
+  const W=760,H=240,P=36,vals=h.map(x=>x.total),min=Math.min(...vals),max=Math.max(...vals);
+  const span=Math.max(1,max-min);
+  const pts=h.map((x,i)=>{
+    const px=h.length===1?W/2:P+i*(W-2*P)/(h.length-1);
+    const py=H-P-(x.total-min)*(H-2*P)/span;
+    return [px,py,x];
+  });
+  const path=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  el.innerHTML=`<svg class="asset-chart" viewBox="0 0 ${W} ${H}">
+    <line x1="${P}" y1="${H-P}" x2="${W-P}" y2="${H-P}" stroke="#94a3b8"/>
+    <line x1="${P}" y1="${P}" x2="${P}" y2="${H-P}" stroke="#94a3b8"/>
+    <path d="${path}" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    ${pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="currentColor"><title>${p[2].date} ${yen(p[2].total)}</title></circle>`).join('')}
+    <text x="${P}" y="18" font-size="12" fill="currentColor">${yen(max)}</text>
+    <text x="${P}" y="${H-7}" font-size="12" fill="currentColor">${yen(min)}</text>
+  </svg>
+  <div class="small">最新：${h[h.length-1].date} / ${yen(h[h.length-1].total)}</div>`;
+}
+function renderSellSimulator(){
+  const el=$('#simList'); if(!el)return;
+  const items=[];
+  for(const x of state.cards||[]){
+    if(x.qty>0&&x.domestic!=null)items.push({id:'c:'+x.id,name:`${x.name} ${x.number||''}`,qty:x.qty,unit:x.domestic,cost:x.cost||0});
+  }
+  for(const x of state.sealed||[]){
+    const unit=currentBoxAssetUnit(x);
+    if(x.qty>0&&unit!=null)items.push({id:'b:'+x.id,name:x.name,qty:x.qty,unit,cost:x.cost||0});
+  }
+  el.innerHTML=items.map(x=>`<label class="sim-row">
+    <input type="checkbox" class="simChk" data-id="${x.id}" data-unit="${x.unit}" data-cost="${x.cost}" data-qty="${x.qty}">
+    <span><b>${esc(x.name)}</b><div class="small">相場 ${yen(x.unit)} / 原価 ${yen(x.cost)} / 在庫 ${x.qty}</div></span>
+    <input class="simQty" data-id="${x.id}" type="number" min="1" max="${x.qty}" value="1" style="width:70px">
+  </label>`).join('')||'<div class="small">相場入力済み在庫がありません</div>';
+  document.querySelectorAll('.simChk,.simQty').forEach(e=>e.onchange=updateSimSummary);
+  updateSimSummary();
+}
+function updateSimSummary(){
+  let revenue=0,cost=0,count=0;
+  document.querySelectorAll('.simChk:checked').forEach(ch=>{
+    const id=ch.dataset.id;
+    const q=Math.max(1,Number(document.querySelector(`.simQty[data-id="${id}"]`)?.value||1));
+    revenue+=Number(ch.dataset.unit)*q;
+    cost+=Number(ch.dataset.cost)*q;
+    count+=q;
+  });
+  const profit=revenue-cost,rate=cost>0?profit/cost*100:null;
+  const el=$('#simSummary'); if(el)el.innerHTML=`<span class="badge">数量 <b>${count}</b></span><span class="badge">売却見込 <b>${yen(revenue)}</b></span><span class="badge">原価 <b>${yen(cost)}</b></span><span class="badge">利益 <b>${yen(profit)}</b></span><span class="badge">利益率 <b>${rate==null?'—':rate.toFixed(1)+'%'}</b></span>`;
+}
+function renderBoxCompare(){
+  const body=$('#boxCompareBody'); if(!body)return;
+  const rows=(state.sealed||[]).filter(x=>x.qty>0&&(x.mimiPrice!=null||x.amtfPrice!=null));
+  body.innerHTML=rows.map(x=>{
+    const m=x.mimiPrice,a=x.amtfPrice;
+    const best=Math.max(m??-Infinity,a??-Infinity);
+    const src=m!=null&&a!=null?(m>=a?'ミミ':'AMTF'):(m!=null?'ミミ':'AMTF');
+    const diff=m!=null&&a!=null?Math.abs(m-a):null;
+    return `<tr><td>${esc(x.name)}</td><td>${m==null?'—':yen(m)}</td><td>${a==null?'—':yen(a)}</td><td class="best-price">${yen(best)}<br><span class="small">${src}</span></td><td>${diff==null?'—':yen(diff)}</td></tr>`;
+  }).join('')||'<tr><td colspan="5" class="small">BOX相場が未入力です</td></tr>';
+}
+
+function renderAll(){renderLottery();renderSealed();renderCards();renderSales();renderAssets();saveAssetSnapshot();renderAssetTrend();renderSellSimulator();renderBoxCompare();if($('#globalMimiDate'))$('#globalMimiDate').value=globalMimiDate;if($('#globalAmtfDate'))$('#globalAmtfDate').value=globalAmtfDate;}
 document.querySelectorAll('[data-lfilter]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-lfilter]').forEach(x=>x.classList.remove('active'));b.classList.add('active');lfilter=b.dataset.lfilter;renderLottery();});
 $('#toggleLost').onclick=()=>{hideLost=!hideLost;save();};$('#lotSearch').oninput=renderLottery;$('#sealedSearch').oninput=renderSealed;$('#cardSearch').oninput=renderCards;$('#sealedSort').onchange=renderSealed;$('#cardSort').onchange=renderCards;$('#globalMimiDate').onchange=e=>applyGlobalBoxDate('mimi',e.target.value);$('#globalAmtfDate').onchange=e=>applyGlobalBoxDate('amtf',e.target.value);
 $('#prev').onclick=()=>{viewMonth=new Date(viewMonth.getFullYear(),viewMonth.getMonth()-1,1);selectedDate=null;renderLottery();};$('#next').onclick=()=>{viewMonth=new Date(viewMonth.getFullYear(),viewMonth.getMonth()+1,1);selectedDate=null;renderLottery();};
