@@ -356,6 +356,35 @@ body.dark-mode .watch-metric.profit-rate.negative b{color:#ff7c88!important}
 }
 </style>
 
+
+<style id="watch-multiselect-v2">
+.watch-picker{border:1px solid var(--line);border-radius:14px;padding:10px;background:var(--card)}
+.watch-tabs{display:flex;gap:7px;overflow:auto;padding-bottom:7px}
+.watch-tab{white-space:nowrap;padding:8px 12px!important;min-height:36px!important;font-size:13px!important;border-radius:10px!important}
+.watch-tab.active{background:#1765c1!important;color:#fff!important;border-color:#1765c1!important}
+.watch-picker-tools{display:flex;gap:7px;flex-wrap:wrap;margin:4px 0 9px}
+.watch-picker-tools button{min-height:32px!important;padding:5px 9px!important;font-size:12px!important}
+#watchAddBtn{background:#eaf4ff!important;border-color:#b9d8f5!important;color:#185986!important;font-weight:850!important}
+.watch-picker-list{display:grid;gap:7px;max-height:330px;overflow-y:auto;padding-right:3px}
+.watch-pick-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:9px;align-items:center;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:pointer}
+.watch-pick-row:hover{background:#f6f9fd}
+.watch-pick-row input{width:18px;height:18px}
+.watch-pick-name{font-weight:800;font-size:14px}
+.watch-pick-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.watch-pick-price{font-size:13px;font-weight:850;white-space:nowrap}
+.watch-empty{padding:18px;text-align:center;color:var(--muted);font-size:13px}
+body.dark-mode .watch-picker{background:#151e2b!important;border-color:#2b394c!important}
+body.dark-mode .watch-pick-row{background:#101925!important;border-color:#2b394c!important}
+body.dark-mode .watch-pick-row:hover{background:#172338!important}
+body.dark-mode #watchAddBtn{background:#17304a!important;border-color:#315c83!important;color:#b3d9fb!important}
+@media(max-width:560px){
+ .watch-picker-list{max-height:42vh}
+ .watch-pick-row{grid-template-columns:auto minmax(0,1fr);padding:9px}
+ .watch-pick-price{grid-column:2}
+ .watch-picker-tools button{flex:1 1 auto}
+}
+</style>
+
 </head><body><div class="app">
 <header><div><h1>📚 トレカ管理</h1><div class="sub">抽選 → 仕入れ → 在庫 → 開封 → 売却 → 資産</div></div><div class="sub">元画像スタンプ背景透明版 2026/8/16</div></header>
 <div class="tabs"><button class="tab active" data-view="lottery">🗓 抽選</button><button class="tab" data-view="sealed">📦 未開封</button><button class="tab" data-view="cards">🃏 カード</button><button class="tab" data-view="sales">💰 売却</button><button class="tab" data-view="assets">📊 資産</button></div>
@@ -420,9 +449,18 @@ body.dark-mode .watch-metric.profit-rate.negative b{color:#ff7c88!important}
     <div class="tool-card">
       <h3>👀 売却ウォッチ</h3>
       <div class="small">売りたい商品だけを登録してモニタリング。現在相場・含み益・利益率・目標価格を確認できます。</div>
-      <div class="watch-add-row" style="margin-top:10px">
-        <select id="watchAddSelect"><option value="">売却候補を選択</option></select>
-        <button id="watchAddBtn" type="button">＋ ウォッチ追加</button>
+      <div class="watch-picker" style="margin-top:10px">
+        <div class="watch-tabs">
+          <button type="button" class="watch-tab active" data-watch-tab="box">📦 BOX</button>
+          <button type="button" class="watch-tab" data-watch-tab="card">🃏 カード</button>
+          <button type="button" class="watch-tab" data-watch-tab="pack">🎴 パック</button>
+        </div>
+        <div class="watch-picker-tools">
+          <button type="button" id="watchSelectAll">すべて選択</button>
+          <button type="button" id="watchClearAll">選択解除</button>
+          <button type="button" id="watchAddBtn">＋ 選択した商品を追加</button>
+        </div>
+        <div id="watchPickerList" class="watch-picker-list"></div>
       </div>
       <div id="simList" class="sim-list" style="margin-top:10px"></div>
       <div id="simSummary" class="summary" style="margin-top:10px"></div>
@@ -802,43 +840,62 @@ function renderAssetTrend(){
   </svg>
   <div class="small">最新：${h[h.length-1].date} / ${yen(h[h.length-1].total)}</div>`;
 }
+let activeWatchTab='box';
+
 function sellWatchItems(){
   const items=[];
   for(const x of state.cards||[]){
-    if(x.qty>0)items.push({key:'c:'+x.id,type:'card',id:x.id,name:`${x.name} ${x.number||''}`.trim(),qty:x.qty,unit:x.domestic,cost:Number(x.cost||0)});
+    if(x.qty>0)items.push({
+      key:'c:'+x.id,type:'card',group:'card',id:x.id,
+      name:`${x.name} ${x.number||''}`.trim(),qty:x.qty,unit:x.domestic,cost:Number(x.cost||0)
+    });
   }
   for(const x of state.sealed||[]){
-    if(x.qty>0)items.push({key:'b:'+x.id,type:'sealed',id:x.id,name:x.name,qty:x.qty,unit:currentBoxAssetUnit(x),cost:Number(x.cost||0)});
+    if(x.qty<=0)continue;
+    const cat=String(x.category||''),nm=String(x.name||'');
+    const isPack=/パック|pack/i.test(cat)||/パック|pack/i.test(nm);
+    items.push({
+      key:'b:'+x.id,type:isPack?'pack':'sealed',group:isPack?'pack':'box',id:x.id,
+      name:x.name,qty:x.qty,unit:currentBoxAssetUnit(x),cost:Number(x.cost||0)
+    });
   }
   return items;
 }
+function renderWatchPicker(){
+  const el=$('#watchPickerList');if(!el)return;
+  const all=sellWatchItems(),watched=new Set((state.sellWatch||[]).map(w=>w.key));
+  const rows=all.filter(x=>x.group===activeWatchTab&&!watched.has(x.key));
+  el.innerHTML=rows.map(x=>`<label class="watch-pick-row">
+    <input type="checkbox" class="watchPickChk" value="${x.key}">
+    <div><div class="watch-pick-name">${esc(x.name)}</div><div class="watch-pick-meta">在庫 ${x.qty}｜取得 ${yen(x.cost)} /個</div></div>
+    <div class="watch-pick-price">${x.unit==null?'相場未入力':yen(x.unit)}</div>
+  </label>`).join('')||`<div class="watch-empty">${activeWatchTab==='box'?'BOX':activeWatchTab==='card'?'カード':'パック'}で追加できる商品はありません</div>`;
+}
 function addSellWatch(){
-  const key=$('#watchAddSelect')?.value;if(!key)return;
   state.sellWatch=state.sellWatch||[];
-  if(!state.sellWatch.some(w=>w.key===key))state.sellWatch.push({key,target:null,added:new Date().toISOString().slice(0,10)});
+  const keys=[...document.querySelectorAll('.watchPickChk:checked')].map(x=>x.value);
+  if(!keys.length)return;
+  keys.forEach(key=>{if(!state.sellWatch.some(w=>w.key===key))state.sellWatch.push({key,target:null,added:new Date().toISOString().slice(0,10)});});
   save();
 }
-function removeSellWatch(key){
-  state.sellWatch=(state.sellWatch||[]).filter(w=>w.key!==key);save();
+function setWatchTab(tab){
+  activeWatchTab=tab;
+  document.querySelectorAll('.watch-tab').forEach(b=>b.classList.toggle('active',b.dataset.watchTab===tab));
+  renderWatchPicker();
 }
-function updateSellWatchTarget(key,val){
-  const w=(state.sellWatch||[]).find(w=>w.key===key);if(!w)return;
-  w.target=val===''?null:Number(val);save();
-}
+function toggleWatchPickerSelection(v){document.querySelectorAll('.watchPickChk').forEach(x=>x.checked=v);}
+function removeSellWatch(key){state.sellWatch=(state.sellWatch||[]).filter(w=>w.key!==key);save();}
+function updateSellWatchTarget(key,val){const w=(state.sellWatch||[]).find(w=>w.key===key);if(!w)return;w.target=val===''?null:Number(val);save();}
 function renderSellSimulator(){
   state.sellWatch=state.sellWatch||[];
   const all=sellWatchItems(),watched=state.sellWatch.map(w=>({w,item:all.find(x=>x.key===w.key)})).filter(x=>x.item);
-  const sel=$('#watchAddSelect');
-  if(sel){
-    const available=all.filter(x=>!state.sellWatch.some(w=>w.key===x.key));
-    sel.innerHTML='<option value="">売却候補を選択</option>'+available.map(x=>`<option value="${x.key}">${esc(x.name)}｜${x.type==='card'?'カード':'BOX'}</option>`).join('');
-  }
+  renderWatchPicker();
   const el=$('#simList');if(!el)return;
   el.innerHTML=watched.map(({w,item:x})=>{
     const cur=x.unit,profit=cur==null?null:(cur-x.cost),rate=(profit!=null&&x.cost>0)?profit/x.cost*100:null;
     const hit=cur!=null&&w.target!=null&&cur>=w.target;
     return `<div class="watch-card ${hit?'target-hit':''}">
-      <div class="watch-top"><div><div class="watch-name">${esc(x.name)}</div><div class="small">${x.type==='card'?'🃏 カード':'📦 BOX'}｜在庫 ${x.qty}${w.added?'｜監視開始 '+w.added:''}</div></div><button class="watch-remove" onclick="removeSellWatch('${x.key}')">削除</button></div>
+      <div class="watch-top"><div><div class="watch-name">${esc(x.name)}</div><div class="small">${x.type==='card'?'🃏 カード':x.type==='pack'?'🎴 パック':'📦 BOX'}｜在庫 ${x.qty}${w.added?'｜監視開始 '+w.added:''}</div></div><button class="watch-remove" onclick="removeSellWatch('${x.key}')">削除</button></div>
       <div class="watch-metrics">
         <div class="watch-metric current-price"><span>現在相場</span><b>${cur==null?'未入力':yen(cur)}</b></div>
         <div class="watch-metric"><span>取得原価/個</span><b>${yen(x.cost)}</b></div>
@@ -874,6 +931,9 @@ $('#saleSave').onclick=()=>{const type=$('#saleSourceType').value,id=$('#saleSou
 $('#backup').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='トレカ管理バックアップ.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);};
 $('#restore').onchange=async e=>{try{state=JSON.parse(await e.target.files[0].text());marketHistory=state.marketHistory||{};save();}catch{alert('バックアップを読み込めませんでした');}};
 if($('#watchAddBtn'))$('#watchAddBtn').onclick=addSellWatch;
+document.querySelectorAll('.watch-tab').forEach(b=>b.onclick=()=>setWatchTab(b.dataset.watchTab));
+if($('#watchSelectAll'))$('#watchSelectAll').onclick=()=>toggleWatchPickerSelection(true);
+if($('#watchClearAll'))$('#watchClearAll').onclick=()=>toggleWatchPickerSelection(false);
 renderAll();
 </script>
 <script id="dark-mode-v3-script">
