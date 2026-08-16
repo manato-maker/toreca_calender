@@ -16,13 +16,21 @@
 dialog{border:0;border-radius:16px;width:min(560px,calc(100% - 24px));padding:0}dialog::backdrop{background:#0007}.modal{padding:18px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .footer{font-size:12px;color:var(--muted);line-height:1.5;margin:14px 3px 40px}
 @media(max-width:700px){header{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr}.day{min-height:68px}.marketgrid{grid-template-columns:1fr}.boxmarkets{grid-template-columns:1fr}.globaldates{grid-template-columns:1fr}.row{flex-direction:column}.grid2{grid-template-columns:1fr}.tabs{overflow:auto;flex-wrap:nowrap}.tab{white-space:nowrap}}
-</style></head><body><div class="app">
-<header><div><h1>📚 トレカ管理</h1><div class="sub">抽選 → 仕入れ → 在庫 → 開封 → 売却 → 資産</div></div><div class="sub">BOX相場入力改善版 2026/8/16</div></header>
+</style>
+<style>
+.lottery-result-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.lottery-result-actions button{min-height:48px;font-weight:700;font-size:16px;border-radius:12px}
+.lottery-result-actions .win{background:#edf9ef;border:1px solid #b8dfbf}
+.lottery-result-actions .lose{background:#fff1f1;border:1px solid #efc1c1}
+.lottery-waiting{display:inline-block;margin-top:7px;padding:5px 9px;border-radius:999px;background:#fff8df;font-size:12px;font-weight:700}
+</style>
+</head><body><div class="app">
+<header><div><h1>📚 トレカ管理</h1><div class="sub">抽選 → 仕入れ → 在庫 → 開封 → 売却 → 資産</div></div><div class="sub">スクショ運用対応版 2026/8/16</div></header>
 <div class="tabs"><button class="tab active" data-view="lottery">🗓 抽選</button><button class="tab" data-view="sealed">📦 未開封</button><button class="tab" data-view="cards">🃏 カード</button><button class="tab" data-view="sales">💰 売却</button><button class="tab" data-view="assets">📊 資産</button></div>
 
-<section id="lottery" class="view active"><div class="toolbar"><button id="prev">←</button><button id="monthLabel" class="active"></button><button id="next">→</button><button data-lfilter="all" class="active">すべて</button><button data-lfilter="unreported">未報告</button><button data-lfilter="win">当選</button><button data-lfilter="lose">落選</button></div><div id="lotSummary" class="summary"></div><div class="calendar"><div class="cal-head"><div class="sun">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div class="sat">土</div></div><div id="calendar" class="cal-grid"></div></div><div class="box" style="margin-top:12px"><input id="lotSearch" class="search" placeholder="タイトル・店舗を検索"><div id="lotList" class="list"></div></div></section>
+<section id="lottery" class="view active"><div class="box" style="margin-bottom:12px"><b>📱 抽選の運用</b><div class="small" style="margin-top:6px">申込完了スクショから追加する抽選は「⏳ 結果待ち」で登録。結果が出たら 🎉当選 / ❌落選 を手動タップ。</div></div><div class="toolbar"><button id="prev">←</button><button id="monthLabel" class="active"></button><button id="next">→</button><button data-lfilter="all" class="active">すべて</button><button data-lfilter="unreported">⏳ 結果待ち</button><button data-lfilter="win">当選</button><button data-lfilter="lose">落選</button></div><div id="lotSummary" class="summary"></div><div class="calendar"><div class="cal-head"><div class="sun">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div class="sat">土</div></div><div id="calendar" class="cal-grid"></div></div><div class="box" style="margin-top:12px"><input id="lotSearch" class="search" placeholder="タイトル・店舗を検索"><div id="lotList" class="list"></div></div></section>
 
-<section id="sealed" class="view"><div class="box">
+<section id="sealed" class="view"><div class="box" style="margin-bottom:12px"><b>📸 BOX相場の運用</b><div class="small" style="margin-top:6px">買取ミミ・AMTFのスクショを読み取り → 金額を目視確認 → 確認後に入力。BOX資産は2社の高い方を採用。</div></div><div class="box">
 <div class="globaldates">
   <div class="mimiDateBox"><label class="field"><b>🐰 買取ミミ 共通日付</b><input id="globalMimiDate" type="date"></label></div>
   <div class="amtfDateBox"><label class="field"><b>📈 AMTF 共通日付</b><input id="globalAmtfDate" type="date"></label></div>
@@ -93,12 +101,12 @@ function save(){state.marketHistory=marketHistory;state.boxMarketHistory=boxMark
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('#'+b.dataset.view).classList.add('active');});
 
 function renderLottery(){
- const a=state.lotteries,c=s=>a.filter(x=>x.status===s).length;$('#lotSummary').innerHTML=`<span class="badge">総数 <b>${a.length}</b></span><span class="badge">🟢 当選 <b>${c('win')}</b></span><span class="badge">⚪ 未報告 <b>${c('unreported')}</b></span><span class="badge">⚫ 落選 <b>${c('lose')}</b></span>`;
+ const a=state.lotteries,c=s=>a.filter(x=>x.status===s).length;$('#lotSummary').innerHTML=`<span class="badge">総数 <b>${a.length}</b></span><span class="badge">🟢 当選 <b>${c('win')}</b></span><span class="badge">⏳ 結果待ち <b>${c('unreported')}</b></span><span class="badge">⚫ 落選 <b>${c('lose')}</b></span>`;
  const y=viewMonth.getFullYear(),m=viewMonth.getMonth();$('#monthLabel').textContent=`${y}年${m+1}月`;const first=new Date(y,m,1),start=new Date(y,m,1-first.getDay());let h='';
  for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,rows=a.filter(x=>x.date===ds),dow=d.getDay();h+=`<div class="day ${d.getMonth()!==m?'muted':''} ${selectedDate===ds?'selected':''}" data-date="${ds}"><b class="${dow===0?'sun':dow===6?'sat':''}">${d.getDate()}</b>${rows.length?`<div class="count">${rows.length}件</div>`:''}</div>`;}
  $('#calendar').innerHTML=h;document.querySelectorAll('.day').forEach(e=>e.onclick=()=>{selectedDate=selectedDate===e.dataset.date?null:e.dataset.date;renderLottery();});
  const q=$('#lotSearch').value.trim().toLowerCase();let rows=a.filter(x=>(!selectedDate||x.date===selectedDate)&&(lfilter==='all'||x.status===lfilter));if(q)rows=rows.filter(x=>(x.title+' '+x.store).toLowerCase().includes(q));rows.sort((x,y)=>(x.date+x.time).localeCompare(y.date+y.time));
- $('#lotList').innerHTML=rows.map(x=>`<div class="item ${x.status==='win'?'win':x.status==='lose'?'lose':''}"><div class="row"><div><div class="title">${fmtDate(x.date)} ${esc(x.time)}｜${esc(x.title)}</div><div class="meta">🏪 ${esc(x.store)} ${x.note?'｜'+esc(x.note):''}</div></div><div class="actions"><button onclick="setLot('${x.id}','unreported')">未報告</button><button onclick="setLot('${x.id}','win')">当選</button><button onclick="setLot('${x.id}','lose')">落選</button></div></div></div>`).join('')||'<div class="small">該当なし</div>';
+ $('#lotList').innerHTML=rows.map(x=>`<div class="item ${x.status==='win'?'win':x.status==='lose'?'lose':''}"><div class="row"><div><div class="title">${fmtDate(x.date)} ${esc(x.time)}｜${esc(x.title)}</div><div class="meta">🏪 ${esc(x.store)} ${x.note?'｜'+esc(x.note):''}</div></div><div class="lottery-waiting">${x.status==='unreported'?'⏳ 結果待ち':x.status==='win'?'🎉 当選':'❌ 落選'}</div><div class="lottery-result-actions"><button class="win" onclick="setLot('${x.id}','win')">🎉 当選</button><button class="lose" onclick="setLot('${x.id}','lose')">❌ 落選</button></div></div></div>`).join('')||'<div class="small">該当なし</div>';
 }
 function setLot(id,status){const x=state.lotteries.find(x=>x.id===id);if(x){x.status=status;save();}}
 
