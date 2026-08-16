@@ -547,6 +547,23 @@ if(!state){
  localStorage.setItem(KEY,JSON.stringify(state));
 }
 for(const k of ['lotteries','sealed','cards','sales']) if(!state[k])state[k]=[]; if(!state.assetHistory)state.assetHistory=[]; if(!state.sellWatch)state.sellWatch=[];
+
+// One-time data fix: 2026-08-17 古本市場 橿原店 -> 古本市場 都島店
+if(!state.dataFixes) state.dataFixes={};
+if(!state.dataFixes.furuichiMiyakojima20260817){
+  let changed=false;
+  for(const lot of (state.lotteries||[])){
+    if(lot.date==='2026-08-17' && lot.store==='古本市場 橿原店'){
+      lot.store='古本市場 都島店';
+      changed=true;
+    }
+  }
+  state.dataFixes.furuichiMiyakojima20260817=true;
+  if(changed || true){
+    localStorage.setItem(KEY,JSON.stringify(state));
+  }
+}
+
 let marketHistory=state.marketHistory||{},boxMarketHistory=state.boxMarketHistory||{},globalMimiDate=state.globalMimiDate||'',globalAmtfDate=state.globalAmtfDate||'',hideLost=state.hideLost||false,viewMonth=new Date(2026,7,1),selectedDate=null,lfilter='all';
 const $=s=>document.querySelector(s),yen=n=>'¥'+Math.round(Number(n||0)).toLocaleString('ja-JP');
 function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
