@@ -97,6 +97,136 @@ body.dark-mode .compare-table th,body.dark-mode .compare-table td{border-color:#
 @media(max-width:700px){.asset-tools-grid{grid-template-columns:1fr}}
 </style>
 
+
+<style id="lottery-readability-v1">
+/* 抽選一覧：情報の優先順位をはっきり */
+#lotList{gap:12px}
+#lotList .item{
+  position:relative;
+  min-height:190px;
+  padding:18px 168px 16px 18px;
+  border-radius:16px;
+  box-shadow:0 2px 8px rgba(22,34,51,.06);
+}
+#lotList .title{
+  font-size:20px;
+  line-height:1.35;
+  font-weight:850;
+  letter-spacing:.01em;
+  color:#172033;
+  margin-bottom:8px;
+}
+#lotList .meta{
+  font-size:18px;
+  line-height:1.4;
+  font-weight:750;
+  color:#526277;
+  margin:4px 0 8px;
+}
+#lotList .lottery-waiting{
+  margin-top:4px;
+  padding:6px 12px;
+  font-size:14px;
+  font-weight:800;
+}
+#lotList .lottery-result-actions{
+  display:flex!important;
+  gap:10px!important;
+  margin-top:12px!important;
+  max-width:none!important;
+}
+#lotList .lottery-result-actions button{
+  min-height:36px!important;
+  height:36px;
+  padding:5px 14px!important;
+  width:auto!important;
+  min-width:92px;
+  font-size:14px!important;
+  border-radius:10px!important;
+  font-weight:800!important;
+}
+#lotList .result-stamp-image,
+#lotList .result-stamp.wait{
+  position:absolute!important;
+  right:22px!important;
+  top:50%!important;
+  transform:translateY(-50%) rotate(-2deg)!important;
+  width:118px!important;
+  height:118px!important;
+}
+#lotList .result-stamp.wait{
+  display:flex!important;
+  align-items:center;
+  justify-content:center;
+}
+#lotSummary{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin:10px 0;
+}
+#lotSummary .badge{
+  font-size:14px;
+  padding:8px 12px;
+  border-radius:999px;
+}
+#lottery .box{border-radius:16px}
+#lotSearch{
+  height:50px;
+  font-size:16px;
+  border-radius:14px;
+}
+/* ダークモードも読みやすく */
+body.dark-mode #lotList .title{color:#f3f6fb!important}
+body.dark-mode #lotList .meta{color:#c0cad8!important}
+body.dark-mode #lotList .item{box-shadow:none}
+/* スマホ最適化 */
+@media(max-width:640px){
+  #lotList .item{
+    min-height:170px;
+    padding:15px 132px 14px 15px;
+  }
+  #lotList .title{
+    font-size:17px;
+    line-height:1.35;
+    margin-bottom:6px;
+  }
+  #lotList .meta{
+    font-size:15px;
+    line-height:1.35;
+    font-weight:800;
+  }
+  #lotList .result-stamp-image,
+  #lotList .result-stamp.wait{
+    right:12px!important;
+    width:102px!important;
+    height:102px!important;
+  }
+  #lotList .lottery-result-actions{
+    gap:8px!important;
+  }
+  #lotList .lottery-result-actions button{
+    height:34px;
+    min-height:34px!important;
+    min-width:78px;
+    padding:4px 10px!important;
+    font-size:13px!important;
+  }
+  #lotSummary .badge{
+    font-size:13px;
+    padding:7px 10px;
+  }
+}
+/* 小さい端末では店名を優先して右スタンプとの衝突を避ける */
+@media(max-width:390px){
+  #lotList .item{padding-right:118px}
+  #lotList .result-stamp-image,
+  #lotList .result-stamp.wait{width:92px!important;height:92px!important;right:9px!important}
+  #lotList .title{font-size:16px}
+  #lotList .meta{font-size:14px}
+}
+</style>
+
 </head><body><div class="app">
 <header><div><h1>📚 トレカ管理</h1><div class="sub">抽選 → 仕入れ → 在庫 → 開封 → 売却 → 資産</div></div><div class="sub">元画像スタンプ背景透明版 2026/8/16</div></header>
 <div class="tabs"><button class="tab active" data-view="lottery">🗓 抽選</button><button class="tab" data-view="sealed">📦 未開封</button><button class="tab" data-view="cards">🃏 カード</button><button class="tab" data-view="sales">💰 売却</button><button class="tab" data-view="assets">📊 資産</button></div>
@@ -227,7 +357,7 @@ function save(){state.marketHistory=marketHistory;state.boxMarketHistory=boxMark
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('#'+b.dataset.view).classList.add('active');});
 
 function renderLottery(){
- const a=state.lotteries,c=s=>a.filter(x=>x.status===s).length;if($('#toggleLost')){$('#toggleLost').textContent=hideLost?'👀 落選を表示':'🙈 落選を隠す';$('#toggleLost').classList.toggle('active',hideLost);}$('#lotSummary').innerHTML=`<span class="badge">総数 <b>${a.length}</b></span><span class="badge">🟢 当選 <b>${c('win')}</b></span><span class="badge">⏳ 結果待ち <b>${c('unreported')}</b></span><span class="badge">⚫ 落選 <b>${c('lose')}</b></span>`;
+ const a=state.lotteries,c=s=>a.filter(x=>x.status===s).length;if($('#toggleLost')){$('#toggleLost').textContent=hideLost?'👀 落選を表示':'🙈 落選を隠す';$('#toggleLost').classList.toggle('active',hideLost);}$('#lotSummary').innerHTML=`<span class="badge">すべて <b>${a.length}</b></span><span class="badge">⏳ 結果待ち <b>${c('unreported')}</b></span><span class="badge">🎉 当選 <b>${c('win')}</b></span><span class="badge">✕ 落選 <b>${c('lose')}</b></span>`;
  const y=viewMonth.getFullYear(),m=viewMonth.getMonth();$('#monthLabel').textContent=`${y}年${m+1}月`;const first=new Date(y,m,1),start=new Date(y,m,1-first.getDay());let h='';
  for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,rows=a.filter(x=>x.date===ds),dow=d.getDay();h+=`<div class="day ${d.getMonth()!==m?'muted':''} ${selectedDate===ds?'selected':''}" data-date="${ds}"><b class="${dow===0?'sun':dow===6?'sat':''}">${d.getDate()}</b>${rows.length?`<div class="count">${rows.length}件</div>`:''}</div>`;}
  $('#calendar').innerHTML=h;document.querySelectorAll('.day').forEach(e=>e.onclick=()=>{selectedDate=selectedDate===e.dataset.date?null:e.dataset.date;renderLottery();});
