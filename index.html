@@ -25,7 +25,7 @@ dialog{border:0;border-radius:16px;width:min(560px,calc(100% - 24px));padding:0}
 .lottery-waiting{display:inline-block;margin-top:7px;padding:5px 9px;border-radius:999px;background:#fff8df;font-size:12px;font-weight:700}
 </style>
 </head><body><div class="app">
-<header><div><h1>📚 トレカ管理</h1><div class="sub">抽選 → 仕入れ → 在庫 → 開封 → 売却 → 資産</div></div><div class="sub">スクショ運用対応版 2026/8/16</div></header>
+<header><div><h1>📚 トレカ管理</h1><div class="sub">抽選 → 仕入れ → 在庫 → 開封 → 売却 → 資産</div></div><div class="sub">並べ替え対応版 2026/8/16</div></header>
 <div class="tabs"><button class="tab active" data-view="lottery">🗓 抽選</button><button class="tab" data-view="sealed">📦 未開封</button><button class="tab" data-view="cards">🃏 カード</button><button class="tab" data-view="sales">💰 売却</button><button class="tab" data-view="assets">📊 資産</button></div>
 
 <section id="lottery" class="view active"><div class="box" style="margin-bottom:12px"><b>📱 抽選の運用</b><div class="small" style="margin-top:6px">申込完了スクショから追加する抽選は「⏳ 結果待ち」で登録。結果が出たら 🎉当選 / ❌落選 を手動タップ。</div></div><div class="toolbar"><button id="prev">←</button><button id="monthLabel" class="active"></button><button id="next">→</button><button data-lfilter="all" class="active">すべて</button><button data-lfilter="unreported">⏳ 結果待ち</button><button data-lfilter="win">当選</button><button data-lfilter="lose">落選</button></div><div id="lotSummary" class="summary"></div><div class="calendar"><div class="cal-head"><div class="sun">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div class="sat">土</div></div><div id="calendar" class="cal-grid"></div></div><div class="box" style="margin-top:12px"><input id="lotSearch" class="search" placeholder="タイトル・店舗を検索"><div id="lotList" class="list"></div></div></section>
@@ -36,8 +36,33 @@ dialog{border:0;border-radius:16px;width:min(560px,calc(100% - 24px));padding:0}
   <div class="amtfDateBox"><label class="field"><b>📈 AMTF 共通日付</b><input id="globalAmtfDate" type="date"></label></div>
 </div>
 <div class="small" style="margin-bottom:9px">ここで日付を1回入力すると、各BOXの同じ相場元の日付に自動反映されます。</div>
-<input id="sealedSearch" class="search" placeholder="BOX・未開封パックを検索"><div id="sealedList" class="list"></div></div></section>
-<section id="cards" class="view"><div class="box"><input id="cardSearch" class="search" placeholder="カード名・番号を検索"><div id="cardList" class="list"></div></div></section>
+<div class="grid2" style="margin-bottom:9px">
+<input id="sealedSearch" class="search" style="margin-bottom:0" placeholder="BOX・未開封パックを検索">
+<select id="sealedSort" class="search" style="margin-bottom:0">
+<option value="default">並べ替え：登録順</option>
+<option value="price_desc">資産価格：高い順</option>
+<option value="price_asc">資産価格：安い順</option>
+<option value="profit_desc">含み利益：高い順</option>
+<option value="profit_asc">含み利益：低い順</option>
+<option value="rate_desc">利益率：高い順</option>
+<option value="rate_asc">利益率：低い順</option>
+<option value="cost_desc">取得価格：高い順</option>
+</select></div>
+<div id="sealedList" class="list"></div></div></section>
+<section id="cards" class="view"><div class="box">
+<div class="grid2" style="margin-bottom:9px">
+<input id="cardSearch" class="search" style="margin-bottom:0" placeholder="カード名・番号を検索">
+<select id="cardSort" class="search" style="margin-bottom:0">
+<option value="default">並べ替え：登録順</option>
+<option value="price_desc">相場価格：高い順</option>
+<option value="price_asc">相場価格：安い順</option>
+<option value="profit_desc">含み利益：高い順</option>
+<option value="profit_asc">含み利益：低い順</option>
+<option value="rate_desc">利益率：高い順</option>
+<option value="rate_asc">利益率：低い順</option>
+<option value="cost_desc">取得価格：高い順</option>
+</select></div>
+<div id="cardList" class="list"></div></div></section>
 <section id="sales" class="view"><div class="box"><div id="salesSummary" class="summary"></div><div id="salesList" class="list"></div></div></section>
 <section id="assets" class="view"><div id="assetStats" class="grid"></div><div class="grid" style="margin-top:10px"><div class="box"><h3>🔥 ポケカチ買取 上昇ランキング</h3><div class="small">同じ商品の前回入力値と今回入力値を比較</div><div id="upRank" class="rank" style="margin-top:8px"></div></div><div class="box"><h3>📉 ポケカチ買取 下落ランキング</h3><div class="small">価格履歴が2件以上ある商品だけ表示</div><div id="downRank" class="rank" style="margin-top:8px"></div></div></div><div class="box"><h3>相場について</h3><div class="small">カードは登録全件を型番・レアリティまで再照合し、ポケカチの素体買取を反映。仕様が確定できないカードは相場未取得のまま表示します。BOX・未開封商品は買取ミミとAMTFを手入力し、別履歴で保存します。相場を更新するたび履歴を保存し、上昇・下落ランキングを自動計算します。相場未入力の商品は推定総資産・含み損益・ランキングから除外します。相場ソース：ポケカチ掲載の買取価格。型番・レアリティ・未開封条件を確認できた値だけ登録します。</div></div></section>
 
@@ -159,13 +184,41 @@ function updateBoxMarket(id,source,key,val){
  }
  save();
 }
+
+function boxAssetUnit(x){
+ const vals=[x.mimiPrice,x.amtfPrice].filter(v=>v!=null);
+ return vals.length?Math.max(...vals):null;
+}
+function calcMetrics(x,unitAsset){
+ const price=unitAsset==null?null:Number(unitAsset);
+ const profit=price==null?null:(price-Number(x.cost||0))*Number(x.qty||0);
+ const rate=(price==null||Number(x.cost||0)<=0)?null:((price-Number(x.cost||0))/Number(x.cost||0))*100;
+ return {price,profit,rate};
+}
+function sortInventory(a,mode,getAsset){
+ if(mode==='default')return a;
+ const dir=mode.endsWith('_asc')?1:-1;
+ const key=mode.replace(/_(asc|desc)$/,'');
+ return a.slice().sort((x,y)=>{
+   const mx=calcMetrics(x,getAsset(x)),my=calcMetrics(y,getAsset(y));
+   let vx,vy;
+   if(key==='price'){vx=mx.price;vy=my.price;}
+   else if(key==='profit'){vx=mx.profit;vy=my.profit;}
+   else if(key==='rate'){vx=mx.rate;vy=my.rate;}
+   else if(key==='cost'){vx=Number(x.cost||0);vy=Number(y.cost||0);}
+   else return 0;
+   const xn=vx==null,yn=vy==null;
+   if(xn&&yn)return 0;if(xn)return 1;if(yn)return -1;
+   return (vx-vy)*dir;
+ });
+}
 function renderSealed(){
- const q=$('#sealedSearch').value.trim().toLowerCase();let a=state.sealed.filter(x=>x.qty>0);if(q)a=a.filter(x=>(x.name+' '+x.store).toLowerCase().includes(q));
+ const q=$('#sealedSearch').value.trim().toLowerCase();let a=state.sealed.filter(x=>x.qty>0);if(q)a=a.filter(x=>(x.name+' '+x.store).toLowerCase().includes(q));a=sortInventory(a,$('#sealedSort').value,boxAssetUnit);
  $('#sealedList').innerHTML=a.map(x=>{
    const mimi=x.mimiPrice,amtf=x.amtfPrice;
    return `<div class="item"><div class="row"><div><div class="title">${esc(x.name)} ×${x.qty}</div>
    <div class="meta">${esc(x.category)}｜${esc(x.store)}｜購入 ${yen(x.cost)}/個｜${x.purchaseDate?fmtDate(x.purchaseDate):'購入日不明'}｜シュリンク ${esc(x.shrink)}</div>
-   <div class="meta">取得原価 ${yen(x.cost*x.qty)}${mimi!=null?`｜ミミ ${yen(mimi*x.qty)}`:''}${amtf!=null?`｜AMTF ${yen(amtf*x.qty)}`:''}${(mimi!=null||amtf!=null)?`｜資産採用 ${yen(Math.max(mimi??-Infinity,amtf??-Infinity)*x.qty)} (${mimi!=null&&amtf!=null?(mimi>=amtf?'ミミ':'AMTF'):(mimi!=null?'ミミ':'AMTF')})`:''}</div></div>
+   <div class="meta">取得原価 ${yen(x.cost*x.qty)}${mimi!=null?`｜ミミ ${yen(mimi*x.qty)}`:''}${amtf!=null?`｜AMTF ${yen(amtf*x.qty)}`:''}${(mimi!=null||amtf!=null)?(()=>{const u=boxAssetUnit(x),mm=calcMetrics(x,u);return `｜資産採用 ${yen(u*x.qty)} (${mimi!=null&&amtf!=null?(mimi>=amtf?'ミミ':'AMTF'):(mimi!=null?'ミミ':'AMTF')})｜含み利益 ${yen(mm.profit)}｜利益率 ${mm.rate==null?'—':mm.rate.toFixed(1)+'%'}`})():''}</div></div>
    <button onclick="openSale('sealed','${x.id}')">売却</button></div>${boxMarketEditor(x)}</div>`;
  }).join('');
 }
@@ -195,8 +248,8 @@ function openBoxGraph(id){
  $('#graphDlg').showModal();
 }
 function renderCards(){
- const q=$('#cardSearch').value.trim().toLowerCase();let a=state.cards.filter(x=>x.qty>0);if(q)a=a.filter(x=>(x.name+' '+x.number+' '+x.rarity).toLowerCase().includes(q));
- $('#cardList').innerHTML=a.map(x=>{const asset=(x.domestic??x.overseas);return `<div class="item"><div class="row"><div><div class="title">${esc(x.name)} ${esc(x.number)} ${esc(x.rarity)} ×${x.qty}</div><div class="meta">${esc(x.source)}｜取得 ${yen(x.cost)}/個｜${esc(x.store)}</div><div class="meta">${asset!=null?`推定資産 ${yen(asset*x.qty)}｜含み損益 ${yen((asset-x.cost)*x.qty)}`:'相場未取得'}</div>${x.reviewNote?`<div class="meta"><b>${esc(x.reviewNote)}</b></div>`:''}</div><button onclick="openSale('cards','${x.id}')">売却</button></div>${marketEditor(x,'cards')}</div>`}).join('');
+ const q=$('#cardSearch').value.trim().toLowerCase();let a=state.cards.filter(x=>x.qty>0);if(q)a=a.filter(x=>(x.name+' '+x.number+' '+x.rarity).toLowerCase().includes(q));a=sortInventory(a,$('#cardSort').value,x=>x.domestic);
+ $('#cardList').innerHTML=a.map(x=>{const asset=(x.domestic??x.overseas);return `<div class="item"><div class="row"><div><div class="title">${esc(x.name)} ${esc(x.number)} ${esc(x.rarity)} ×${x.qty}</div><div class="meta">${esc(x.source)}｜取得 ${yen(x.cost)}/個｜${esc(x.store)}</div><div class="meta">${asset!=null?(()=>{const mm=calcMetrics(x,asset);return `推定資産 ${yen(asset*x.qty)}｜含み利益 ${yen(mm.profit)}｜利益率 ${mm.rate==null?'—':mm.rate.toFixed(1)+'%'}`})():'相場未取得'}</div>${x.reviewNote?`<div class="meta"><b>${esc(x.reviewNote)}</b></div>`:''}</div><button onclick="openSale('cards','${x.id}')">売却</button></div>${marketEditor(x,'cards')}</div>`}).join('');
 }
 function renderSales(){
  const revenue=state.sales.reduce((s,x)=>s+x.price,0),fees=state.sales.reduce((s,x)=>s+x.fee+x.ship,0),profit=state.sales.reduce((s,x)=>s+x.profit,0);
@@ -223,7 +276,7 @@ function renderAssets(){
 }
 function renderAll(){renderLottery();renderSealed();renderCards();renderSales();renderAssets();if($('#globalMimiDate'))$('#globalMimiDate').value=globalMimiDate;if($('#globalAmtfDate'))$('#globalAmtfDate').value=globalAmtfDate;}
 document.querySelectorAll('[data-lfilter]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-lfilter]').forEach(x=>x.classList.remove('active'));b.classList.add('active');lfilter=b.dataset.lfilter;renderLottery();});
-$('#lotSearch').oninput=renderLottery;$('#sealedSearch').oninput=renderSealed;$('#cardSearch').oninput=renderCards;$('#globalMimiDate').onchange=e=>applyGlobalBoxDate('mimi',e.target.value);$('#globalAmtfDate').onchange=e=>applyGlobalBoxDate('amtf',e.target.value);
+$('#lotSearch').oninput=renderLottery;$('#sealedSearch').oninput=renderSealed;$('#cardSearch').oninput=renderCards;$('#sealedSort').onchange=renderSealed;$('#cardSort').onchange=renderCards;$('#globalMimiDate').onchange=e=>applyGlobalBoxDate('mimi',e.target.value);$('#globalAmtfDate').onchange=e=>applyGlobalBoxDate('amtf',e.target.value);
 $('#prev').onclick=()=>{viewMonth=new Date(viewMonth.getFullYear(),viewMonth.getMonth()-1,1);selectedDate=null;renderLottery();};$('#next').onclick=()=>{viewMonth=new Date(viewMonth.getFullYear(),viewMonth.getMonth()+1,1);selectedDate=null;renderLottery();};
 $('#saleCancel').onclick=()=>$('#saleDlg').close();$('#graphClose').onclick=()=>$('#graphDlg').close();
 $('#saleSave').onclick=()=>{const type=$('#saleSourceType').value,id=$('#saleSourceId').value,arr=type==='sealed'?state.sealed:state.cards,x=arr.find(x=>x.id===id),qty=Math.max(1,Number($('#saleQty').value||1));if(!x||qty>x.qty)return alert('数量を確認してください');const price=Number($('#salePrice').value||0),fee=Number($('#saleFee').value||0),ship=Number($('#saleShip').value||0),cost=x.cost*qty;state.sales.push({id:'sale-'+Date.now(),sourceId:id,type,name:type==='sealed'?x.name:`${x.name} ${x.number}`,qty,date:$('#saleDate').value,price,fee,ship,place:$('#salePlace').value,cost,profit:price-fee-ship-cost});x.qty-=qty;$('#saleDlg').close();save();};
