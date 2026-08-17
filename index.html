@@ -885,10 +885,28 @@ if(!state.dataFixes.announcementFirstDayRule20260817){
    if(st===norm('イエローサブマリン')&&ti.includes('ストームエメラルダ')) x.date='2026-08-26';
    if(st===norm('古本市場 中百舌鳥店')&&(ti.includes('ストームエメラルダ')||ti.includes('スタートデッキ100')||ti.includes('蒼海の七傑'))) x.date='2026-08-19';
    if(st===norm('TCGショップ オラクルベリー')&&ti.includes('世界最強の戦士')) x.date='2026-08-19';
-   if(st.includes('HMV&BOOKSSPOT伊丹空港')) x.store='HMVトレカショップ三宮オーパ';
+   if(st.includes('HMVトレカショップ三宮オーパ')) x.store='HMVトレカショップ三宮オーパ';
  }
  state.dataFixes.announcementFirstDayRule20260817=true;
  localStorage.setItem(KEY,JSON.stringify(state));
+}
+
+
+if(!state.dataFixes)state.dataFixes={};
+{
+ const norm=s=>String(s||'').replace(/\s+/g,'').toUpperCase();
+ let changed=false;
+ for(const x of (state.lotteries||[])){
+   const st=norm(x.store);
+   if(st.includes('HMV&BOOKSSPOT')&&st.includes('伊丹空港')){
+     x.store='HMVトレカショップ三宮オーパ';
+     changed=true;
+   }
+ }
+ if(changed){
+   state.dataFixes.hmvSannomiyaOpaForceRename20260817=true;
+   localStorage.setItem(KEY,JSON.stringify(state));
+ }
 }
 
 let marketHistory=state.marketHistory||{},boxMarketHistory=state.boxMarketHistory||{},globalMimiDate=state.globalMimiDate||'',globalAmtfDate=state.globalAmtfDate||'',hideLost=state.hideLost||false,viewMonth=new Date(2026,7,1),selectedDate=null,lfilter='all';
