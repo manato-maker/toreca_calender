@@ -491,6 +491,11 @@ body.dark-mode .pack-item{background:#151e2b!important;border-color:#2b394c!impo
 .pack-value{text-align:right;white-space:nowrap}.pack-value span{display:block;font-size:10px;color:var(--muted)}.pack-value b{font-size:17px}
 body.dark-mode .pack-amtf b{color:#66b8ff!important}
 </style>
+
+<style id="pack-asset-watch-v1">
+.pack-asset-note{font-size:11px;color:var(--muted)}
+</style>
+
 </head><body><div class="app">
 <header><div><h1>📚 トレカ管理</h1><div class="sub">抽選 → 仕入れ → 在庫 → 開封 → 売却 → 資産</div></div><div class="sub">元画像スタンプ背景透明版 2026/8/16</div></header>
 <div class="tabs"><button class="tab active" data-view="lottery">🗓 抽選</button><button class="tab" data-view="sealed">📦 未開封</button><button class="tab" data-view="packs">🎴 バラパック</button><button class="tab" data-view="cards">🃏 カード</button><button class="tab" data-view="sales">💰 売却</button><button class="tab" data-view="assets">📊 資産</button></div>
@@ -1035,11 +1040,15 @@ function renderAssets(){
  const boxPriced=state.sealed.filter(x=>(x.mimiPrice!=null||x.amtfPrice!=null)&&x.qty>0);
  const boxAsset=boxPriced.reduce((s,x)=>s+Math.max(x.mimiPrice??-Infinity,x.amtfPrice??-Infinity)*x.qty,0);
  const boxPricedCost=boxPriced.reduce((s,x)=>s+x.cost*x.qty,0);
+ const packPriced=(state.loosePacks||[]).filter(x=>x.qty>0&&x.amtfPrice!=null);
+ const packAsset=packPriced.reduce((s,x)=>s+Number(x.qty)*Number(x.amtfPrice),0);
+ const packCount=(state.loosePacks||[]).reduce((s,x)=>s+Number(x.qty||0),0);
  const realized=state.sales.reduce((s,x)=>s+x.profit,0);
- $('#assetStats').innerHTML=`<div class="stat">現在庫の取得原価<b>${yen(sealedCost+cardCost)}</b></div>
+ $('#assetStats').innerHTML=`<div class="stat">現在庫の取得原価<b>${yen(sealedCost+cardCost)}</b><span class="small">バラパックは取得原価未集計</span></div>
  <div class="stat">カード推定資産<br><span class="small">ポケカチ買取・${cardPriced.length}種</span><b>${yen(cardAsset)}</b></div>
  <div class="stat">BOX推定資産<br><span class="small">各BOXごとに買取ミミ / AMTF の高い方・${boxPriced.length}商品</span><b>${yen(boxAsset)}</b><span class="small">含み損益 ${yen(boxAsset-boxPricedCost)}</span></div>
- <div class="stat">推定総資産<b>${yen(cardAsset+boxAsset)}</b></div>
+ <div class="stat">バラパック推定資産<br><span class="small">AMTF買取・${packCount}パック</span><b>${yen(packAsset)}</b></div>
+ <div class="stat">推定総資産<b>${yen(cardAsset+boxAsset+packAsset)}</b></div>
  <div class="stat">カード含み損益<b>${yen(cardAsset-cardPricedCost)}</b></div>
  <div class="stat">実現利益<b>${yen(realized)}</b></div>`;
  const ranks=[];for(const [id,h] of Object.entries(marketHistory)){if(h.length<2)continue;const prev=h[h.length-2].value,cur=h[h.length-1].value,diff=cur-prev,pct=prev?diff/prev*100:0;const x=state.cards.find(x=>x.id===id);if(x)ranks.push({name:x.name+(x.number?' '+x.number:''),url:x.pokekachiUrl||'',diff,pct,cur});}
@@ -1055,15 +1064,16 @@ function currentBoxAssetUnit(x){
 function currentAssetSnapshot(){
   const cardAsset=(state.cards||[]).filter(x=>x.qty>0&&x.domestic!=null).reduce((s,x)=>s+x.domestic*x.qty,0);
   const boxAsset=(state.sealed||[]).filter(x=>x.qty>0&&currentBoxAssetUnit(x)!=null).reduce((s,x)=>s+currentBoxAssetUnit(x)*x.qty,0);
-  return {cardAsset,boxAsset,total:cardAsset+boxAsset};
+  const packAsset=(state.loosePacks||[]).filter(x=>x.qty>0&&x.amtfPrice!=null).reduce((s,x)=>s+Number(x.amtfPrice)*Number(x.qty),0);
+  return {cardAsset,boxAsset,packAsset,total:cardAsset+boxAsset+packAsset};
 }
 function saveAssetSnapshot(){
   state.assetHistory=state.assetHistory||[];
   const snap=currentAssetSnapshot();
   const d=new Date().toISOString().slice(0,10);
   const last=state.assetHistory[state.assetHistory.length-1];
-  if(last&&last.date===d){last.total=snap.total;last.cardAsset=snap.cardAsset;last.boxAsset=snap.boxAsset;}
-  else state.assetHistory.push({date:d,total:snap.total,cardAsset:snap.cardAsset,boxAsset:snap.boxAsset});
+  if(last&&last.date===d){last.total=snap.total;last.cardAsset=snap.cardAsset;last.boxAsset=snap.boxAsset;last.packAsset=snap.packAsset;}
+  else state.assetHistory.push({date:d,total:snap.total,cardAsset:snap.cardAsset,boxAsset:snap.boxAsset,packAsset:snap.packAsset});
   if(state.assetHistory.length>365)state.assetHistory=state.assetHistory.slice(-365);
   localStorage.setItem(KEY,JSON.stringify(state));
 }
@@ -1093,6 +1103,13 @@ let activeWatchTab='box';
 
 function sellWatchItems(){
   const items=[];
+  for(const x of state.loosePacks||[]){
+    if(Number(x.qty||0)>0)items.push({
+      key:'p:'+x.id,type:'pack',group:'pack',id:x.id,
+      name:x.name,qty:Number(x.qty||0),unit:x.amtfPrice==null?null:Number(x.amtfPrice),
+      cost:x.unitCost==null?null:Number(x.unitCost)
+    });
+  }
   for(const x of state.cards||[]){
     if(x.qty>0)items.push({
       key:'c:'+x.id,type:'card',group:'card',id:x.id,
@@ -1116,7 +1133,7 @@ function renderWatchPicker(){
   const rows=all.filter(x=>x.group===activeWatchTab&&!watched.has(x.key));
   el.innerHTML=rows.map(x=>`<label class="watch-pick-row">
     <input type="checkbox" class="watchPickChk" value="${x.key}">
-    <div><div class="watch-pick-name">${esc(x.name)}</div><div class="watch-pick-meta">在庫 ${x.qty}｜取得 ${yen(x.cost)} /個</div></div>
+    <div><div class="watch-pick-name">${esc(x.name)}</div><div class="watch-pick-meta">在庫 ${x.qty}｜取得 ${x.cost==null?'—':yen(x.cost)+' /個'}</div></div>
     <div class="watch-pick-price">${x.unit==null?'相場未入力':yen(x.unit)}</div>
   </label>`).join('')||`<div class="watch-empty">${activeWatchTab==='box'?'BOX':activeWatchTab==='card'?'カード':'パック'}で追加できる商品はありません</div>`;
 }
@@ -1141,13 +1158,13 @@ function renderSellSimulator(){
   renderWatchPicker();
   const el=$('#simList');if(!el)return;
   el.innerHTML=watched.map(({w,item:x})=>{
-    const cur=x.unit,profit=cur==null?null:(cur-x.cost),rate=(profit!=null&&x.cost>0)?profit/x.cost*100:null;
+    const cur=x.unit,profit=(cur==null||x.cost==null)?null:(cur-x.cost),rate=(profit!=null&&x.cost>0)?profit/x.cost*100:null;
     const hit=cur!=null&&w.target!=null&&cur>=w.target;
     return `<div class="watch-card ${hit?'target-hit':''}">
       <div class="watch-top"><div><div class="watch-name">${esc(x.name)}</div><div class="small">${x.type==='card'?'🃏 カード':x.type==='pack'?'🎴 パック':'📦 BOX'}｜在庫 ${x.qty}${w.added?'｜監視開始 '+w.added:''}</div></div><button class="watch-remove" onclick="removeSellWatch('${x.key}')">削除</button></div>
       <div class="watch-metrics">
         <div class="watch-metric current-price"><span>現在相場</span><b>${cur==null?'未入力':yen(cur)}</b></div>
-        <div class="watch-metric"><span>取得原価/個</span><b>${yen(x.cost)}</b></div>
+        <div class="watch-metric"><span>取得原価/個</span><b>${x.cost==null?'—':yen(x.cost)}</b></div>
         <div class="watch-metric"><span>含み益/個</span><b>${profit==null?'—':yen(profit)}</b></div>
         <div class="watch-metric profit-rate ${rate==null?'':rate>=0?'positive':'negative'}"><span>利益率</span><b>${rate==null?'—':rate.toFixed(1)+'%'}</b></div>
       </div>
