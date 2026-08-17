@@ -476,9 +476,19 @@ body.dark-mode .card-market-status{color:#9eabbc!important}
 .loose-pack-row{display:flex;justify-content:space-between;gap:8px;padding:8px 9px;border:1px solid var(--line);border-radius:9px;background:var(--soft)}
 .loose-pack-row span{font-size:12px;font-weight:700}.loose-pack-row b{font-size:14px;white-space:nowrap}
 </style>
+
+<style id="loose-pack-tab-v2">
+.pack-list{display:grid;gap:9px}
+.pack-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+.pack-name{font-weight:850;font-size:15px}
+.pack-qty{font-size:20px;font-weight:900}
+.pack-meta{font-size:11px;color:var(--muted);margin-top:3px}
+body.dark-mode .pack-item{background:#151e2b!important;border-color:#2b394c!important}
+</style>
+
 </head><body><div class="app">
 <header><div><h1>📚 トレカ管理</h1><div class="sub">抽選 → 仕入れ → 在庫 → 開封 → 売却 → 資産</div></div><div class="sub">元画像スタンプ背景透明版 2026/8/16</div></header>
-<div class="tabs"><button class="tab active" data-view="lottery">🗓 抽選</button><button class="tab" data-view="sealed">📦 未開封</button><button class="tab" data-view="cards">🃏 カード</button><button class="tab" data-view="sales">💰 売却</button><button class="tab" data-view="assets">📊 資産</button></div>
+<div class="tabs"><button class="tab active" data-view="lottery">🗓 抽選</button><button class="tab" data-view="sealed">📦 未開封</button><button class="tab" data-view="packs">🎴 バラパック</button><button class="tab" data-view="cards">🃏 カード</button><button class="tab" data-view="sales">💰 売却</button><button class="tab" data-view="assets">📊 資産</button></div>
 
 <section id="lottery" class="view active"><div class="box" style="margin-bottom:12px"><b>📱 抽選の運用</b><div class="small" style="margin-top:6px">申込完了スクショから追加する抽選は「⏳ 結果待ち」で登録。結果が出たら 🎉当選 / ❌落選 を手動タップ。</div></div><div class="toolbar"><button id="prev">←</button><button id="monthLabel" class="active"></button><button id="next">→</button><button data-lfilter="all" class="active">すべて</button><button data-lfilter="unreported">⏳ 結果待ち</button><button data-lfilter="win">当選</button><button data-lfilter="lose">落選</button><button id="toggleLost">🙈 落選を隠す</button></div><div id="lotSummary" class="summary"></div>
 <div id="lotteryStats" class="lottery-stats"></div>
@@ -513,6 +523,19 @@ body.dark-mode .card-market-status{color:#9eabbc!important}
 <option value="cost_desc">取得価格：高い順</option>
 </select></div>
 <div id="sealedList" class="list"></div></div></section>
+
+<section id="packs" class="view">
+  <div class="box">
+    <div class="row" style="align-items:center;justify-content:space-between">
+      <div>
+        <h3 style="margin:0">🎴 バラパック</h3>
+        <div class="small">タイトル別の現在庫。今後パック単価・買取相場・資産額もここで管理。</div>
+      </div>
+      <div id="packTotal" class="badge"></div>
+    </div>
+    <div id="packList" class="pack-list" style="margin-top:10px"></div>
+  </div>
+</section>
 <section id="cards" class="view"><div class="box">
 <div class="grid2" style="margin-bottom:9px">
 <input id="cardSearch" class="search" style="margin-bottom:0" placeholder="カード名・番号を検索">
@@ -922,9 +945,21 @@ function loosePackSection(){
  return `<div class="item loose-pack-card"><div class="title">📦 バラパック <span class="badge">${total}パック</span></div><div class="loose-pack-grid">${a.map(x=>`<div class="loose-pack-row"><span>${esc(x.name)}</span><b>${Number(x.qty)||0}P</b></div>`).join('')}</div></div>`;
 }
 
+
+function renderPacks(){
+ const a=state.loosePacks||[];
+ const total=a.reduce((s,x)=>s+(Number(x.qty)||0),0);
+ if($('#packTotal'))$('#packTotal').textContent=`合計 ${total}パック`;
+ const el=$('#packList');if(!el)return;
+ el.innerHTML=a.map(x=>`<div class="pack-item">
+   <div><div class="pack-name">${esc(x.name)}</div><div class="pack-meta">現在庫</div></div>
+   <div class="pack-qty">${Number(x.qty)||0}P</div>
+ </div>`).join('')||'<div class="small">バラパック在庫はありません</div>';
+}
+
 function renderSealed(){
  const q=$('#sealedSearch').value.trim().toLowerCase();let a=state.sealed.filter(x=>x.qty>0);if(q)a=a.filter(x=>(x.name+' '+x.store).toLowerCase().includes(q));a=sortInventory(a,$('#sealedSort').value,boxAssetUnit);
- $('#sealedList').innerHTML=loosePackSection()+a.map(x=>{
+ $('#sealedList').innerHTML=a.map(x=>{
    const mimi=x.mimiPrice,amtf=x.amtfPrice;
    return `<div class="item"><div class="row"><div><div class="title">${esc(x.name)} ×${x.qty}</div>
    <div class="meta">${esc(x.category)}｜${esc(x.store)}｜購入 ${x.needsCost?'未入力':yen(x.cost)+'/個'}｜${x.purchaseDate?fmtDate(x.purchaseDate):'購入日不明'}｜シュリンク ${esc(x.shrink)}</div>${x.needsCost?`<div class="quick-cost"><input id="cost-${x.id}" type="number" min="0" placeholder="購入価格/個"><button onclick="setQuickCost('${x.id}',$('#cost-${x.id}').value)">価格を保存</button></div>`:''}
@@ -1111,7 +1146,7 @@ function renderBoxCompare(){
   }).join('')||'<tr><td colspan="5" class="small">BOX相場が未入力です</td></tr>';
 }
 
-function renderAll(){renderLottery();renderSealed();renderCards();renderSales();renderAssets();saveAssetSnapshot();renderAssetTrend();renderSellSimulator();renderBoxCompare();if($('#globalMimiDate'))$('#globalMimiDate').value=globalMimiDate;if($('#globalAmtfDate'))$('#globalAmtfDate').value=globalAmtfDate;}
+function renderAll(){renderLottery();renderSealed();renderPacks();renderCards();renderSales();renderAssets();saveAssetSnapshot();renderAssetTrend();renderSellSimulator();renderBoxCompare();if($('#globalMimiDate'))$('#globalMimiDate').value=globalMimiDate;if($('#globalAmtfDate'))$('#globalAmtfDate').value=globalAmtfDate;}
 document.querySelectorAll('[data-lfilter]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-lfilter]').forEach(x=>x.classList.remove('active'));b.classList.add('active');lfilter=b.dataset.lfilter;renderLottery();});
 $('#toggleLost').onclick=()=>{hideLost=!hideLost;save();};$('#lotSearch').oninput=renderLottery;$('#lotSort').onchange=renderLottery;$('#sealedSearch').oninput=renderSealed;$('#cardSearch').oninput=renderCards;$('#sealedSort').onchange=renderSealed;$('#cardSort').onchange=renderCards;$('#globalMimiDate').onchange=e=>applyGlobalBoxDate('mimi',e.target.value);$('#globalAmtfDate').onchange=e=>applyGlobalBoxDate('amtf',e.target.value);
 $('#prev').onclick=()=>{viewMonth=new Date(viewMonth.getFullYear(),viewMonth.getMonth()-1,1);selectedDate=null;renderLottery();};$('#next').onclick=()=>{viewMonth=new Date(viewMonth.getFullYear(),viewMonth.getMonth()+1,1);selectedDate=null;renderLottery();};
