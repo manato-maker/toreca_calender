@@ -512,7 +512,7 @@ body.dark-mode .pack-amtf b{color:#66b8ff!important}
 </style>
 
 </head><body><div class="app">
-<header><div><h1>📚 トレカ管理</h1><div class="sub">抽選 → 仕入れ → 在庫 → 開封 → 売却 → 資産</div></div><div class="sub">元画像スタンプ背景透明版 2026/8/16</div></header>
+<header><div><h1>📚 トレカ管理</h1><div class="sub">抽選 → 仕入れ → 在庫 → 開封 → 売却 → 資産</div></div><div class="sub">元画像スタンプ背景透明版 2026/8/20</div></header>
 <div class="tabs"><button class="tab active" data-view="lottery">🗓 抽選</button><button class="tab" data-view="sealed">📦 未開封</button><button class="tab" data-view="packs">🎴 バラパック</button><button class="tab" data-view="cards">🃏 カード</button><button class="tab" data-view="sales">💰 売却</button><button class="tab" data-view="assets">📊 資産</button></div>
 
 <section id="lottery" class="view active"><div class="box" style="margin-bottom:12px"><b>📱 抽選の運用</b><div class="small" style="margin-top:6px">申込完了スクショから追加する抽選は「⏳ 結果待ち」で登録。結果が出たら 🎉当選 / ❌落選 を手動タップ。</div></div><div class="toolbar"><button id="prev">←</button><button id="monthLabel" class="active"></button><button id="next">→</button><button data-lfilter="all" class="active">すべて</button><button data-lfilter="unreported">⏳ 結果待ち</button><button data-lfilter="win">当選</button><button data-lfilter="lose">落選</button><button id="toggleLost">🙈 落選を隠す</button></div><div id="lotSummary" class="summary"></div>
@@ -1036,6 +1036,27 @@ if(!state.dataFixes.marketUpdate20260818){
 
 
 if(!state.dataFixes)state.dataFixes={};
+if(!state.dataFixes.marketUpdateAMTF20260820){
+ const d='2026-08-20';
+ const amtf={"ストームエメラルダ":{"あり":17200,"なし":15800},"アビスアイ":{"あり":8800,"なし":7300},"ニンジャスピナー":{"あり":10200,"なし":8500},"ムニキスゼロ":{"あり":8600,"なし":7200},"MEGAドリームex":{"あり":13600,"なし":12300},"インフェルノX":{"あり":19000,"なし":12000},"メガブレイブ":{"あり":10300,"なし":8300},"メガシンフォニア":{"あり":9300,"なし":7300},"MEGA スタートデッキ100":{"不明":1000}};
+ const packPrices={"ストームエメラルダ":130,"アビスアイ":80,"ニンジャスピナー":100,"ムニキスゼロ":90,"MEGAドリームex":550,"インフェルノX":180,"メガブレイブ":110,"メガシンフォニア":100};
+ state.boxMarketHistory=state.boxMarketHistory||{};
+ for(const x of (state.sealed||[])){
+   const mm=amtf[x.name]; if(!mm)continue;
+   const sh=x.shrink||'不明'; if(mm[sh]==null)continue;
+   x.amtfPrice=mm[sh]; x.amtfDate=d;
+   state.boxMarketHistory[x.id]=state.boxMarketHistory[x.id]||{mimi:[],amtf:[]};
+   const a=state.boxMarketHistory[x.id].amtf=state.boxMarketHistory[x.id].amtf||[];
+   if(!a.some(p=>p.date===d&&p.value===x.amtfPrice))a.push({date:d,value:x.amtfPrice});
+ }
+ for(const x of (state.loosePacks||[])){
+   if(packPrices[x.name]!=null){x.amtfPrice=packPrices[x.name];x.amtfDate=d;}
+ }
+ state.globalAmtfDate=d; state.globalPackAmtfDate=d;
+ state.dataFixes.marketUpdateAMTF20260820=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+}
+
 if(!state.dataFixes.latestLotteryData20260819){
   const norm=s=>String(s||'').replace(/\s+/g,'').replace(/1BOX/ig,'').trim();
 
