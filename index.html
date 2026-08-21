@@ -1246,16 +1246,32 @@ try{
  if(!state.dataFixes.edionKashihara0827v2){
    if(!Array.isArray(state.lotteries)) state.lotteries=[];
    const ids=new Set(['lottery-042','lottery-043','lottery-044','lottery-045']);
-   const titles=['スタートデッキ100','ストームエメラルダ','メガシンフォニア','メガブレイブ'];
    state.lotteries.forEach(x=>{
-     if(ids.has(x.id) || (x.date==='2026-08-27' && titles.some(t=>String(x.title||'').includes(t)))){
-       x.store='エディオンイオンモール橿原';
-     }
+     if(ids.has(x.id)) x.store='エディオンイオンモール橿原';
    });
    state.dataFixes.edionKashihara0827v2=true;
    try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){console.warn('state save skipped',e);}
  }
 }catch(e){console.error('Edion Kashihara 8/27 migration skipped',e);}
+
+// 2026-08-21 repair 8/27 lottery records after an earlier over-broad store rename.
+// Keep exactly the canonical 8/27 applications and preserve status/note by matching id.
+try{
+ if(!state.dataFixes || typeof state.dataFixes!=='object') state.dataFixes={};
+ if(!state.dataFixes.repair0827Duplicates20260821v3){
+   if(!Array.isArray(state.lotteries)) state.lotteries=[];
+   const canonical0827=[{"id":"lottery-042","date":"2026-08-27","time":"","title":"メガブレイブ 2BOX","store":"エディオンイオンモール橿原","status":"unreported","note":""},{"id":"lottery-043","date":"2026-08-27","time":"","title":"ストームエメラルダ 2BOX","store":"エディオンイオンモール橿原","status":"unreported","note":""},{"id":"lottery-044","date":"2026-08-27","time":"","title":"メガシンフォニア 2BOX","store":"エディオンイオンモール橿原","status":"unreported","note":""},{"id":"lottery-045","date":"2026-08-27","time":"","title":"スタートデッキ100 5BOX","store":"エディオンイオンモール橿原","status":"unreported","note":""},{"id":"lottery-046","date":"2026-08-27","time":"","title":"ストームエメラルダ 1BOX","store":"ジョーシン","status":"unreported","note":""},{"id":"lottery-047","date":"2026-08-27","time":"","title":"ストームエメラルダ 1BOX","store":"イトーヨーカドー あべの店","status":"unreported","note":""},{"id":"lottery-torecaplaza55-eevee-20260827","date":"2026-08-27","time":"","title":"スターターセットex イーブイex","store":"トレカプラザ55通販店","status":"unreported","note":"当選発表 8/27"}];
+   const existingById=new Map(state.lotteries.map(x=>[x.id,x]));
+   const repaired=canonical0827.map(r=>{
+     const old=existingById.get(r.id);
+     if(!old) return r;
+     return {...r,status:old.status||r.status,note:old.note||r.note,time:old.time||r.time};
+   });
+   state.lotteries=state.lotteries.filter(x=>x.date!=='2026-08-27').concat(repaired);
+   state.dataFixes.repair0827Duplicates20260821v3=true;
+   try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){console.warn('state save skipped',e);}
+ }
+}catch(e){console.error('8/27 duplicate repair skipped',e);}
 
 function save(){state.marketHistory=marketHistory;state.boxMarketHistory=boxMarketHistory;state.globalMimiDate=globalMimiDate;state.globalAmtfDate=globalAmtfDate;state.hideLost=hideLost;localStorage.setItem(KEY,JSON.stringify(state));renderAll();}
 
