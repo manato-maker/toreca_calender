@@ -1240,6 +1240,23 @@ try{
  }
 }catch(e){console.error('Mogily/spouse migration skipped',e);}
 
+// 2026-08-21 force-fix 8/27 Edion Aeon Mall Kashihara store names in existing localStorage.
+try{
+ if(!state.dataFixes || typeof state.dataFixes!=='object') state.dataFixes={};
+ if(!state.dataFixes.edionKashihara0827v2){
+   if(!Array.isArray(state.lotteries)) state.lotteries=[];
+   const ids=new Set(['lottery-042','lottery-043','lottery-044','lottery-045']);
+   const titles=['スタートデッキ100','ストームエメラルダ','メガシンフォニア','メガブレイブ'];
+   state.lotteries.forEach(x=>{
+     if(ids.has(x.id) || (x.date==='2026-08-27' && titles.some(t=>String(x.title||'').includes(t)))){
+       x.store='エディオンイオンモール橿原';
+     }
+   });
+   state.dataFixes.edionKashihara0827v2=true;
+   try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){console.warn('state save skipped',e);}
+ }
+}catch(e){console.error('Edion Kashihara 8/27 migration skipped',e);}
+
 function save(){state.marketHistory=marketHistory;state.boxMarketHistory=boxMarketHistory;state.globalMimiDate=globalMimiDate;state.globalAmtfDate=globalAmtfDate;state.hideLost=hideLost;localStorage.setItem(KEY,JSON.stringify(state));renderAll();}
 
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));b.classList.add('active');$('#'+b.dataset.view).classList.add('active');});
