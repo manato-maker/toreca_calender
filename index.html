@@ -807,6 +807,35 @@ if(!state.dataFixes.livePocketLoseStatusFix20260817){
 
 
 
+// 2026-08-21 BOX market update from supplied 買取ミミ / AMTF images.
+if(!state.dataFixes)state.dataFixes={};
+if(!state.dataFixes.boxMarketImages20260821){
+  const fixes={
+    'sealed-001':{mimi:9100,amtf:8800},
+    'sealed-005':{mimi:20000,amtf:19500},
+    'sealed-006':{mimi:13600,amtf:13600},
+    'sealed-007':{mimi:12600,amtf:12300},
+    'sealed-008':{mimi:7000,amtf:7300},
+    'sealed-mega-start100-aeon':{mimi:900,amtf:1000},
+    'sealed-mega-start100-furuichi-takanohara':{mimi:900,amtf:1000}
+  };
+  const d='2026-08-21';
+  state.boxMarketHistory=state.boxMarketHistory||{};
+  for(const x of (state.sealed||[])){
+    const f=fixes[x.id];if(!f)continue;
+    for(const src of ['mimi','amtf']){
+      const v=f[src]; if(v==null)continue;
+      x[src+'Price']=v;x[src+'Date']=d;
+      state.boxMarketHistory[x.id]=state.boxMarketHistory[x.id]||{mimi:[],amtf:[]};
+      const a=state.boxMarketHistory[x.id][src]=state.boxMarketHistory[x.id][src]||[];
+      if(!a.some(q=>q.date===d&&q.value===v))a.push({date:d,value:v});
+    }
+  }
+  state.globalMimiDate=d;state.globalAmtfDate=d;
+  state.dataFixes.boxMarketImages20260821=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+}
+
 // 2026-08-18 LivePocket win: ふるいち イオンモール大和郡山店 / スタートデッキ100
 // Match STORE + TITLE so existing localStorage data is updated safely.
 if(!state.dataFixes)state.dataFixes={};
