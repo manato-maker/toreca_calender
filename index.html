@@ -529,12 +529,12 @@ body.dark-mode .pack-amtf b{color:#66b8ff!important}
 </div>
 <div id="lotList" class="list"></div></div></section>
 
-<section id="sealed" class="view"><div class="box" style="margin-bottom:12px"><b>📸 BOX相場の運用</b><div class="small" style="margin-top:6px">買取ミミ・AMTFのスクショを読み取り → 金額を目視確認 → 確認後に入力。BOX資産は2社の高い方を採用。</div></div><div class="box">
-<div class="globaldates">
-  <div class="mimiDateBox"><label class="field"><b>🐰 買取ミミ 共通日付</b><input id="globalMimiDate" type="date"></label></div>
-  <div class="amtfDateBox"><label class="field"><b>📈 AMTF 共通日付</b><input id="globalAmtfDate" type="date"></label></div>
+<section id="sealed" class="view"><div class="box" style="margin-bottom:12px"><b>📸 BOX相場の運用</b><div class="small" style="margin-top:6px">買取ミミ・アムタフの一覧を読み取り → 金額を目視確認 → 確認後に入力。BOX資産は2社の高い方を採用。</div></div><div class="box">
+<div class="box" style="margin-bottom:10px;background:var(--soft)">
+  <b>📅 相場日付は商品ごとに管理</b>
+  <div class="small" style="margin-top:5px">価格を確認できた商品だけ「価格＋取得日」をセットで更新。未確認の商品は前回の価格・日付をそのまま残します。</div>
 </div>
-<div class="small" style="margin-bottom:9px">ここで日付を1回入力すると、各BOXの同じ相場元の日付に自動反映されます。</div>
+<div id="marketSourceStatusBox" class="box" style="margin-bottom:10px"></div>
 <div class="grid2" style="margin-bottom:9px">
 <input id="sealedSearch" class="search" style="margin-bottom:0" placeholder="BOX・未開封パックを検索">
 <select id="sealedSort" class="search" style="margin-bottom:0">
@@ -610,10 +610,10 @@ body.dark-mode .pack-amtf b{color:#66b8ff!important}
 
     <div class="tool-card">
       <h3>🏪 BOX買取比較</h3>
-      <div class="small">買取ミミ / AMTF の高い方を採用。差額も表示</div>
+      <div class="small">買取ミミ / アムタフ の高い方を採用。差額も表示</div>
       <div style="overflow:auto;margin-top:8px">
         <table class="compare-table">
-          <thead><tr><th>BOX</th><th>ミミ</th><th>AMTF</th><th>高い方</th><th>差額</th></tr></thead>
+          <thead><tr><th>BOX</th><th>ミミ</th><th>アムタフ</th><th>高い方</th><th>差額</th></tr></thead>
           <tbody id="boxCompareBody"></tbody>
         </table>
       </div>
@@ -1184,6 +1184,13 @@ if(!state.dataFixes.marketConfirmed20260823){
  localStorage.setItem(KEY,JSON.stringify(state));
 }
 
+
+if(!state.dataFixes)state.dataFixes={};
+if(!state.dataFixes.perItemMarketDates20260823){
+ state.dataFixes.perItemMarketDates20260823=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+}
+
 let marketHistory=state.marketHistory||{},boxMarketHistory=state.boxMarketHistory||{},globalMimiDate=state.globalMimiDate||'',globalAmtfDate=state.globalAmtfDate||'',hideLost=state.hideLost||false,viewMonth=new Date(2026,7,1),selectedDate=null,lfilter='all';
 const $=s=>document.querySelector(s),yen=n=>'¥'+Math.round(Number(n||0)).toLocaleString('ja-JP');
 function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
@@ -1474,24 +1481,19 @@ function updateMarket(type,id,key,val){
 function openSale(type,id){const arr=type==='sealed'?state.sealed:state.cards,x=arr.find(x=>x.id===id);$('#saleSourceId').value=id;$('#saleSourceType').value=type;$('#saleName').value=type==='sealed'?x.name:`${x.name} ${x.number}`;$('#saleQty').value=1;$('#saleDate').value='2026-08-16';$('#salePrice').value='';$('#saleFee').value=0;$('#saleShip').value=0;$('#salePlace').value='';$('#saleDlg').showModal();}
 
 function applyGlobalBoxDate(source,val){
- if(source==='mimi'){
-   globalMimiDate=val;
-   state.sealed.forEach(x=>x.mimiDate=val);
- }else{
-   globalAmtfDate=val;
-   state.sealed.forEach(x=>x.amtfDate=val);
- }
- save();
+ // 互換用。今後は商品ごとの取得日を使うため、一括日付更新はしない。
+ if(source==='mimi') globalMimiDate=val;
+ else globalAmtfDate=val;
 }
 function boxMarketEditor(x){
  return `<div class="boxmarkets">
    <div class="sourcebox mimi"><b>🐰 買取ミミ</b>
      <div class="grid2"><label class="field">価格<input type="number" value="${x.mimiPrice??''}" placeholder="円" onchange="updateBoxMarket('${x.id}','mimi','price',this.value)"></label>
-     <label class="field">日付<input type="date" value="${x.mimiDate||''}" onchange="updateBoxMarket('${x.id}','mimi','date',this.value)"></label></div>
+     <label class="field">取得日<input type="date" value="${x.mimiDate||''}" onchange="updateBoxMarket('${x.id}','mimi','date',this.value)"></label></div>
    </div>
-   <div class="sourcebox amtf"><b>📈 AMTF</b>
+   <div class="sourcebox amtf"><b>📈 アムタフ</b>
      <div class="grid2"><label class="field">価格<input type="number" value="${x.amtfPrice??''}" placeholder="円" onchange="updateBoxMarket('${x.id}','amtf','price',this.value)"></label>
-     <label class="field">日付<input type="date" value="${x.amtfDate||''}" onchange="updateBoxMarket('${x.id}','amtf','date',this.value)"></label></div>
+     <label class="field">取得日<input type="date" value="${x.amtfDate||''}" onchange="updateBoxMarket('${x.id}','amtf','date',this.value)"></label></div>
    </div>
  </div><div class="actions" style="margin-top:8px"><button onclick="openBoxGraph('${x.id}')">📊 履歴グラフ</button></div>`;
 }
@@ -1501,9 +1503,8 @@ function updateBoxMarket(id,source,key,val){
  if(key==='date'){x[dkey]=val;save();return;}
  const n=val===''?null:Number(val);x[pkey]=n;
  if(n!==null){
-   const globalDate=source==='mimi'?globalMimiDate:globalAmtfDate;
-   if(globalDate)x[dkey]=globalDate;
    const date=x[dkey]||new Date().toISOString().slice(0,10);
+   if(!x[dkey])x[dkey]=date;
    boxMarketHistory[id]=boxMarketHistory[id]||{mimi:[],amtf:[]};
    boxMarketHistory[id][source]=boxMarketHistory[id][source]||[];
    const arr=boxMarketHistory[id][source],last=arr[arr.length-1];
@@ -1566,13 +1567,22 @@ function renderPacks(){
  }).join('')||'<div class="small">バラパック在庫はありません</div>';
 }
 
+
+function renderMarketSourceStatus(){
+ const el=$('#marketSourceStatusBox'); if(!el)return;
+ const s=state.marketSourceStatus||{};
+ const mimi=s['買取ミミ']?.latestListPostDate||'—';
+ const amtf=s['アムタフ']?.latestListPostDate||s['AMTF']?.latestListPostDate||'—';
+ el.innerHTML=`<b>相場ソース確認日</b><div class="small" style="margin-top:5px">🐰 買取ミミ：${mimi}｜📈 アムタフ：${amtf}<br>※確認できた商品のみ価格・取得日を更新</div>`;
+}
+
 function renderSealed(){
  const q=$('#sealedSearch').value.trim().toLowerCase();let a=state.sealed.filter(x=>x.qty>0);if(q)a=a.filter(x=>(x.name+' '+x.store).toLowerCase().includes(q));a=sortInventory(a,$('#sealedSort').value,boxAssetUnit);
  $('#sealedList').innerHTML=a.map(x=>{
    const mimi=x.mimiPrice,amtf=x.amtfPrice;
    return `<div class="item"><div class="row"><div><div class="title">${esc(x.name)} ×${x.qty}</div>
    <div class="meta">${esc(x.category)}｜${esc(x.store)}｜購入 ${x.needsCost?'未入力':yen(x.cost)+'/個'}｜${x.purchaseDate?fmtDate(x.purchaseDate):'購入日不明'}｜シュリンク ${esc(x.shrink)}</div>${x.needsCost?`<div class="quick-cost"><input id="cost-${x.id}" type="number" min="0" placeholder="購入価格/個"><button onclick="setQuickCost('${x.id}',$('#cost-${x.id}').value)">価格を保存</button></div>`:''}
-   <div class="meta">取得原価 ${yen(x.cost*x.qty)}${mimi!=null?`｜ミミ ${yen(mimi*x.qty)}`:''}${amtf!=null?`｜AMTF ${yen(amtf*x.qty)}`:''}${(mimi!=null||amtf!=null)?(()=>{const u=boxAssetUnit(x),mm=calcMetrics(x,u);return `｜資産採用 ${yen(u*x.qty)} (${mimi!=null&&amtf!=null?(mimi>=amtf?'ミミ':'AMTF'):(mimi!=null?'ミミ':'AMTF')})｜含み利益 ${yen(mm.profit)}｜利益率 ${mm.rate==null?'—':mm.rate.toFixed(1)+'%'}`})():''}</div></div>
+   <div class="meta">取得原価 ${yen(x.cost*x.qty)}${mimi!=null?`｜ミミ ${yen(mimi*x.qty)}${x.mimiDate?' ('+fmtDate(x.mimiDate)+')':''}`:''}${amtf!=null?`｜アムタフ ${yen(amtf*x.qty)}${x.amtfDate?' ('+fmtDate(x.amtfDate)+')':''}`:''}${(mimi!=null||amtf!=null)?(()=>{const u=boxAssetUnit(x),mm=calcMetrics(x,u);return `｜資産採用 ${yen(u*x.qty)} (${mimi!=null&&amtf!=null?(mimi>=amtf?'ミミ':'アムタフ'):(mimi!=null?'ミミ':'アムタフ')})｜含み利益 ${yen(mm.profit)}｜利益率 ${mm.rate==null?'—':mm.rate.toFixed(1)+'%'}`})():''}</div></div>
    <button onclick="openSale('sealed','${x.id}')">売却</button></div>${boxMarketEditor(x)}</div>`;
  }).join('');
 }
@@ -1625,7 +1635,7 @@ function renderAssets(){
  const realized=state.sales.reduce((s,x)=>s+x.profit,0);
  $('#assetStats').innerHTML=`<div class="stat">現在庫の取得原価<b>${yen(sealedCost+cardCost)}</b><span class="small">バラパックは取得原価未集計</span></div>
  <div class="stat">カード推定資産<br><span class="small">ポケカチ買取・${cardPriced.length}種</span><b>${yen(cardAsset)}</b></div>
- <div class="stat">BOX推定資産<br><span class="small">各BOXごとに買取ミミ / AMTF の高い方・${boxPriced.length}商品</span><b>${yen(boxAsset)}</b><span class="small">含み損益 ${yen(boxAsset-boxPricedCost)}</span></div>
+ <div class="stat">BOX推定資産<br><span class="small">各BOXごとに買取ミミ / アムタフ の高い方・${boxPriced.length}商品</span><b>${yen(boxAsset)}</b><span class="small">含み損益 ${yen(boxAsset-boxPricedCost)}</span></div>
  <div class="stat">バラパック推定資産<br><span class="small">AMTF買取・${packCount}パック</span><b>${yen(packAsset)}</b></div>
  <div class="stat">推定総資産<b>${yen(cardAsset+boxAsset+packAsset)}</b></div>
  <div class="stat">カード含み損益<b>${yen(cardAsset-cardPricedCost)}</b></div>
@@ -1769,7 +1779,7 @@ function renderBoxCompare(){
 
 function renderAll(){const jobs=[renderLottery,renderSealed,renderPacks,renderCards,renderSales,renderAssets,saveAssetSnapshot,renderAssetTrend,renderSellSimulator,renderBoxCompare];for(const fn of jobs){try{fn();}catch(e){console.error(fn.name,e);}}if($('#globalMimiDate'))$('#globalMimiDate').value=globalMimiDate;if($('#globalAmtfDate'))$('#globalAmtfDate').value=globalAmtfDate;}
 document.querySelectorAll('[data-lfilter]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-lfilter]').forEach(x=>x.classList.remove('active'));b.classList.add('active');lfilter=b.dataset.lfilter;renderLottery();});
-$('#toggleLost').onclick=()=>{hideLost=!hideLost;save();};$('#lotSearch').oninput=renderLottery;$('#lotSort').onchange=renderLottery;$('#sealedSearch').oninput=renderSealed;$('#cardSearch').oninput=renderCards;$('#sealedSort').onchange=renderSealed;$('#cardSort').onchange=renderCards;$('#globalMimiDate').onchange=e=>applyGlobalBoxDate('mimi',e.target.value);$('#globalAmtfDate').onchange=e=>applyGlobalBoxDate('amtf',e.target.value);
+$('#toggleLost').onclick=()=>{hideLost=!hideLost;save();};$('#lotSearch').oninput=renderLottery;$('#lotSort').onchange=renderLottery;$('#sealedSearch').oninput=renderSealed;$('#cardSearch').oninput=renderCards;$('#sealedSort').onchange=renderSealed;$('#cardSort').onchange=renderCards;
 $('#prev').onclick=()=>{viewMonth=new Date(viewMonth.getFullYear(),viewMonth.getMonth()-1,1);selectedDate=null;renderLottery();};$('#next').onclick=()=>{viewMonth=new Date(viewMonth.getFullYear(),viewMonth.getMonth()+1,1);selectedDate=null;renderLottery();};
 $('#saleCancel').onclick=()=>$('#saleDlg').close();$('#graphClose').onclick=()=>$('#graphDlg').close();
 $('#saleSave').onclick=()=>{const type=$('#saleSourceType').value,id=$('#saleSourceId').value,arr=type==='sealed'?state.sealed:state.cards,x=arr.find(x=>x.id===id),qty=Math.max(1,Number($('#saleQty').value||1));if(!x||qty>x.qty)return alert('数量を確認してください');const price=Number($('#salePrice').value||0),fee=Number($('#saleFee').value||0),ship=Number($('#saleShip').value||0),cost=x.cost*qty;state.sales.push({id:'sale-'+Date.now(),sourceId:id,type,name:type==='sealed'?x.name:`${x.name} ${x.number}`,qty,date:$('#saleDate').value,price,fee,ship,place:$('#salePlace').value,cost,profit:price-fee-ship-cost});x.qty-=qty;$('#saleDlg').close();save();};
