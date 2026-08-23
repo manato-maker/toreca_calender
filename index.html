@@ -1796,7 +1796,11 @@ function renderSales(){
  $('#salesList').innerHTML=state.sales.slice().reverse().map(x=>`<div class="item"><div class="title">${esc(x.name)} ×${x.qty}</div><div class="meta">${fmtDate(x.date)}｜${esc(x.place||'売却先不明')}｜売却 ${yen(x.price)}｜経費 ${yen(x.fee+x.ship)}｜原価 ${yen(x.cost)}｜利益 ${yen(x.profit)}</div></div>`).join('')||'<div class="small">売却データなし</div>';
 }
 function renderAssets(){
- const sealedCost=state.sealed.reduce((s,x)=>s+x.cost*x.qty,0),cardCost=state.cards.reduce((s,x)=>s+x.cost*x.qty,0);
+ const sealedCost=state.sealed.reduce((s,x)=>s+(x.costUnknown?0:Number(x.cost||0)*Number(x.qty||0)),0),cardCost=state.cards.reduce((s,x)=>s+Number(x.cost||0)*Number(x.qty||0),0);
+ const purchaseLedger=state.purchaseLedger||[];
+ const totalSpent=purchaseLedger.reduce((s,x)=>s+Number(x.total||0),0);
+ const packSpent=purchaseLedger.filter(x=>x.type==='パック').reduce((s,x)=>s+Number(x.total||0),0);
+ const openedPackSpent=purchaseLedger.filter(x=>x.type==='パック').reduce((s,x)=>s+Number(x.opened||0)*Number(x.unitCost||0),0);
  const cardPriced=state.cards.filter(x=>x.domestic!=null&&x.qty>0),cardAsset=cardPriced.reduce((s,x)=>s+x.domestic*x.qty,0),cardPricedCost=cardPriced.reduce((s,x)=>s+x.cost*x.qty,0);
  const boxPriced=state.sealed.filter(x=>(x.mimiPrice!=null||x.amtfPrice!=null)&&x.qty>0);
  const boxAsset=boxPriced.reduce((s,x)=>s+Math.max(x.mimiPrice??-Infinity,x.amtfPrice??-Infinity)*x.qty,0);
@@ -1805,7 +1809,9 @@ function renderAssets(){
  const packAsset=packPriced.reduce((s,x)=>s+Number(x.qty)*Number(x.amtfPrice),0);
  const packCount=(state.loosePacks||[]).reduce((s,x)=>s+Number(x.qty||0),0);
  const realized=state.sales.reduce((s,x)=>s+x.profit,0);
- $('#assetStats').innerHTML=`<div class="stat">現在庫の取得原価<b>${yen(sealedCost+cardCost)}</b><span class="small">バラパックは取得原価未集計</span></div>
+ $('#assetStats').innerHTML=`<div class="stat">これまで使った金額<b>${yen(totalSpent)}</b><span class="small">購入履歴で金額判明分｜パック購入 ${yen(packSpent)}</span></div>
+ <div class="stat">開封済パック取得額<b>${yen(openedPackSpent)}</b><span class="small">購入累計には残したまま別表示</span></div>
+ <div class="stat">現在庫の取得原価<b>${yen(sealedCost+cardCost)}</b><span class="small">購入価格未登録分は含めない</span></div>
  <div class="stat">カード推定資産<br><span class="small">ポケカチ買取・${cardPriced.length}種</span><b>${yen(cardAsset)}</b></div>
  <div class="stat">BOX推定資産<br><span class="small">各BOXごとに買取ミミ / アムタフ の高い方・${boxPriced.length}商品</span><b>${yen(boxAsset)}</b><span class="small">含み損益 ${yen(boxAsset-boxPricedCost)}</span></div>
  <div class="stat">バラパック推定資産<br><span class="small">AMTF買取・${packCount}パック</span><b>${yen(packAsset)}</b></div>
