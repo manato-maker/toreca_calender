@@ -511,6 +511,12 @@ body.dark-mode .pack-amtf b{color:#66b8ff!important}
 }
 </style>
 
+
+<style id="sealed-group-v1">
+#sealedList .title .badge{margin-left:6px;font-size:13px}
+.group-lots summary{user-select:none}
+</style>
+
 </head><body><div class="app">
 <header><div><h1>📚 トレカ管理</h1><div class="sub">抽選 → 仕入れ → 在庫 → 開封 → 売却 → 資産</div></div><div class="sub">元画像スタンプ背景透明版 2026/8/20</div></header>
 <div class="tabs"><button class="tab active" data-view="lottery">🗓 抽選</button><button class="tab" data-view="sealed">📦 未開封</button><button class="tab" data-view="packs">🎴 バラパック</button><button class="tab" data-view="cards">🃏 カード</button><button class="tab" data-view="sales">💰 売却</button><button class="tab" data-view="assets">📊 資産</button></div>
@@ -1576,15 +1582,107 @@ function renderMarketSourceStatus(){
  el.innerHTML=`<b>相場ソース確認日</b><div class="small" style="margin-top:5px">🐰 買取ミミ：${mimi}｜📈 アムタフ：${amtf}<br>※確認できた商品のみ価格・取得日を更新</div>`;
 }
 
+
+function sealedGroupKey(x){
+ return [String(x.name||'').trim(),String(x.shrink||'不明').trim(),String(x.category||'').trim()].join('||');
+}
+function latestMarketInGroup(items,source){
+ const pkey=source==='mimi'?'mimiPrice':'amtfPrice';
+ const dkey=source==='mimi'?'mimiDate':'amtfDate';
+ const valid=items.filter(x=>x[pkey]!=null);
+ if(!valid.length)return {price:null,date:'',item:null};
+ valid.sort((a,b)=>String(b[dkey]||'').localeCompare(String(a[dkey]||'')));
+ return {price:Number(valid[0][pkey]),date:valid[0][dkey]||'',item:valid[0]};
+}
+function groupedSealedInventory(){
+ const map=new Map();
+ for(const x of (state.sealed||[]).filter(x=>Number(x.qty||0)>0)){
+   const k=sealedGroupKey(x);
+   if(!map.has(k))map.set(k,{key:k,name:x.name,shrink:x.shrink||'不明',category:x.category||'',items:[],qty:0,totalCost:0});
+   const g=map.get(k);
+   g.items.push(x);
+   g.qty+=Number(x.qty||0);
+   g.totalCost+=Number(x.cost||0)*Number(x.qty||0);
+ }
+ return [...map.values()].map(g=>{
+   g.avgCost=g.qty?g.totalCost/g.qty:0;
+   g.mimi=latestMarketInGroup(g.items,'mimi');
+   g.amtf=latestMarketInGroup(g.items,'amtf');
+   g.assetUnit=[g.mimi.price,g.amtf.price].filter(v=>v!=null).sort((a,b)=>b-a)[0]??null;
+   return g;
+ });
+}
+function updateBoxMarketGroup(groupKey,source,key,val){
+ const items=(state.sealed||[]).filter(x=>sealedGroupKey(x)===groupKey&&Number(x.qty||0)>0);
+ const pkey=source==='mimi'?'mimiPrice':'amtfPrice',dkey=source==='mimi'?'mimiDate':'amtfDate';
+ if(key==='date'){
+   items.forEach(x=>x[dkey]=val);
+   save(); return;
+ }
+ const n=val===''?null:Number(val);
+ items.forEach(x=>{
+   x[pkey]=n;
+   if(n!==null){
+     const date=x[dkey]||new Date().toISOString().slice(0,10);
+     if(!x[dkey])x[dkey]=date;
+     boxMarketHistory[x.id]=boxMarketHistory[x.id]||{mimi:[],amtf:[]};
+     boxMarketHistory[x.id][source]=boxMarketHistory[x.id][source]||[];
+     const arr=boxMarketHistory[x.id][source],last=arr[arr.length-1];
+     if(!last||last.value!==n||last.date!==date)arr.push({date,value:n});
+   }
+ });
+ save();
+}
+function boxMarketEditorGroup(g){
+ const k=String(g.key).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+ return `<div class="boxmarkets">
+   <div class="sourcebox mimi"><b>🐰 買取ミミ</b>
+     <div class="grid2"><label class="field">価格<input type="number" value="${g.mimi.price??''}" placeholder="円" onchange="updateBoxMarketGroup('${k}','mimi','price',this.value)"></label>
+     <label class="field">取得日<input type="date" value="${g.mimi.date||''}" onchange="updateBoxMarketGroup('${k}','mimi','date',this.value)"></label></div>
+   </div>
+   <div class="sourcebox amtf"><b>📈 アムタフ</b>
+     <div class="grid2"><label class="field">価格<input type="number" value="${g.amtf.price??''}" placeholder="円" onchange="updateBoxMarketGroup('${k}','amtf','price',this.value)"></label>
+     <label class="field">取得日<input type="date" value="${g.amtf.date||''}" onchange="updateBoxMarketGroup('${k}','amtf','date',this.value)"></label></div>
+   </div>
+ </div>`;
+}
+
 function renderSealed(){
- const q=$('#sealedSearch').value.trim().toLowerCase();let a=state.sealed.filter(x=>x.qty>0);if(q)a=a.filter(x=>(x.name+' '+x.store).toLowerCase().includes(q));a=sortInventory(a,$('#sealedSort').value,boxAssetUnit);
- $('#sealedList').innerHTML=a.map(x=>{
-   const mimi=x.mimiPrice,amtf=x.amtfPrice;
-   return `<div class="item"><div class="row"><div><div class="title">${esc(x.name)} ×${x.qty}</div>
-   <div class="meta">${esc(x.category)}｜${esc(x.store)}｜購入 ${x.needsCost?'未入力':yen(x.cost)+'/個'}｜${x.purchaseDate?fmtDate(x.purchaseDate):'購入日不明'}｜シュリンク ${esc(x.shrink)}</div>${x.needsCost?`<div class="quick-cost"><input id="cost-${x.id}" type="number" min="0" placeholder="購入価格/個"><button onclick="setQuickCost('${x.id}',$('#cost-${x.id}').value)">価格を保存</button></div>`:''}
-   <div class="meta">取得原価 ${yen(x.cost*x.qty)}${mimi!=null?`｜ミミ ${yen(mimi*x.qty)}${x.mimiDate?' ('+fmtDate(x.mimiDate)+')':''}`:''}${amtf!=null?`｜アムタフ ${yen(amtf*x.qty)}${x.amtfDate?' ('+fmtDate(x.amtfDate)+')':''}`:''}${(mimi!=null||amtf!=null)?(()=>{const u=boxAssetUnit(x),mm=calcMetrics(x,u);return `｜資産採用 ${yen(u*x.qty)} (${mimi!=null&&amtf!=null?(mimi>=amtf?'ミミ':'アムタフ'):(mimi!=null?'ミミ':'アムタフ')})｜含み利益 ${yen(mm.profit)}｜利益率 ${mm.rate==null?'—':mm.rate.toFixed(1)+'%'}`})():''}</div></div>
-   <button onclick="openSale('sealed','${x.id}')">売却</button></div>${boxMarketEditor(x)}</div>`;
- }).join('');
+ const q=$('#sealedSearch').value.trim().toLowerCase();
+ let groups=groupedSealedInventory();
+ if(q)groups=groups.filter(g=>(g.name+' '+g.items.map(x=>x.store).join(' ')).toLowerCase().includes(q));
+ const mode=$('#sealedSort').value;
+ groups=groups.sort((a,b)=>{
+   if(mode==='default')return 0;
+   const dir=mode.endsWith('_asc')?1:-1,key=mode.replace(/_(asc|desc)$/,'');
+   const metrics=g=>{
+     const price=g.assetUnit,profit=price==null?null:price*g.qty-g.totalCost,rate=(price==null||g.totalCost<=0)?null:profit/g.totalCost*100;
+     return {price,profit,rate,cost:g.avgCost};
+   };
+   const x=metrics(a),y=metrics(b),vx=x[key],vy=y[key];
+   if(vx==null&&vy==null)return 0;if(vx==null)return 1;if(vy==null)return -1;
+   return (vx-vy)*dir;
+ });
+ $('#sealedList').innerHTML=groups.map(g=>{
+   const stores=[...new Set(g.items.map(x=>x.store).filter(Boolean))];
+   const dates=[...new Set(g.items.map(x=>x.purchaseDate).filter(Boolean))].sort();
+   const asset=g.assetUnit==null?null:g.assetUnit*g.qty;
+   const profit=asset==null?null:asset-g.totalCost;
+   const rate=(profit==null||g.totalCost<=0)?null:profit/g.totalCost*100;
+   const source=g.assetUnit==null?'':(g.mimi.price!=null&&g.amtf.price!=null?(g.mimi.price>=g.amtf.price?'ミミ':'アムタフ'):(g.mimi.price!=null?'ミミ':'アムタフ'));
+   return `<div class="item">
+    <div class="row"><div style="min-width:0;flex:1">
+      <div class="title">${esc(g.name)} <span class="badge">×${g.qty}</span></div>
+      <div class="meta">${esc(g.category)}｜シュリンク ${esc(g.shrink)}｜購入先 ${stores.length}か所｜平均取得 ${yen(g.avgCost)}/個</div>
+      <div class="meta">取得原価 ${yen(g.totalCost)}${g.mimi.price!=null?`｜ミミ ${yen(g.mimi.price*g.qty)}${g.mimi.date?' ('+fmtDate(g.mimi.date)+')':''}`:''}${g.amtf.price!=null?`｜アムタフ ${yen(g.amtf.price*g.qty)}${g.amtf.date?' ('+fmtDate(g.amtf.date)+')':''}`:''}${asset!=null?`｜資産採用 ${yen(asset)} (${source})｜含み利益 ${yen(profit)}｜利益率 ${rate==null?'—':rate.toFixed(1)+'%'}`:''}</div>
+    </div></div>
+    ${boxMarketEditorGroup(g)}
+    <details class="group-lots" style="margin-top:8px">
+      <summary class="small" style="cursor:pointer;font-weight:800">購入内訳 ${g.items.length}件を見る</summary>
+      <div class="list" style="margin-top:7px">${g.items.map(x=>`<div class="small" style="padding:7px 0;border-top:1px solid var(--line)">🏪 ${esc(x.store||'不明')}｜${x.purchaseDate?fmtDate(x.purchaseDate):'購入日不明'}｜${x.qty}個｜${yen(x.cost)}/個 <button style="float:right;padding:4px 8px" onclick="openSale('sealed','${x.id}')">売却</button></div>`).join('')}</div>
+    </details>
+   </div>`;
+ }).join('')||'<div class="small">該当なし</div>';
 }
 function svgLine(points,w,h,minV,maxV,pad){
  if(points.length<1)return '';
@@ -1790,6 +1888,38 @@ document.querySelectorAll('.watch-tab').forEach(b=>b.onclick=()=>setWatchTab(b.d
 if($('#watchSelectAll'))$('#watchSelectAll').onclick=()=>toggleWatchPickerSelection(true);
 if($('#watchClearAll'))$('#watchClearAll').onclick=()=>toggleWatchPickerSelection(false);
 renderAll();
+
+
+// 2026-08-23 market source refresh.
+// Keep per-item dates honest: only values confirmed from the current source are stamped 8/23.
+if(!state.dataFixes)state.dataFixes={};
+if(!state.dataFixes.marketSourceRefresh20260823_v2){
+  const d='2026-08-23';
+  state.marketSourceStatus=state.marketSourceStatus||{};
+  state.marketSourceStatus['買取ミミ']={latestListPostDate:d,applied:'confirmed-values-only'};
+  state.marketSourceStatus['アムタフ']={latestListPostDate:d,applied:'confirmed-values-only'};
+
+  // 買取ミミ: current supplied 8/23 BOX table was reviewed.
+  // Do not overwrite a product unless product identity + condition can be read with confidence.
+  // Current confirmed price-change notice: ストームエメラルダ / シュリンク有 17,300円.
+  state.boxMarketMaster=state.boxMarketMaster||{};
+  state.boxMarketMaster['ストームエメラルダ']=state.boxMarketMaster['ストームエメラルダ']||{};
+  state.boxMarketMaster['ストームエメラルダ'].mimi=Object.assign({},state.boxMarketMaster['ストームエメラルダ'].mimi||{}, {'あり':17300});
+
+  // AMTF 日本橋 8/23: OP-17 世界最強の戦士 BOX 17,700円 (テープ付き扱い).
+  const op17s=(state.sealed||[]).filter(x=>String(x.name||'').includes('世界最強の戦士'));
+  state.boxMarketHistory=state.boxMarketHistory||{};
+  for(const x of op17s){
+    x.amtfPrice=17700; x.amtfDate=d;
+    state.boxMarketHistory[x.id]=state.boxMarketHistory[x.id]||{mimi:[],amtf:[]};
+    const a=state.boxMarketHistory[x.id].amtf=state.boxMarketHistory[x.id].amtf||[];
+    if(!a.some(q=>q.date===d&&q.value===17700))a.push({date:d,value:17700});
+  }
+  state.globalMimiDate=d; state.globalAmtfDate=d;
+  state.dataFixes.marketSourceRefresh20260823_v2=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+}
+
 </script>
 <script id="dark-mode-v3-script">
 (function(){
