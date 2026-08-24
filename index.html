@@ -1929,82 +1929,66 @@ if(!state.dataFixes.marketSourceRefresh20260823_v2){
 })();
 </script>
 
-<script id="update-20260824-1418">
+
+<script id="update-20260824-evening">
 (function(){
-  if(typeof state==='undefined') return;
-  state.dataFixes=state.dataFixes||{};
-  if(!state.dataFixes.update20260824_1418){
-    const norm=v=>String(v||'').replace(/\s+/g,'').toLowerCase();
-    const setLot=(store,title,status,note)=>{
-      const x=(state.lotteries||[]).find(q=>norm(q.store).includes(norm(store))&&norm(q.title).includes(norm(title)));
-      if(x){x.status=status;x.note=note;}
-    };
-    setLot('古本市場 香里園店','アビスアイ','lose','8/24 落選確認｜販売 8/29〜8/30｜申込番号 1037086253');
-    setLot('古本市場 香里園店','ストームエメラルダ','lose','8/24 落選確認｜販売 8/29〜8/30｜申込番号 1037085691');
-    setLot('古本市場 香里園店','スタートデッキ100','lose','8/24 落選確認｜販売 8/29〜8/30｜申込番号 1037085836');
-    setLot('ふるいちイオンモール高の原店','スタートデッキ100','lose','8/24 落選確認｜販売 8/28〜8/30｜申込番号 1037087669');
-    setLot('ふるいちイオンモール高の原店','メガブレイブ','lose','8/24 落選確認｜販売 8/28〜8/30｜申込番号 1037087347');
-
-    // 世界最強の戦士: 5BOX購入 → テープカット1BOXを定価売却、残りテープカット3BOXは全開封、テープ付き1BOXのみ未開封在庫。
-    const op=(state.sealed||[]).filter(x=>String(x.name||'').includes('世界最強の戦士'));
-    op.forEach(x=>x.qty=0);
-    let cur=(state.sealed||[]).find(x=>x.id==='sealed-op17-current-taped-20260824');
-    if(!cur){
-      cur={id:'sealed-op17-current-taped-20260824',name:'世界最強の戦士 OP-17',qty:1,cost:5760,store:'購入分まとめ',purchaseDate:'2026-08-22',shrink:'テープ付き',category:'BOX',domestic:null,overseas:null,marketDate:'2026-08-23',note:'現在庫：テープ付き1BOX。テープカット4BOXのうち1BOXは友人へ定価売却、3BOXは全開封。',mimiPrice:null,mimiDate:'',amtfPrice:17700,amtfDate:'2026-08-23'};
-      state.sealed.push(cur);
-    } else {cur.qty=1;cur.shrink='テープ付き';cur.amtfPrice=17700;cur.amtfDate='2026-08-23';}
-    state.sales=state.sales||[];
-    if(!state.sales.some(x=>x.id==='sale-op17-friend-20260824')) state.sales.push({id:'sale-op17-friend-20260824',sourceId:'op17-tapecut',type:'sealed',name:'世界最強の戦士 OP-17（テープカット）',qty:1,date:'2026-08-24',price:5760,fee:0,ship:0,place:'友人',cost:5760,profit:0,note:'定価で売却'});
-
-    // 購入累計は在庫から消えても残す。過去に確認済みの4BOX + GEO香芝の1BOXを記録。
-    if(!state.purchaseLedger) state.purchaseLedger=[
-      {id:'pl-sealed-001',date:'2026-08-16',name:'メガシンフォニア',store:'カードボックスオーサカ',qty:1,unitCost:5400,type:'未開封',opened:0,total:5400,note:'レシートなし／商品写真あり'},
-      {id:'pl-sealed-002',date:'',name:'決戦の刻 OP-16',store:'プレミアムバンダイ',qty:1,unitCost:5280,type:'未開封',opened:0,total:5280,note:'購入日不明'},
-      {id:'pl-sealed-003',date:'',name:'スペシャルBOX ポケモンセンターフクオカ',store:'ポケモンセンターオンライン',qty:1,unitCost:2090,type:'未開封',opened:0,total:2090,note:'購入日不明'},
-      {id:'pl-sealed-004',date:'',name:'スペシャルBOX ポケモンセンタートウホク',store:'ポケモンセンターオンライン',qty:1,unitCost:2090,type:'未開封',opened:0,total:2090,note:'購入日不明'},
-      {id:'pl-sealed-005',date:'',name:'インフェルノX',store:'ポケモンセンターオンライン',qty:1,unitCost:5400,type:'未開封',opened:0,total:5400,note:'購入日不明'},
-      {id:'pl-sealed-006',date:'',name:'MEGAドリームex',store:'ポケモンセンターオンライン',qty:2,unitCost:5500,type:'未開封',opened:0,total:11000,note:'購入日不明'},
-      {id:'pl-sealed-007',date:'',name:'MEGAドリームex',store:'不明',qty:1,unitCost:5500,type:'未開封',opened:0,total:5500,note:'購入日・店舗不明'},
-      {id:'pl-sealed-008',date:'',name:'アビスアイ',store:'古本市場 羽曳野店',qty:1,unitCost:6000,type:'未開封',opened:0,total:6000,note:'購入日不明'},
-      {id:'pl-sealed-mega-start100-aeon',date:'',name:'MEGA スタートデッキ100',store:'イオンスタイルオンライン',qty:1,unitCost:891,type:'未開封',opened:0,total:891,note:'税込891円'},
-      {id:'pl-sealed-mega-start100-furuichi-takanohara',date:'2026-08-15',name:'MEGA スタートデッキ100',store:'古本市場 イオンモール高の原店',qty:1,unitCost:891,type:'未開封',opened:0,total:891,note:'8/15購入'},
-      {id:'pl-sealed-op17-furuichi-kyuhoji-20260822',date:'2026-08-22',name:'世界最強の戦士 OP-17',store:'古本市場 久宝寺店',qty:1,unitCost:5760,type:'BOX',opened:0,total:5760,note:'8/22購入'},
-      {id:'pl-sealed-op17-edion-kashihara-20260822',date:'2026-08-22',name:'世界最強の戦士 OP-17',store:'エディオンイオンモール橿原',qty:1,unitCost:5260,type:'BOX',opened:0,total:5260,note:'500円引き'},
-      {id:'pl-sealed-op17-joshin-kamimaki-20260822',date:'2026-08-22',name:'世界最強の戦士 OP-17',store:'Joshin 上牧店',qty:2,unitCost:5760,type:'BOX',opened:2,total:11520,note:'2BOX購入・開封分を含む'},
-      {id:'pl-sealed-start100-furuichi-yamatokoriyama-20260823',date:'2026-08-23',name:'MEGA スタートデッキ100',store:'古本市場 AM大和郡山店',qty:1,unitCost:891,type:'未開封',opened:0,total:891,note:'8/23購入'},
-      {id:'pl-メガブレイブ-2026-08-17',date:'2026-08-17',name:'メガブレイブ',store:'Joshin 外環柏原店',qty:5,unitCost:180,type:'パック',opened:2,total:900,note:'5P購入'},
-      {id:'pl-purchase-seven-oji-hataked4-storm-20260819',date:'2026-08-19',name:'ストームエメラルダ',store:'セブンイレブン 王寺畠田4丁目',qty:3,unitCost:200,type:'パック',opened:1,total:600,note:'3P購入'},
-      {id:'pl-purchase-geo-kashiba-storm-20260822',date:'2026-08-22',name:'ストームエメラルダ',store:'GEO香芝店',qty:10,unitCost:180,type:'パック',opened:6,total:1800,note:'5P×2購入'},
-      {id:'pl-purchase-geo-kashiba-blackbolt-20260822',date:'2026-08-22',name:'ブラックボルト',store:'GEO香芝店',qty:5,unitCost:264,type:'パック',opened:5,total:1320,note:'5P購入'}
-    ];
-    if(!state.purchaseLedger.some(x=>x.id==='pl-op17-geo-kashiba-20260822')) state.purchaseLedger.push({id:'pl-op17-geo-kashiba-20260822',date:'2026-08-22',name:'世界最強の戦士 OP-17',store:'GEO香芝店',qty:1,unitCost:5760,type:'BOX',opened:1,total:5760,note:'購入済み5BOX総数の不足分。テープカット開封分として計上'});
-
-    // 最新相場確認 8/24。ミミ/AMTFは確認できた最新掲示を保持し、未確認値を8/24扱いにはしない。
-    state.marketSourceStatus=state.marketSourceStatus||{};
-    state.marketSourceStatus['買取ミミ']=Object.assign({},state.marketSourceStatus['買取ミミ']||{}, {checkedDate:'2026-08-24',latestConfirmedDate:state.marketSourceStatus['買取ミミ']?.latestListPostDate||'2026-08-23'});
-    state.marketSourceStatus['アムタフ']=Object.assign({},state.marketSourceStatus['アムタフ']||{}, {checkedDate:'2026-08-24',latestConfirmedDate:'2026-08-23'});
-    state.marketSourceStatus['カード個別']={checkedDate:'2026-08-24',note:'世界最強の戦士の個別相場も確認。開封カードはカード名・番号未登録のため資産へは未加算'};
-    state.genericMarket=state.genericMarket||{};
-    state.genericMarket['世界最強の戦士 OP-17']={checkedDate:'2026-08-24',sourceDate:'2026-08-23',buyMin:16500,buyMax:18200,listingFrom:16398,note:'全国公開買取6件の実測レンジ。テープ付き未開封の参考。関西のテープカットはユーザー確認により買取なし扱い。'};
-    state.dataFixes.update20260824_1418=true;
-    localStorage.setItem(KEY,JSON.stringify(state));
-  }
-
-  // 資産ページ：累計購入額と推定資産との差を常時表示。
-  window.renderAssets=function(){
-    const sealedCost=(state.sealed||[]).reduce((s,x)=>s+(x.costUnknown?0:Number(x.cost||0)*Number(x.qty||0)),0),cardCost=(state.cards||[]).reduce((s,x)=>s+Number(x.cost||0)*Number(x.qty||0),0);
-    const ledger=state.purchaseLedger||[],totalSpent=ledger.reduce((s,x)=>s+Number(x.total||0),0),packSpent=ledger.filter(x=>x.type==='パック').reduce((s,x)=>s+Number(x.total||0),0);
-    const cardPriced=(state.cards||[]).filter(x=>x.domestic!=null&&x.qty>0),cardAsset=cardPriced.reduce((s,x)=>s+x.domestic*x.qty,0),cardPricedCost=cardPriced.reduce((s,x)=>s+x.cost*x.qty,0);
-    const boxPriced=(state.sealed||[]).filter(x=>(x.mimiPrice!=null||x.amtfPrice!=null)&&x.qty>0),boxAsset=boxPriced.reduce((s,x)=>s+Math.max(x.mimiPrice??-Infinity,x.amtfPrice??-Infinity)*x.qty,0),boxPricedCost=boxPriced.reduce((s,x)=>s+x.cost*x.qty,0);
-    const packPriced=(state.loosePacks||[]).filter(x=>x.qty>0&&x.amtfPrice!=null),packAsset=packPriced.reduce((s,x)=>s+Number(x.qty)*Number(x.amtfPrice),0),packCount=(state.loosePacks||[]).reduce((s,x)=>s+Number(x.qty||0),0);
-    const realized=(state.sales||[]).reduce((s,x)=>s+Number(x.profit||0),0),estimatedTotal=cardAsset+boxAsset+packAsset,diff=estimatedTotal-totalSpent,rate=totalSpent>0?diff/totalSpent*100:null;
-    $('#assetStats').innerHTML=`<div class="stat">これまで使った金額<b>${yen(totalSpent)}</b><span class="small">購入履歴で金額判明分｜パック購入 ${yen(packSpent)}</span></div><div class="stat">現在庫の取得原価<b>${yen(sealedCost+cardCost)}</b></div><div class="stat">カード推定資産<b>${yen(cardAsset)}</b></div><div class="stat">BOX推定資産<b>${yen(boxAsset)}</b><span class="small">含み損益 ${yen(boxAsset-boxPricedCost)}</span></div><div class="stat">バラパック推定資産<b>${yen(packAsset)}</b><span class="small">${packCount}パック</span></div><div class="stat">推定総資産<b>${yen(estimatedTotal)}</b></div><div class="stat">使った金額との差<b>${diff>=0?'+':''}${yen(diff)}</b><span class="small">推定資産 − 累計購入額${rate==null?'':`｜${rate>=0?'+':''}${rate.toFixed(1)}%`}</span></div><div class="stat">実現利益<b>${yen(realized)}</b></div>`;
-    const ranks=[];for(const [id,h] of Object.entries(marketHistory||{})){if(h.length<2)continue;const prev=h[h.length-2].value,cur=h[h.length-1].value,diff=cur-prev,pct=prev?diff/prev*100:0,x=(state.cards||[]).find(x=>x.id===id);if(x)ranks.push({name:x.name+(x.number?' '+x.number:''),url:x.pokekachiUrl||'',diff,pct,cur});}
-    const up=ranks.filter(x=>x.diff>0).sort((a,b)=>b.pct-a.pct).slice(0,10),down=ranks.filter(x=>x.diff<0).sort((a,b)=>a.pct-b.pct).slice(0,10);
-    $('#upRank').innerHTML=up.map((x,i)=>`<div class="rankrow up"><span>${i+1}. ${esc(x.name)}</span><b>+${yen(x.diff)} (+${x.pct.toFixed(1)}%)</b></div>`).join('')||'<div class="small">価格履歴を2回以上入力すると表示されます</div>';
-    $('#downRank').innerHTML=down.map((x,i)=>`<div class="rankrow down"><span>${i+1}. ${esc(x.name)}</span><b>${yen(x.diff)} (${x.pct.toFixed(1)}%)</b></div>`).join('')||'<div class="small">価格履歴を2回以上入力すると表示されます</div>';
-  };
-  if(typeof renderAll==='function') renderAll();
+ const KEY='tcg-manager-v2';
+ let st; try{st=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}; if(!st)return;
+ st.dataFixes=st.dataFixes||{};
+ if(st.dataFixes.update20260824Evening_v1)return;
+ const N=v=>String(v||'').replace(/\s+/g,'');
+ const lot=(store,title,status,note)=>{let x=(st.lotteries||[]).find(x=>N(x.store).includes(N(store))&&N(x.title).includes(N(title)));if(x){x.status=status;x.note=note||x.note||'';}};
+ // Confirmed lottery results supplied on 8/24.
+ lot('ふるいちイオンモール高の原店','メガシンフォニア','lose','8/24 落選確認');
+ lot('古本市場 鶴見店','スタートデッキ100','lose','8/24 落選確認｜申込番号 1037082402｜イベント 8/28〜8/30');
+ lot('古本市場 生野店','スタートデッキ100','lose','8/24 落選確認｜申込番号 1037084108｜イベント 8/29〜8/31');
+ lot('古本市場 生野店','ストームエメラルダ','lose','8/24 落選確認｜申込番号 1037084275｜イベント 8/29〜8/31');
+ // OP-17 inventory: 1 tape-sealed BOX remains. 1 tape-cut BOX sold at MSRP; 3 tape-cut BOXes opened.
+ st.sealed=st.sealed||[];
+ const op=st.sealed.filter(x=>N(x.name).includes('世界最強の戦士'));
+ op.forEach((x,i)=>{x.qty=i===0?1:0;x.shrink=i===0?'テープ付き':'テープカット';});
+ if(op[0]){op[0].cost=5760;op[0].mimiPrice=null;op[0].mimiDate='2026-08-24';op[0].amtfPrice=null;op[0].amtfDate='2026-08-24';op[0].note=(op[0].note?op[0].note+'｜':'')+'8/24現在 テープ付き1BOX所持';}
+ st.sales=st.sales||[];
+ if(!st.sales.some(x=>x.id==='sale-op17-friend-msrp-20260824'))st.sales.push({id:'sale-op17-friend-msrp-20260824',sourceId:'op17-cut',type:'sealed',name:'世界最強の戦士 OP-17（テープカット）',qty:1,date:'2026-08-24',price:5760,fee:0,ship:0,place:'友人',cost:5760,profit:0,note:'定価で売却'});
+ st.historicalSpendExtra=Number(st.historicalSpendExtra||0)+16780; // opened 3 BOX purchase cost retained in cumulative spend
+ st.openedHistory=st.openedHistory||[];
+ if(!st.openedHistory.some(x=>x.id==='opened-op17-3box-20260824'))st.openedHistory.push({id:'opened-op17-3box-20260824',date:'2026-08-24',name:'世界最強の戦士 OP-17',qty:3,note:'テープカット3BOXを全開封。レアリティカードは売却予定'});
+ // Market source status: supplied screenshots + same-day public checks. Do not invent unreadable per-item prices.
+ st.marketSourceStatus=st.marketSourceStatus||{};
+ st.marketSourceStatus['買取ミミ']={latestListPostDate:'2026-08-24',applied:'confirmed-values-only'};
+ st.marketSourceStatus['アムタフ']={latestListPostDate:'2026-08-24',applied:'confirmed-values-only'};
+ st.globalMimiDate='2026-08-24'; st.globalAmtfDate='2026-08-24';
+ st.boxMarketMaster=st.boxMarketMaster||{};
+ st.boxMarketMaster['決戦の刻']=st.boxMarketMaster['決戦の刻']||{};
+ st.boxMarketMaster['決戦の刻'].amtf=Object.assign({},st.boxMarketMaster['決戦の刻'].amtf||{}, {'テープ付き':10000});
+ st.boxMarketMaster['決戦の刻'].amtfDate='2026-08-24';
+ // Confirmed 8/24 Mimi status: OP-17 buyback stopped after quota reached; don't value it as cash-buyable inventory.
+ if(op[0]){op[0].mimiPrice=null;op[0].mimiDate='2026-08-24';op[0].mimiNote='8/24 規定数到達で買取ストップ確認';}
+ st.dataFixes.update20260824Evening_v1=true;
+ localStorage.setItem(KEY,JSON.stringify(st));
 })();
 </script>
+<script id="asset-spend-20260824">
+(function(){
+ function enhance(){
+  try{
+   const KEY='tcg-manager-v2',st=JSON.parse(localStorage.getItem(KEY)||'null'); if(!st)return;
+   const box=document.getElementById('assetStats'); if(!box)return;
+   const current=(st.sealed||[]).reduce((s,x)=>s+Number(x.cost||0)*Number(x.qty||0),0)+(st.cards||[]).reduce((s,x)=>s+Number(x.cost||0)*Number(x.qty||0),0);
+   const sold=(st.sales||[]).reduce((s,x)=>s+Number(x.cost||0),0);
+   const packs=(st.loosePackHistory||[]).reduce((s,x)=>s+Number(x.purchased||0)*Number(x.unitCost||0),0);
+   const extra=Number(st.historicalSpendExtra||0);
+   const spent=current+sold+packs+extra;
+   const snap=(typeof currentAssetSnapshot==='function')?currentAssetSnapshot():{total:0};
+   const diff=Number(snap.total||0)-spent;
+   if(!document.getElementById('totalSpentStat')){
+    const a=document.createElement('div');a.className='stat';a.id='totalSpentStat';a.innerHTML='使った金額（累計）<b>'+yen(spent)+'</b><span class="small">購入済・売却済・開封済を含む</span>';box.appendChild(a);
+    const b=document.createElement('div');b.className='stat';b.id='assetVsSpendStat';b.innerHTML='推定資産 − 使った金額<b>'+yen(diff)+'</b><span class="small">現在の推定総資産との差</span>';box.appendChild(b);
+   }
+  }catch(e){console.error(e)}
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(enhance,50));else setTimeout(enhance,50);
+})();
+</script>
+
 </body></html>
