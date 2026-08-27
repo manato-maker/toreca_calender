@@ -2133,4 +2133,68 @@ window.addEventListener('load',()=>{
 {id:'lottery-dorasu-megasymphonia-20260828',date:'2026-08-28',time:'',title:'MEGA 拡張パック メガシンフォニア 1BOX',store:'ドラスター通販',status:'unreported',receiptStatus:'',note:'8/26 応募済｜税込5,400円｜1BOX｜発表予定日 8/28｜注文受付期間 8/28〜9/3'}
 ];for(const r of rows){const i=state.lotteries.findIndex(x=>x.id===r.id);if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],r);else state.lotteries.push(r)}state.dataFixes.dorasu_mega_20260826_v1=true;localStorage.setItem(KEY,JSON.stringify(state));if(typeof renderAll==='function')renderAll()}}catch(e){console.warn(e)}})();
 </script>
+<script id="update-20260828-corrected-rakuten-market-dragonstar">
+(function(){
+ try{
+  const KEY='tcg-master-v14';
+  const s=JSON.parse(localStorage.getItem(KEY)||'{}');
+  s.lotteries=s.lotteries||[];
+  s.boxMarketMaster=s.boxMarketMaster||{};
+
+  // 8/28調査時点：買取ミミ(8/26) / AMTAF(8/27)
+  const market={
+   'メガシンフォニア':{mimi:{'あり':9700,'なし':8000},amtf:{'あり':8000,'なし':6500}},
+   'スペシャルBOX ポケモンセンターフクオカ':{mimi:{'未開封':14000},amtf:{}},
+   'スペシャルBOX ポケモンセンタートウホク':{mimi:{'未開封':14200},amtf:{}},
+   'インフェルノX':{mimi:{'あり':21000,'なし':12700},amtf:{'あり':20000,'なし':12500}},
+   'MEGAドリームex':{mimi:{'あり':13400,'なし':12500},amtf:{'あり':13000,'なし':11500}},
+   'アビスアイ':{mimi:{'あり':9000,'なし':7800},amtf:{'あり':8000,'なし':6500}},
+   'MEGA スタートデッキ100':{mimi:{'未開封':900,'不明':900},amtf:{'未開封':500,'不明':500}},
+   'マクドナルド プロモカードパック':{mimi:{},amtf:{}},
+   '決戦の刻 OP-16':{mimi:{'テープ付き':10700},amtf:{'テープ付き':8000}},
+   '決戦の刻':{mimi:{'テープ付き':10700},amtf:{'テープ付き':8000}},
+   '世界最強の戦士 OP-17':{mimi:{'テープ付き':14800},amtf:{'テープ付き':14300}}
+  };
+  Object.keys(market).forEach(k=>s.boxMarketMaster[k]=market[k]);
+  s.boxMarketMasterDate='2026-08-28';
+  s.globalMimiDate='2026-08-26'; s.globalAmtfDate='2026-08-27';
+  s.marketSourceStatus={
+   '買取ミミ':{latestListPostDate:'2026-08-26',applied:'8/26一覧表＋価格変更投稿'},
+   'アムタフ':{latestListPostDate:'2026-08-27',applied:'8/27最新BOX買取表'},
+   mimi:'8/28調査時点。8/26最新一覧表＋価格変更投稿。',
+   amtf:'8/28調査時点。8/27最新BOX買取表。'
+  };
+
+  function add(id,title,store,date,time,note){
+   if(!s.lotteries.some(x=>x.id===id)) s.lotteries.push({id,date,time:time||'',title,store,status:'unreported',receiptStatus:'',note:note||''});
+  }
+
+  // 楽天ブックス 8/27 エントリー：画像で確認した17件
+  const rb=[
+   ['世界最強の戦士 OP-17','5,781円'],['受け継がれる意志 OP-13','5,280円'],['神の島の冒険 OP-15','5,280円'],
+   ['決戦の刻 OP-16','5,280円'],['蒼海の七傑 OP-14','5,280円'],['Heroines Edition EB-03','5,280円'],
+   ['DRAGON BALL SUPER CARD GAME FUSION WORLD STORY BOOSTER 01','6,600円'],
+   ['DRAGON BALL SUPER CARD GAME FUSION WORLD DUAL EVOLUTION FB09','5,280円'],
+   ['DRAGON BALL SUPER CARD GAME FUSION WORLD CROSS FORCE FB10','5,280円'],
+   ['MEGA スタートデッキ100 バトルコレクション 5個セット','4,455円'],
+   ['メガシンフォニア','5,412円'],['アビスアイ','6,006円'],['メガブレイブ','5,412円'],
+   ['30th CELEBRATION','7,216円'],['30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー','6,200円'],
+   ['MEGAドリームex','5,500円'],['ストームエメラルダ','6,006円']
+  ];
+  rb.forEach((r,i)=>add('lottery-rakutenbooks-20260827-'+String(i+1).padStart(2,'0'),r[0],'楽天ブックス','2026-08-30','23:59','8/27 エントリー済｜価格 '+r[1]+'｜応募締切 8/30 23:59'));
+
+  // ドラゴンスター：今回画像で確認済みの申込
+  const storm=['日本橋本店','日本橋2号店','日本橋3号店','オタロード中央店','くずはモール','ららぽーと堺','なんばなんさん通り店'];
+  storm.forEach((st,i)=>add('lottery-ds-storm-20260828-'+String(i+1).padStart(2,'0'),'ストームエメラルダ 1BOX','ドラゴンスター '+st,'2026-09-04','', '抽選申込済｜価格 6,000円｜販売 9/5〜9/7｜当選発表予定 9/4'));
+  const cel=['日本橋本店','日本橋2号店','日本橋3号店','オタロード中央店','くずはモール','ららぽーと堺','なんばなんさん通り店'];
+  cel.forEach((st,i)=>add('lottery-ds-30th-20260828-'+String(i+1).padStart(2,'0'),'30th CELEBRATION 1BOX','ドラゴンスター '+st,'2026-09-12','', '抽選申込済｜価格 7,200円｜販売 9/16〜9/23｜当選発表予定 9/12'));
+  const prem=['泉佐野店','日本橋本店','日本橋2号店','日本橋3号店','オタロード中央店','くずはモール','ららぽーと堺','なんばなんさん通り店'];
+  prem.forEach((st,i)=>add('lottery-ds-premium-20260828-'+String(i+1).padStart(2,'0'),'30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー','ドラゴンスター '+st,'2026-09-12','', '抽選登録完了｜価格 6,200円｜販売 9/16〜9/23｜当選発表予定 9/12'));
+
+  s.dataFixes=s.dataFixes||{}; s.dataFixes['update_20260828_corrected_rakuten_market_dragonstar']=true;
+  localStorage.setItem(KEY,JSON.stringify(s));
+  if(typeof renderAll==='function') renderAll();
+ }catch(e){console.warn('20260828 corrected update',e);}
+})();
+</script>
 </body></html>
