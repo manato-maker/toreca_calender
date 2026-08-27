@@ -1322,6 +1322,72 @@ if(!state.dataFixes.fullReconcile20260826_v2){
   localStorage.setItem(KEY,JSON.stringify(state));
 }
 
+
+// 2026-08-28 FORCE latest sealed market values BEFORE first render.
+// This intentionally runs on every load so older localStorage values cannot win.
+(function applyLatestSealedMarket20260828(){
+  state.sealed=state.sealed||[];
+  state.boxMarketHistory=state.boxMarketHistory||{};
+  state.boxMarketMaster=state.boxMarketMaster||{};
+
+  const MIMI_DATE='2026-08-26', AMTF_DATE='2026-08-27';
+  const latest={
+    'メガシンフォニア': {mimi:{'あり':9700,'なし':8000}, amtf:{'あり':8000,'なし':6500}},
+    'スペシャルBOX ポケモンセンターフクオカ': {mimi:{'未開封':14000}, amtf:{}},
+    'スペシャルBOX ポケモンセンタートウホク': {mimi:{'未開封':14200}, amtf:{}},
+    'インフェルノX': {mimi:{'あり':21000,'なし':12700}, amtf:{'あり':20000,'なし':12500}},
+    'MEGAドリームex': {mimi:{'あり':13400,'なし':12500}, amtf:{'あり':13000,'なし':11500}},
+    'アビスアイ': {mimi:{'あり':9000,'なし':7800}, amtf:{'あり':8000,'なし':6500}},
+    'MEGA スタートデッキ100': {mimi:{'不明':900,'未開封':900}, amtf:{'不明':500,'未開封':500}},
+    '決戦の刻 OP-16': {mimi:{'テープ付き':10700}, amtf:{'テープ付き':8000}},
+    '世界最強の戦士 OP-17': {mimi:{'テープ付き':14800}, amtf:{'テープ付き':14300}}
+  };
+
+  Object.assign(state.boxMarketMaster,latest);
+  state.boxMarketMasterDate='2026-08-28';
+  state.globalMimiDate=MIMI_DATE;
+  state.globalAmtfDate=AMTF_DATE;
+  state.marketSourceStatus={
+    '買取ミミ':{latestListPostDate:MIMI_DATE,applied:'8/26最新一覧表＋価格変更投稿（8/28調査）'},
+    'アムタフ':{latestListPostDate:AMTF_DATE,applied:'8/27最新BOX買取表（8/28調査）'},
+    mimi:'8/28調査時点。8/26最新一覧表＋価格変更投稿。',
+    amtf:'8/28調査時点。8/27最新BOX買取表。'
+  };
+
+  function pushHist(x,src,date,value){
+    const h=state.boxMarketHistory[x.id]||(state.boxMarketHistory[x.id]={mimi:[],amtf:[]});
+    const a=h[src]||(h[src]=[]);
+    if(!a.some(q=>q.date===date&&Number(q.value)===Number(value))) a.push({date,value:Number(value)});
+  }
+  function setVal(x,src,value,date){
+    if(value==null)return;
+    x[src+'Price']=Number(value);
+    x[src+'Date']=date;
+    pushHist(x,src,date,value);
+  }
+
+  for(const x of state.sealed){
+    const nm=String(x.name||'');
+    let key=nm;
+    if(nm.includes('決戦の刻')) key='決戦の刻 OP-16';
+    else if(nm.includes('世界最強の戦士')) key='世界最強の戦士 OP-17';
+    const row=latest[key];
+    if(!row) continue;
+
+    // ONE PIECE: only intact/tape-attached BOX gets the current sealed price.
+    if(key==='世界最強の戦士 OP-17' && String(x.shrink||'')==='テープカット') continue;
+    let cond=String(x.shrink||'不明');
+    if(key==='決戦の刻 OP-16' && cond!=='テープカット'){
+      cond='テープ付き';
+      x.shrink='テープ付き';
+    }
+
+    if(row.mimi && row.mimi[cond]!=null) setVal(x,'mimi',row.mimi[cond],MIMI_DATE);
+    if(row.amtf && row.amtf[cond]!=null) setVal(x,'amtf',row.amtf[cond],AMTF_DATE);
+  }
+  localStorage.setItem(KEY,JSON.stringify(state));
+})();
+
 let marketHistory=state.marketHistory||{},boxMarketHistory=state.boxMarketHistory||{},globalMimiDate=state.globalMimiDate||'',globalAmtfDate=state.globalAmtfDate||'',hideLost=state.hideLost||false,viewMonth=new Date(2026,7,1),selectedDate=null,lfilter='all';
 const $=s=>document.querySelector(s),yen=n=>'¥'+Math.round(Number(n||0)).toLocaleString('ja-JP');
 function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
