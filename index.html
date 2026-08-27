@@ -2197,4 +2197,85 @@ window.addEventListener('load',()=>{
  }catch(e){console.warn('20260828 corrected update',e);}
 })();
 </script>
+
+<script id="market-fix-20260828-all-sealed-v3">
+(function(){
+  try{
+    const KEY='tcg-master-v14';
+    const state=JSON.parse(localStorage.getItem(KEY)||'{}');
+    state.sealed=state.sealed||[];
+    state.boxMarketHistory=state.boxMarketHistory||{};
+    state.boxMarketMaster=state.boxMarketMaster||{};
+    state.dataFixes=state.dataFixes||{};
+
+    // 2026-08-28 review: source values supplied by user from Grok.
+    // 買取ミミ = 8/26 latest list / price-change posts, AMTAF = 8/27 latest BOX list.
+    const latest={
+      'メガシンフォニア': {mimi:{'あり':9700,'なし':8000}, amtf:{'あり':8000,'なし':6500}},
+      'スペシャルBOX ポケモンセンターフクオカ': {mimi:{'未開封':14000}, amtf:{}},
+      'スペシャルBOX ポケモンセンタートウホク': {mimi:{'未開封':14200}, amtf:{}},
+      'インフェルノX': {mimi:{'あり':21000,'なし':12700}, amtf:{'あり':20000,'なし':12500}},
+      'MEGAドリームex': {mimi:{'あり':13400,'なし':12500}, amtf:{'あり':13000,'なし':11500}},
+      'アビスアイ': {mimi:{'あり':9000,'なし':7800}, amtf:{'あり':8000,'なし':6500}},
+      'MEGA スタートデッキ100': {mimi:{'不明':900,'未開封':900}, amtf:{'不明':500,'未開封':500}},
+      'マクドナルド プロモカードパック': {mimi:{}, amtf:{}},
+      '決戦の刻 OP-16': {mimi:{'テープ付き':10700}, amtf:{'テープ付き':8000}},
+      '世界最強の戦士 OP-17': {mimi:{'テープ付き':14800}, amtf:{'テープ付き':14300}}
+    };
+    Object.assign(state.boxMarketMaster,latest);
+    state.boxMarketMasterDate='2026-08-28';
+    state.globalMimiDate='2026-08-26';
+    state.globalAmtfDate='2026-08-27';
+    state.marketSourceStatus={
+      '買取ミミ':{latestListPostDate:'2026-08-26',applied:'8/26最新一覧表＋価格変更投稿（8/28調査）'},
+      'アムタフ':{latestListPostDate:'2026-08-27',applied:'8/27最新BOX買取表（8/28調査）'},
+      mimi:'8/28調査時点。8/26最新一覧表＋価格変更投稿。',
+      amtf:'8/28調査時点。8/27最新BOX買取表。'
+    };
+
+    function hist(x,src,date,value){
+      if(value==null)return;
+      const h=state.boxMarketHistory[x.id]||(state.boxMarketHistory[x.id]={mimi:[],amtf:[]});
+      const a=h[src]||(h[src]=[]);
+      if(!a.some(q=>q.date===date&&Number(q.value)===Number(value)))a.push({date,value:Number(value)});
+    }
+    function setMarket(x,src,value,date){
+      if(value==null)return;
+      x[src+'Price']=Number(value);
+      x[src+'Date']=date;
+      hist(x,src,date,value);
+    }
+    function marketCondition(x){
+      const name=String(x.name||'');
+      const sh=String(x.shrink||'不明');
+      if(name.includes('決戦の刻')){
+        if(sh!=='テープカット') x.shrink='テープ付き';
+        return x.shrink;
+      }
+      if(name.includes('世界最強の戦士')) return sh;
+      return sh;
+    }
+
+    for(const x of state.sealed){
+      const name=String(x.name||'');
+      if(name.includes('世界最強の戦士') && String(x.shrink||'')==='テープカット') continue;
+      const key=name.includes('決戦の刻')?'決戦の刻 OP-16':name.includes('世界最強の戦士')?'世界最強の戦士 OP-17':name;
+      const row=latest[key];
+      if(!row) continue;
+      const cond=marketCondition(x);
+      const mp=row.mimi&&row.mimi[cond];
+      const ap=row.amtf&&row.amtf[cond];
+      if(mp!=null)setMarket(x,'mimi',mp,'2026-08-26');
+      if(ap!=null)setMarket(x,'amtf',ap,'2026-08-27');
+      // If a source has no verified current price, do not fabricate a value/date.
+      // Existing null remains null; an older valid value is intentionally not re-dated.
+    }
+
+    state.dataFixes["market_fix_20260828_all_sealed_v3"]=true;
+    localStorage.setItem(KEY,JSON.stringify(state));
+    try{ if(typeof renderAll==='function') renderAll(); }catch(e){ console.warn(e); }
+  }catch(e){ console.warn('market fix 20260828 all sealed v3',e); }
+})();
+</script>
+
 </body></html>
