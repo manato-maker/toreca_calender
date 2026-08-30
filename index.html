@@ -2476,4 +2476,35 @@ window.addEventListener('load',()=>{
 }catch(e){console.error('lottery-furuichi-20260830-v1',e)}})();
 </script>
 
+
+<script>
+/* lottery-audit-fix-20260830 */
+(function(){
+  const additions=[
+    {id:'lottery-trecap-hiroshima-151-20260903',date:'2026-09-03',time:'',title:'ポケモンカード151 1BOX',store:'トレカキャピタル広島本店',status:'unreported',note:'応募期間 8/28〜8/30 23:59／購入期間 9/4〜9/7'},
+    {id:'lottery-trecap-hiroshima-lostabyss-20260903',date:'2026-09-03',time:'',title:'ロストアビス 1BOX',store:'トレカキャピタル広島本店',status:'unreported',note:'応募期間 8/28〜8/30 23:59／購入期間 9/4〜9/7'},
+    {id:'lottery-trecap-hiroshima-eeveeheroes-20260903',date:'2026-09-03',time:'',title:'イーブイヒーローズ 1BOX',store:'トレカキャピタル広島本店',status:'unreported',note:'応募期間 8/28〜8/30 23:59／購入期間 9/4〜9/7'}
+  ];
+  function addToArray(arr){
+    if(!Array.isArray(arr)) return false;
+    let changed=false;
+    for(const x of additions){
+      const exists=arr.some(y=>y && (y.id===x.id || (y.date===x.date && y.store===x.store && y.title===x.title)));
+      if(!exists){arr.push({...x});changed=true;}
+    }
+    return changed;
+  }
+  try{ if(typeof state!=='undefined' && state && addToArray(state.lotteries)){ if(typeof save==='function') save(); } }catch(e){}
+  try{ if(typeof SEED!=='undefined' && SEED) addToArray(SEED.lotteries); }catch(e){}
+  try{
+    const key='tcg-master-v14', raw=localStorage.getItem(key);
+    if(raw){ const st=JSON.parse(raw); if(addToArray(st.lotteries)) localStorage.setItem(key,JSON.stringify(st)); }
+  }catch(e){}
+  try{
+    const key='tcg-lottery-custom-v1', arr=JSON.parse(localStorage.getItem(key)||'[]');
+    if(addToArray(arr)) localStorage.setItem(key,JSON.stringify(arr));
+  }catch(e){}
+  try{ if(typeof render==='function') render(); }catch(e){}
+})();
+</script>
 </body></html>
