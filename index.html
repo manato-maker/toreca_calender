@@ -2507,4 +2507,56 @@ window.addEventListener('load',()=>{
   try{ if(typeof render==='function') render(); }catch(e){}
 })();
 </script>
+<!-- user-update-20260831-v2 -->
+<script>
+(function(){
+  try{
+    const rows=[
+      {id:'lottery-joshin-sotokan-kashiwara-op13-20260904',date:'2026-09-04',time:'15:00',title:'ONE PIECEカードゲーム OP-13 受け継がれる意志 1BOX',store:'Joshin 外環柏原店',status:'unreported',receiptStatus:'',note:'価格 5,280円｜当選枠 130BOX｜応募 8/26 10:00〜9/2 16:00｜結果 9/4 15:00頃｜購入 9/5 13:00〜9/7 20:00｜Joshinアプリ・シルバースマイル以上'},
+      {id:'lottery-tsutaya-vivamall-neyagawa-30th-box-20260907',date:'2026-09-07',time:'',title:'MEGA 拡張パック 30th CELEBRATION',store:'TSUTAYA BOOKSTORE ビバモール寝屋川',status:'unreported',receiptStatus:'',note:'当選発表 9/7予定｜購入期間 9/16〜9/20｜LivePocket'},
+      {id:'lottery-tsutaya-vivamall-neyagawa-30th-premium-20260907',date:'2026-09-07',time:'',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'TSUTAYA BOOKSTORE ビバモール寝屋川',status:'unreported',receiptStatus:'',note:'当選発表 9/7予定｜購入期間 9/16〜9/20｜LivePocket'},
+      {id:'lottery-geo-kashiba-30th-box-20260914',date:'2026-09-14',time:'',title:'MEGA 拡張パック 30th CELEBRATION',store:'GEO香芝店',status:'unreported',receiptStatus:'',note:'当選メール 9/14｜購入期限 9/16〜9/20'},
+      {id:'lottery-geo-kashiba-30th-premium-20260914',date:'2026-09-14',time:'',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'GEO香芝店',status:'unreported',receiptStatus:'',note:'当選メール 9/14｜購入期限 9/16〜9/20'},
+      {id:'lottery-geo-kashiba-start100-battle-20260924',date:'2026-09-24',time:'',title:'MEGA スタートデッキ100 バトルコレクション',store:'GEO香芝店',status:'unreported',receiptStatus:'',note:'当選メール 9/24｜購入期限 9/26〜9/27'},
+      {id:'lottery-yodobashi-com-30th-box-20260902',date:'2026-09-02',time:'10:00',title:'MEGA 拡張パック 30th CELEBRATION 1BOX',store:'ヨドバシ・ドット・コム',status:'unreported',receiptStatus:'',note:'価格 7,200円｜抽選結果 9/2 10:00から順次発表｜オンライン抽選'},
+      {id:'lottery-yodobashi-com-30th-premium-20260902',date:'2026-09-02',time:'10:00',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'ヨドバシ・ドット・コム',status:'unreported',receiptStatus:'',note:'価格 6,200円｜抽選結果 9/2 10:00から順次発表｜オンライン抽選'}
+    ];
+    state.lotteries=state.lotteries||[];
+    for(const r of rows){const i=state.lotteries.findIndex(x=>x.id===r.id); if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],r); else state.lotteries.push(r);}
+    // BIGMAGICなんば店：画像でプレミアムデッキセットの落選を確認
+    let bm=state.lotteries.find(x=>x.id==='lottery-bigmagic-namba-30th-20260831');
+    if(bm){Object.assign(bm,{date:'2026-08-31',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'BIGMAGICなんば店',status:'lose',receiptStatus:'',note:'8/31 落選確認｜購入権利抽選｜受取期間 9/16〜9/20｜郵送不可'});}
+    // 8/30 Joshin上牧店購入：どちらが奥さん当選分かは未特定
+    state.sealed=state.sealed||[];
+    const sealedRows=[
+      {id:'sealed-storm-emerald-joshin-kamimaki-20260830',name:'ストームエメラルダ',qty:1,cost:6000,store:'Joshin 上牧店',purchaseDate:'2026-08-30',shrink:'なし',category:'BOX',domestic:null,overseas:null,marketDate:'',note:'8/30購入｜シュリンクなし｜この購入2BOXのうち1BOXは奥さん当選分（商品未特定）',mimiPrice:null,mimiDate:'',amtfPrice:null,amtfDate:''},
+      {id:'sealed-megadream-joshin-kamimaki-20260830',name:'MEGAドリームex',qty:1,cost:6000,store:'Joshin 上牧店',purchaseDate:'2026-08-30',shrink:'なし',category:'BOX',domestic:null,overseas:null,marketDate:'',note:'8/30購入｜シュリンクなし｜この購入2BOXのうち1BOXは奥さん当選分（商品未特定）',mimiPrice:11200,mimiDate:'2026-08-30',amtfPrice:11000,amtfDate:'2026-08-30'}
+    ];
+    for(const r of sealedRows){const i=state.sealed.findIndex(x=>x.id===r.id);if(i>=0)state.sealed[i]=Object.assign({},state.sealed[i],r);else state.sealed.push(r);}
+    state.purchaseLedger=state.purchaseLedger||[];
+    const ledger=[
+      {id:'pl-sealed-storm-emerald-joshin-kamimaki-20260830',date:'2026-08-30',name:'ストームエメラルダ',store:'Joshin 上牧店',qty:1,unitCost:6000,type:'未開封',opened:0,total:6000,note:'シュリンクなし｜同日購入2BOXのうち1BOXは奥さん当選分（商品未特定）'},
+      {id:'pl-sealed-megadream-joshin-kamimaki-20260830',date:'2026-08-30',name:'MEGAドリームex',store:'Joshin 上牧店',qty:1,unitCost:6000,type:'未開封',opened:0,total:6000,note:'シュリンクなし｜同日購入2BOXのうち1BOXは奥さん当選分（商品未特定）'}
+    ];
+    for(const r of ledger){const i=state.purchaseLedger.findIndex(x=>x.id===r.id);if(i>=0)state.purchaseLedger[i]=Object.assign({},state.purchaseLedger[i],r);else state.purchaseLedger.push(r);}
+    // 30th前に売却検討する3BOX
+    state.sellWatch=state.sellWatch||[];
+    for(const key of ['b:sealed-001','b:sealed-008','b:sealed-storm-emerald-joshin-kamimaki-20260830']){
+      let w=state.sellWatch.find(x=>x.key===key); if(!w){w={key,target:null,added:'2026-08-31'};state.sellWatch.push(w);} w.note='30th前売却';
+    }
+    // OP17 回収額の訂正
+    state.openedHistory=state.openedHistory||[];
+    const oh=state.openedHistory.find(x=>x.id==='open-op17-cut-3box-20260824');
+    if(oh)oh.note='3BOX全開封。レアリティカードはカードショップへ売却。友達への1BOX定価販売込みの合計回収18,040円。対象4BOX取得原価23,040円、実現損益 -5,000円。';
+    // 8/31は新しい買取表なし。価格・相場日は8/30のまま維持。
+    state.marketSourceStatus=state.marketSourceStatus||{};
+    state.marketSourceStatus.checkedAt='2026-08-31';
+    state.marketSourceStatus.checkNote='8/31確認：AMTAFは棚卸しで買取営業停止、新表なし。買取ミミも新表なし。価格・相場日は8/30最新値を維持。';
+    state.dataFixes=state.dataFixes||{};state.dataFixes.user_update_20260831_v2=true;
+    try{localStorage.setItem('tcg-master-v14',JSON.stringify(state));}catch(e){}
+    try{if(typeof SEED!=='undefined'){for(const k of ['lotteries','sealed','purchaseLedger','openedHistory','sellWatch'])SEED[k]=JSON.parse(JSON.stringify(state[k]||[]));SEED.marketSourceStatus=JSON.parse(JSON.stringify(state.marketSourceStatus||{}));}}catch(e){}
+    try{if(typeof renderAll==='function')renderAll();}catch(e){console.warn(e);}
+  }catch(e){console.warn('user-update-20260831-v2',e);}
+})();
+</script>
 </body></html>
