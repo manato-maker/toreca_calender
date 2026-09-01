@@ -2559,4 +2559,61 @@ window.addEventListener('load',()=>{
   }catch(e){console.warn('user-update-20260831-v2',e);}
 })();
 </script>
+
+<!-- user-update-20260901-v1 -->
+<script id="user-update-20260901-v1">
+(function(){try{
+ const KEY='tcg-master-v14';
+ const st=(typeof state!=='undefined'&&state)?state:JSON.parse(localStorage.getItem(KEY)||'{}');
+ st.dataFixes=st.dataFixes||{}; st.lotteries=Array.isArray(st.lotteries)?st.lotteries:[];
+ const rows=[
+  {id:'lottery-hareruya2-online-30th-box-20260908',date:'2026-09-08',time:'',title:'MEGA 30th CELEBRATION 予約購入権',store:'晴れる屋2通販',status:'unreported',receiptStatus:'',note:'結果発表予定 9/8｜イベント・発売 9/16｜オンライン（LivePocket）'},
+  {id:'lottery-ryuunoshippo-fuse-30th-box-20260909',date:'2026-09-09',time:'',title:'MEGA 拡張パック 30th CELEBRATION 1BOX',store:'竜のしっぽ 布施店',status:'unreported',receiptStatus:'',note:'価格 7,200円｜応募 8/31 10:00〜9/7 00:00｜販売 9/16〜9/23'},
+  {id:'lottery-ryuunoshippo-fuse-30th-premium-20260909',date:'2026-09-09',time:'',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'竜のしっぽ 布施店',status:'unreported',receiptStatus:'',note:'価格 6,200円｜応募 8/31 10:00〜9/7 00:00｜販売 9/16〜9/23'},
+  {id:'lottery-ryuunoshippo-osakaumeda-30th-box-20260909',date:'2026-09-09',time:'',title:'MEGA 拡張パック 30th CELEBRATION 1BOX',store:'竜のしっぽ 大阪梅田店',status:'unreported',receiptStatus:'',note:'価格 7,200円｜応募 8/31 10:00〜9/7 00:00｜販売 9/16〜9/23'},
+  {id:'lottery-ryuunoshippo-osakaumeda-30th-premium-20260909',date:'2026-09-09',time:'',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'竜のしっぽ 大阪梅田店',status:'unreported',receiptStatus:'',note:'価格 6,200円｜応募 8/31 10:00〜9/7 00:00｜販売 9/16〜9/23'},
+  {id:'lottery-ryuunoshippo-nuchayamachi-30th-box-20260909',date:'2026-09-09',time:'',title:'MEGA 拡張パック 30th CELEBRATION 1BOX',store:'竜のしっぽ 梅田NU茶屋町店',status:'unreported',receiptStatus:'',note:'価格 7,200円｜応募 8/31 10:00〜9/7 00:00｜販売 9/16〜9/23'},
+  {id:'lottery-ryuunoshippo-nuchayamachi-30th-premium-20260909',date:'2026-09-09',time:'',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'竜のしっぽ 梅田NU茶屋町店',status:'unreported',receiptStatus:'',note:'価格 6,200円｜応募 8/31 10:00〜9/7 00:00｜販売 9/16〜9/23'},
+  {id:'lottery-kidoriya-30th-box-20260911',date:'2026-09-11',time:'',title:'MEGA 拡張パック 30th CELEBRATION 1BOX',store:'カードショップ黄鶏屋',status:'unreported',receiptStatus:'',note:'価格 7,200円｜応募 8/23〜9/7 23:59｜当選通知 9/11以降｜発売 9/16｜プレミアムデッキセットは未応募'},
+  {id:'lottery-famima-kamimaki-katsuragidai-umamusume-20260909',date:'2026-09-09',time:'午前中から順次',title:'UNION ARENA ブースターパック ウマ娘 プリティーダービー UA59BT',store:'ファミマオンライン（受取：上牧葛城台店）',status:'unreported',receiptStatus:'',note:'6,160円｜応募 9/1 13:54｜結果 9/9午前中から順次｜変更・キャンセル期限 9/7 23:59｜受取期限 12/31 23:59'}
+ ];
+ for(const r of rows){const i=st.lotteries.findIndex(x=>x.id===r.id||(x.date===r.date&&x.store===r.store&&x.title===r.title));if(i>=0)st.lotteries[i]=Object.assign({},st.lotteries[i],r);else st.lotteries.push(r);}
+ // 9/1 BOX market: only exact values get a new 9/1 source date; approximate/unavailable values keep prior price/date.
+ st.sealed=Array.isArray(st.sealed)?st.sealed:[];
+ function upd(names,cond,vals){for(const x of st.sealed){if(names.includes(x.name)&&(!cond||String(x.shrink||'').includes(cond))){for(const [k,v] of Object.entries(vals))x[k]=v;}}}
+ upd(['メガシンフォニア'],'付き',{mimiPrice:9000,mimiDate:'2026-09-01',amtfPrice:7000,amtfDate:'2026-09-01'});
+ upd(['メガシンフォニア'],'なし',{amtfPrice:6000,amtfDate:'2026-09-01'});
+ upd(['インフェルノX'],'付き',{mimiPrice:17700,mimiDate:'2026-09-01',amtfPrice:18000,amtfDate:'2026-09-01'});
+ upd(['インフェルノX'],'なし',{mimiPrice:12500,mimiDate:'2026-09-01',amtfPrice:12000,amtfDate:'2026-09-01'});
+ upd(['MEGAドリームex'],'付き',{mimiPrice:12500,mimiDate:'2026-09-01',amtfPrice:12600,amtfDate:'2026-09-01'});
+ upd(['MEGAドリームex'],'なし',{mimiPrice:11300,mimiDate:'2026-09-01',amtfPrice:11600,amtfDate:'2026-09-01'});
+ upd(['アビスアイ'],'付き',{amtfPrice:7300,amtfDate:'2026-09-01'});
+ upd(['アビスアイ'],'なし',{amtfPrice:6300,amtfDate:'2026-09-01'});
+ upd(['MEGA スタートデッキ100','MEGA スタートデッキ100 バトルコレクション'],null,{amtfPrice:800,amtfDate:'2026-09-01'});
+ upd(['決戦の刻 OP-16'],null,{amtfPrice:8000,amtfDate:'2026-09-01'});
+ upd(['世界最強の戦士 OP-17'],null,{mimiPrice:16000,mimiDate:'2026-09-01',amtfPrice:15000,amtfDate:'2026-09-01'});
+ // 9/1 AMTAF loose packs.
+ st.loosePacks=Array.isArray(st.loosePacks)?st.loosePacks:[];
+ const pp={'ニンジャスピナー':100,'インフェルノX':150,'ストームエメラルダ':110,'メガブレイブ':90,'アビスアイ':80,'ムニキスゼロ':80,'メガシンフォニア':80,'MEGAドリームex':550};
+ for(const x of st.loosePacks){if(Object.prototype.hasOwnProperty.call(pp,x.name)){x.amtfPrice=pp[x.name];x.amtfDate='2026-09-01';}} st.globalPackAmtfDate='2026-09-01';
+ // Singles checked 9/1. Pokekachi basis dates are kept as the actual price dates, not today's check date.
+ st.cards=Array.isArray(st.cards)?st.cards:[];
+ const singles={
+  'card-001':[6500,'2026-08-24'],'card-002':[700,'2026-08-10'],'card-003':[3000,'2026-08-24'],'card-004':[1500,'2026-08-25'],
+  'card-005':[600,'2026-08-24'],'card-006':[900,'2026-08-24'],'card-007':[3500,'2026-08-24'],'card-008':[1100,'2026-08-25'],
+  'card-009':[3000,'2026-08-10'],'card-010':[1500,'2026-08-24'],'card-011':[2500,'2026-08-25'],'card-015':[4000,'2026-08-25'],
+  'card-touko-sar-173086':[5000,'2026-08-24']
+ };
+ for(const x of st.cards){if(singles[x.id]){x.domestic=singles[x.id][0];x.marketDate=singles[x.id][1];}}
+ st.marketSourceStatus=st.marketSourceStatus||{}; st.marketSourceStatus.checkedAt='2026-09-01';
+ st.marketSourceStatus.checkNote='9/1更新：BOXはユーザー確認の買取ミミ/AMTAF最新表を反映。概算・取得不可は旧価格日を維持。バラパックAMTAFは9/1。シングルはポケカチで再確認し、確認できたカードのみ実際の価格基準日で更新。';
+ st.cardMarketStatus=st.cardMarketStatus||{}; st.cardMarketStatus.checkedAt='2026-09-01'; st.cardMarketStatus.note='ポケカチ再確認。価格日は各カードページの素体価格基準日を使用。未検証カードは従来値を維持。';
+ st.dataFixes.user_update_20260901_v1=true;
+ try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}
+ try{if(typeof state!=='undefined'&&state!==st){for(const k of ['lotteries','sealed','loosePacks','cards','marketSourceStatus','cardMarketStatus','globalPackAmtfDate','dataFixes'])state[k]=st[k];}}catch(e){}
+ try{if(typeof SEED!=='undefined'){for(const k of ['lotteries','sealed','loosePacks','cards'])SEED[k]=JSON.parse(JSON.stringify(st[k]||[]));SEED.marketSourceStatus=JSON.parse(JSON.stringify(st.marketSourceStatus||{}));SEED.cardMarketStatus=JSON.parse(JSON.stringify(st.cardMarketStatus||{}));}}catch(e){}
+ try{if(typeof renderAll==='function')renderAll();}catch(e){}
+}catch(e){console.error('user-update-20260901-v1',e)}})();
+</script>
+
 </body></html>
