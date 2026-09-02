@@ -2886,4 +2886,41 @@ window.addEventListener('load',()=>{
 }catch(e){console.error('user-update-20260902-furuichi-kyuhoji-30th',e)}})();
 </script>
 
+<!-- user-update-20260902-joshin-storm-inventory-asset-final -->
+<script id="user-update-20260902-joshin-storm-inventory-asset-final">
+(function(){try{
+ const KEY='tcg-master-v14';
+ if(typeof state==='undefined')return;
+ state.sealed=Array.isArray(state.sealed)?state.sealed:[];
+ state.purchaseLedger=Array.isArray(state.purchaseLedger)?state.purchaseLedger:[];
+ state.dataFixes=state.dataFixes||{};
+
+ // 8/30の仮登録（ストーム1BOX＋MEGAドリームex 1BOX）を確定内容へ置換。
+ state.sealed=state.sealed.filter(x=>x.id!=='sealed-megadream-joshin-kamimaki-20260830');
+ const box={
+  id:'sealed-storm-emerald-joshin-kamimaki-20260830',name:'ストームエメラルダ',qty:2,cost:6000,
+  store:'Joshin 上牧店',purchaseDate:'2026-08-30',shrink:'なし',category:'BOX',
+  domestic:null,overseas:null,marketDate:'2026-09-02',
+  note:'シュリンクなし計2BOX｜本人分1BOX＋奥さん分1BOX',
+  mimiPrice:null,mimiDate:'',amtfPrice:10000,amtfDate:'2026-09-02',
+  assetOverride:10000,assetOverrideReason:'9/2 AMTAF（シュリンクなし）'
+ };
+ let i=state.sealed.findIndex(x=>x.id===box.id);
+ if(i>=0)state.sealed[i]=Object.assign({},state.sealed[i],box);else state.sealed.push(box);
+
+ state.purchaseLedger=state.purchaseLedger.filter(x=>x.id!=='pl-sealed-megadream-joshin-kamimaki-20260830');
+ const led={id:'pl-sealed-storm-emerald-joshin-kamimaki-20260830',date:'2026-08-30',name:'ストームエメラルダ',store:'Joshin 上牧店',qty:2,unitCost:6000,type:'未開封',opened:0,total:12000,note:'シュリンクなし計2BOX｜本人分1BOX＋奥さん分1BOX'};
+ i=state.purchaseLedger.findIndex(x=>x.id===led.id);
+ if(i>=0)state.purchaseLedger[i]=Object.assign({},state.purchaseLedger[i],led);else state.purchaseLedger.push(led);
+
+ state.dataFixes.joshin_storm_inventory_asset_final_20260902=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof SEED!=='undefined'){
+  SEED.sealed=JSON.parse(JSON.stringify(state.sealed));
+  SEED.purchaseLedger=JSON.parse(JSON.stringify(state.purchaseLedger));
+ }
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('user-update-20260902-joshin-storm-inventory-asset-final',e)}})();
+</script>
+
 </body></html>
