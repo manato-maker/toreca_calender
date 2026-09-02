@@ -2805,4 +2805,85 @@ window.addEventListener('load',()=>{
 }catch(e){console.error('user-update-20260902-famima-30th-box',e)}})();
 </script>
 
+<!-- user-update-20260902-joshin-storm-2box-correction -->
+<script id="user-update-20260902-joshin-storm-2box-correction">
+(function(){try{
+ const KEY='tcg-master-v14';
+ const st=(typeof state!=='undefined'&&state)?state:JSON.parse(localStorage.getItem(KEY)||'{}');
+ st.dataFixes=st.dataFixes||{};st.sealed=Array.isArray(st.sealed)?st.sealed:[];st.purchaseLedger=Array.isArray(st.purchaseLedger)?st.purchaseLedger:[];
+ st.sealed=st.sealed.filter(x=>x.id!=='sealed-megadream-joshin-kamimaki-20260830');
+ const box={id:'sealed-storm-emerald-joshin-kamimaki-20260830',name:'ストームエメラルダ',qty:2,cost:6000,store:'Joshin 上牧店',purchaseDate:'2026-08-30',shrink:'なし',category:'BOX',domestic:null,overseas:null,marketDate:'',note:'8/30購入｜シュリンクなし計2BOX｜本人当選分1BOX＋奥さん当選分1BOX',mimiPrice:15800,mimiDate:'2026-08-30',amtfPrice:15800,amtfDate:'2026-08-30'};
+ let i=st.sealed.findIndex(x=>x.id===box.id);if(i>=0)st.sealed[i]=Object.assign({},st.sealed[i],box);else st.sealed.push(box);
+ st.purchaseLedger=st.purchaseLedger.filter(x=>x.id!=='pl-sealed-megadream-joshin-kamimaki-20260830');
+ const led={id:'pl-sealed-storm-emerald-joshin-kamimaki-20260830',date:'2026-08-30',name:'ストームエメラルダ',store:'Joshin 上牧店',qty:2,unitCost:6000,type:'未開封',opened:0,total:12000,note:'シュリンクなし計2BOX｜本人当選分1BOX＋奥さん当選分1BOX'};
+ i=st.purchaseLedger.findIndex(x=>x.id===led.id);if(i>=0)st.purchaseLedger[i]=Object.assign({},st.purchaseLedger[i],led);else st.purchaseLedger.push(led);
+ st.dataFixes.joshin_storm_2box_correction_20260902=true;
+ try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}
+ try{if(typeof state!=='undefined'&&state!==st){state.sealed=st.sealed;state.purchaseLedger=st.purchaseLedger;state.dataFixes=st.dataFixes;}}catch(e){}
+ try{if(typeof SEED!=='undefined'){SEED.sealed=JSON.parse(JSON.stringify(st.sealed));SEED.purchaseLedger=JSON.parse(JSON.stringify(st.purchaseLedger));}}catch(e){}
+ try{if(typeof renderAll==='function')renderAll();}catch(e){}
+}catch(e){console.error('user-update-20260902-joshin-storm-2box-correction',e)}})();
+</script>
+
+<!-- user-update-20260902-storm-market -->
+<script id="user-update-20260902-storm-market">
+(function(){try{
+ const KEY='tcg-master-v14';
+ const st=(typeof state!=='undefined'&&state)?state:JSON.parse(localStorage.getItem(KEY)||'{}');
+ st.dataFixes=st.dataFixes||{};st.sealed=Array.isArray(st.sealed)?st.sealed:[];st.boxMarketMaster=st.boxMarketMaster||{};
+ for(const x of st.sealed){
+  if(x.name==='ストームエメラルダ'&&String(x.shrink||'').includes('あり')){x.mimiPrice=12000;x.mimiDate='2026-09-02';x.amtfPrice=12000;x.amtfDate='2026-09-02';}
+  if(x.name==='ストームエメラルダ'&&String(x.shrink||'').includes('なし')){x.amtfPrice=10000;x.amtfDate='2026-09-02';x.marketEstimateNote='9/2 買取ミミは取得不可。ミミ既存価格・旧確認日を維持。AMTAF 10,000円。';}
+  if(x.name==='決戦の刻 OP-16'){x.amtfPrice=8000;x.amtfDate='2026-09-02';}
+ }
+ const storm=st.boxMarketMaster['ストームエメラルダ']=st.boxMarketMaster['ストームエメラルダ']||{};
+ storm.mimi=Object.assign({},storm.mimi||{}, {'あり':12000});storm.amtf=Object.assign({},storm.amtf||{}, {'あり':12000,'なし':10000});storm.pack=110;
+ const op16=st.boxMarketMaster['決戦の刻']=st.boxMarketMaster['決戦の刻']||{};op16.mimi=Object.assign({},op16.mimi||{}, {'テープ付き':9700});op16.amtf=Object.assign({},op16.amtf||{}, {'テープ付き':8000});
+ st.marketSourceStatus=st.marketSourceStatus||{};st.marketSourceStatus.checkedAt='2026-09-02';st.marketSourceStatus.checkNote='9/2更新：ストームエメラルダはシュリンク付きがミミ/AMTAF各12,000円、シュリンクなしはAMTAF 10,000円。シュリンクなしのミミは取得不可のため既存値・旧確認日を維持。その他は9/2更新値を維持。';
+ st.dataFixes.storm_market_update_20260902=true;
+ try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}
+ try{if(typeof state!=='undefined'&&state!==st){state.sealed=st.sealed;state.boxMarketMaster=st.boxMarketMaster;state.marketSourceStatus=st.marketSourceStatus;state.dataFixes=st.dataFixes;}}catch(e){}
+ try{if(typeof SEED!=='undefined'){SEED.sealed=JSON.parse(JSON.stringify(st.sealed));SEED.boxMarketMaster=JSON.parse(JSON.stringify(st.boxMarketMaster));SEED.marketSourceStatus=JSON.parse(JSON.stringify(st.marketSourceStatus));}}catch(e){}
+ try{if(typeof renderAll==='function')renderAll();}catch(e){}
+}catch(e){console.error('user-update-20260902-storm-market',e)}})();
+</script>
+
+<!-- user-update-20260902-drasta-30th-lotteries -->
+<script id="user-update-20260902-drasta-30th-lotteries">
+(function(){try{
+ const KEY='tcg-master-v14';
+ const st=(typeof state!=='undefined'&&state)?state:JSON.parse(localStorage.getItem(KEY)||'{}');
+ st.dataFixes=st.dataFixes||{};st.lotteries=Array.isArray(st.lotteries)?st.lotteries:[];
+ const rows=[
+  {id:'lottery-drasta-online-30th-box-20260904',date:'2026-09-04',time:'',title:'MEGA 拡張パック 30th CELEBRATION 1BOX',store:'ドラスタ通販',status:'unreported',receiptStatus:'',note:'価格 7,200円｜応募 9/2 22:00〜9/4 00:00｜当選発表 9/4｜注文受付 9/4〜9/10｜9/16以降出荷予定｜申込数量 1BOX'},
+  {id:'lottery-drasta-online-30th-premium-20260904',date:'2026-09-04',time:'',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'ドラスタ通販',status:'unreported',receiptStatus:'',note:'価格 6,200円｜応募 9/2 22:00〜9/4 00:00｜当選発表 9/4｜注文受付 9/4〜9/10｜9/16以降出荷予定｜申込数量 1個'}
+ ];
+ for(const r of rows){const i=st.lotteries.findIndex(x=>x.id===r.id||(x.date===r.date&&x.store===r.store&&x.title===r.title));if(i>=0)st.lotteries[i]=Object.assign({},st.lotteries[i],r);else st.lotteries.push(r);}
+ st.dataFixes.drasta_30th_lotteries_20260902=true;
+ try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}
+ try{if(typeof state!=='undefined'&&state!==st){state.lotteries=st.lotteries;state.dataFixes=st.dataFixes;}}catch(e){}
+ try{if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(st.lotteries));}catch(e){}
+ try{if(typeof renderAll==='function')renderAll();}catch(e){}
+}catch(e){console.error('user-update-20260902-drasta-30th-lotteries',e)}})();
+</script>
+
+<!-- user-update-20260902-furuichi-kyuhoji-30th -->
+<script id="user-update-20260902-furuichi-kyuhoji-30th">
+(function(){try{
+ const KEY='tcg-master-v14';
+ const st=(typeof state!=='undefined'&&state)?state:JSON.parse(localStorage.getItem(KEY)||'{}');
+ st.dataFixes=st.dataFixes||{};st.lotteries=Array.isArray(st.lotteries)?st.lotteries:[];
+ const rows=[
+  {id:'lottery-furuichi-kyuhoji-30th-box-20260914',date:'2026-09-14',time:'23:00までに順次',title:'MEGA 拡張パック 30th CELEBRATION 1BOX',store:'古本市場 久宝寺店',status:'unreported',receiptStatus:'',note:'価格 7,200円｜応募締切 9/6 23:00｜当選発表 9/14 23:00までに順次｜購入 9/16〜9/20｜ふるいちアプリ'},
+  {id:'lottery-furuichi-kyuhoji-30th-premium-20260914',date:'2026-09-14',time:'23:00までに順次',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'古本市場 久宝寺店',status:'unreported',receiptStatus:'',note:'価格 6,200円｜応募締切 9/6 23:00｜当選発表 9/14 23:00までに順次｜購入 9/16〜9/20｜ふるいちアプリ'}
+ ];
+ for(const r of rows){const i=st.lotteries.findIndex(x=>x.id===r.id||(x.date===r.date&&x.store===r.store&&x.title===r.title));if(i>=0)st.lotteries[i]=Object.assign({},st.lotteries[i],r);else st.lotteries.push(r);}
+ st.dataFixes.furuichi_kyuhoji_30th_20260902=true;
+ try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}
+ try{if(typeof state!=='undefined'&&state!==st){state.lotteries=st.lotteries;state.dataFixes=st.dataFixes;}}catch(e){}
+ try{if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(st.lotteries));}catch(e){}
+ try{if(typeof renderAll==='function')renderAll();}catch(e){}
+}catch(e){console.error('user-update-20260902-furuichi-kyuhoji-30th',e)}})();
+</script>
+
 </body></html>
