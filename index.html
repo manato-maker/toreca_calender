@@ -3059,4 +3059,88 @@ window.addEventListener('load',()=>{
 }catch(e){console.error('user-update-20260903-market-and-singles',e)}})();
 </script>
 
+<!-- user-update-20260903-aeon-cardset-lotteries -->
+<script id="user-update-20260903-aeon-cardset-lotteries">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const common='応募 9/3 11:00〜9/4 23:59｜価格 1,166円＋個別配送料550円｜イオンマークのクレジットカード払い限定｜1人各1点';
+ const rows=[
+  {id:'lottery-aeonstyle-online-cardset-no1-20260915',date:'2026-09-15',time:'12:00頃',title:'MEGA 30th CELEBRATION カードセット フシギダネ・ヒトカゲ・ゼニガメ',store:'イオンスタイルオンライン（No.1）',status:'unreported',receiptStatus:'',note:common+'｜当選発表 9/15 12:00頃｜購入期限 9/15 12:00〜9/16 23:59'},
+  {id:'lottery-aeonstyle-online-cardset-no6-20260916',date:'2026-09-16',time:'12:00頃',title:'MEGA 30th CELEBRATION カードセット ハリマロン・フォッコ・ケロマツ',store:'イオンスタイルオンライン（No.6）',status:'unreported',receiptStatus:'',note:common+'｜当選発表 9/16 12:00頃｜購入期限 9/16 12:00〜9/17 23:59'},
+  {id:'lottery-aeonstyle-online-cardset-no9-20260917',date:'2026-09-17',time:'12:00頃',title:'MEGA 30th CELEBRATION カードセット ニャオハ・ホゲータ・クワッス',store:'イオンスタイルオンライン（No.9）',status:'unreported',receiptStatus:'',note:common+'｜当選発表 9/17 12:00頃｜購入期限 9/17 12:00〜9/18 23:59'}
+ ];
+ for(const r of rows){const i=state.lotteries.findIndex(x=>x.id===r.id);if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],r);else state.lotteries.push(r);}
+ state.dataFixes.aeonstyle_online_cardsets_1_6_9_20260903=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('user-update-20260903-aeon-cardset-lotteries',e)}})();
+</script>
+
+<!-- user-update-20260903-livepocket-lotteries -->
+<script id="user-update-20260903-livepocket-lotteries">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const rows=[
+  {id:'lottery-kiddyland-osaka-umeda-30th-20260914',date:'2026-09-14',time:'中まで',title:'MEGA 拡張パック 30th CELEBRATION 購入券',store:'キデイランド大阪梅田店',status:'unreported',receiptStatus:'',note:'LivePocket｜結果発表 9/14中まで｜販売・引取 9/17〜9/21｜引取日程注意'},
+  {id:'lottery-hobbystation-storm-restock-20260911',date:'2026-09-11',time:'',title:'ストームエメラルダ（再販）',store:'ホビーステーション（全国各地）',status:'unreported',receiptStatus:'',note:'LivePocket｜結果発表 9/11｜販売 9/14〜9/20'}
+ ];
+ for(const r of rows){const i=state.lotteries.findIndex(x=>x.id===r.id);if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],r);else state.lotteries.push(r);}
+ state.dataFixes.livepocket_kiddyland_hobbystation_20260903=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('user-update-20260903-livepocket-lotteries',e)}})();
+</script>
+
+<!-- user-update-20260903-rakutenbooks-result-calendar-fix -->
+<script id="user-update-20260903-rakutenbooks-result-calendar-fix">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ let count=0;
+ for(const x of state.lotteries){
+  if(String(x.id||'').startsWith('lottery-rakutenbooks-20260827-')){
+   x.date='2026-09-14';x.time='10:00まで';x.status=x.status||'unreported';x.receiptStatus=x.receiptStatus||'';
+   const price=(String(x.note||'').match(/価格\s*[^｜]+/)||[])[0]||'';
+   x.note='8/27エントリー済｜応募締切 8/30 23:59｜当選者のみ9/14 10:00までにメール通知｜購入 9/14 10:00〜9/18 9:59'+(price?'｜'+price:'');
+   count++;
+  }
+ }
+ state.dataFixes.rakutenbooks_result_calendar_20260914=true;
+ state.dataFixes.rakutenbooks_result_calendar_count=count;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('user-update-20260903-rakutenbooks-result-calendar-fix',e)}})();
+</script>
+
+<!-- user-update-20260903-lottery-full-audit -->
+<script id="user-update-20260903-lottery-full-audit">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ // 同一応募の旧・重複レコードを除去。
+ const removeIds=new Set(['lottery-furuichi-higashiosaka-storm-20260831','lottery-pokemoncenter-wife-30th-20260821']);
+ state.lotteries=state.lotteries.filter(x=>!removeIds.has(x.id));
+ const fixes={
+  'lottery-cardbox-kyoto-infernox-721-20260901':{status:'lose',note:'9/1 落選確認｜抽選番号721｜購入期間 9/2 13:00〜9/7 22:00'},
+  'lottery-cardbox-kyoto-megabrave-symphonia-512-20260901':{status:'lose',note:'9/1 落選確認｜抽選番号512｜購入期間 9/2 13:00〜9/7 22:00'},
+  'lottery-cardbox-kyoto-stormemerald-699-20260901':{status:'lose',note:'9/1 落選確認｜抽選番号699｜購入期間 9/2 13:00〜9/7 22:00'},
+  'lottery-yodobashi-com-30th-box-20260902':{status:'lose',note:'9/2 落選確認｜価格 7,200円｜オンライン抽選'},
+  'lottery-yodobashi-com-30th-premium-20260902':{status:'lose',note:'9/2 落選確認｜価格 6,200円｜オンライン抽選'},
+  'lottery-furuichi-higashiosaka-storm-20260902':{status:'lose',note:'9/2 落選確認｜販売 9/5〜9/6｜申込番号 1039507595｜LivePocket'}
+ };
+ for(const x of state.lotteries)if(fixes[x.id])Object.assign(x,fixes[x.id]);
+ // 楽天ブックス全17件は当選発表日の9/14に統一。
+ for(const x of state.lotteries)if(String(x.id||'').startsWith('lottery-rakutenbooks-20260827-')){x.date='2026-09-14';x.time='10:00まで';}
+ state.dataFixes.lottery_full_audit_20260903={checked:state.lotteries.length,calendarDateRule:'当選発表日',rakutenFixed:17,duplicateRemoved:2,resultFixed:6};
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('user-update-20260903-lottery-full-audit',e)}})();
+</script>
+
 </body></html>
