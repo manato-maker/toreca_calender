@@ -1790,10 +1790,18 @@ function renderMarketSourceStatus(){
 function sealedGroupKey(x){
  return [String(x.name||'').trim(),String(x.shrink||'不明').trim(),String(x.category||'').trim()].join('||');
 }
+function isFreshAssetDate(value,referenceDate){
+ if(!value)return false;
+ const d=new Date(String(value).slice(0,10)+'T00:00:00Z');
+ const r=referenceDate?new Date(String(referenceDate).slice(0,10)+'T00:00:00Z'):new Date(new Date().toISOString().slice(0,10)+'T00:00:00Z');
+ if(!Number.isFinite(d.getTime())||!Number.isFinite(r.getTime()))return false;
+ const days=Math.floor((r-d)/86400000);
+ return days>=0&&days<=1;
+}
 function latestMarketInGroup(items,source){
  const pkey=source==='mimi'?'mimiPrice':'amtfPrice';
  const dkey=source==='mimi'?'mimiDate':'amtfDate';
- const valid=items.filter(x=>x[pkey]!=null);
+ const valid=items.filter(x=>x[pkey]!=null&&isFreshAssetDate(x[dkey]));
  if(!valid.length)return {price:null,date:'',item:null};
  valid.sort((a,b)=>String(b[dkey]||'').localeCompare(String(a[dkey]||'')));
  return {price:Number(valid[0][pkey]),date:valid[0][dkey]||'',item:valid[0]};
@@ -1814,7 +1822,7 @@ function groupedSealedInventory(){
    g.avgCost=g.knownQty?g.totalCost/g.knownQty:0;
    g.mimi=latestMarketInGroup(g.items,'mimi');
    g.amtf=latestMarketInGroup(g.items,'amtf');
-   const overrides=g.items.filter(x=>x.assetOverride!=null);
+   const overrides=g.items.filter(x=>x.assetOverride!=null&&isFreshAssetDate(x.assetOverrideDate));
    g.assetOverride=(overrides.length===g.items.length&&g.items.length)?Number(overrides[0].assetOverride):null;
    g.assetOverrideReason=g.assetOverride!=null?(overrides[0].assetOverrideReason||''):'';
    g.assetUnit=g.assetOverride!=null?g.assetOverride:([g.mimi.price,g.amtf.price].filter(v=>v!=null).sort((a,b)=>b-a)[0]??null);
@@ -1936,11 +1944,11 @@ function renderAssets(){
  const totalSpent=purchaseLedger.reduce((s,x)=>s+Number(x.total||0),0);
  const packSpent=purchaseLedger.filter(x=>x.type==='パック').reduce((s,x)=>s+Number(x.total||0),0);
  const openedPackSpent=purchaseLedger.filter(x=>x.type==='パック').reduce((s,x)=>s+Number(x.opened||0)*Number(x.unitCost||0),0);
- const cardPriced=state.cards.filter(x=>x.domestic!=null&&x.qty>0),cardAsset=cardPriced.reduce((s,x)=>s+x.domestic*x.qty,0),cardPricedCost=cardPriced.reduce((s,x)=>s+x.cost*x.qty,0);
+ const cardPriced=state.cards.filter(x=>x.domestic!=null&&x.qty>0&&isFreshAssetDate(x.marketDate)),cardAsset=cardPriced.reduce((s,x)=>s+x.domestic*x.qty,0),cardPricedCost=cardPriced.reduce((s,x)=>s+x.cost*x.qty,0);
  const boxPriced=state.sealed.filter(x=>currentBoxAssetUnit(x)!=null&&x.qty>0);
  const boxAsset=boxPriced.reduce((s,x)=>s+currentBoxAssetUnit(x)*x.qty,0);
  const boxPricedCost=boxPriced.reduce((s,x)=>s+x.cost*x.qty,0);
- const packPriced=(state.loosePacks||[]).filter(x=>x.qty>0&&x.amtfPrice!=null);
+ const packPriced=(state.loosePacks||[]).filter(x=>x.qty>0&&x.amtfPrice!=null&&isFreshAssetDate(x.amtfDate));
  const packAsset=packPriced.reduce((s,x)=>s+Number(x.qty)*Number(x.amtfPrice),0);
  const packCount=(state.loosePacks||[]).reduce((s,x)=>s+Number(x.qty||0),0);
  const realized=state.sales.reduce((s,x)=>s+x.profit,0);
@@ -1964,14 +1972,16 @@ function renderAssets(){
 }
 
 function currentBoxAssetUnit(x){
-  if(x.assetOverride!=null)return Number(x.assetOverride);
-  const vals=[x.mimiPrice,x.amtfPrice].filter(v=>v!=null);
+  if(x.assetOverride!=null&&isFreshAssetDate(x.assetOverrideDate))return Number(x.assetOverride);
+  const vals=[];
+  if(x.mimiPrice!=null&&isFreshAssetDate(x.mimiDate))vals.push(Number(x.mimiPrice));
+  if(x.amtfPrice!=null&&isFreshAssetDate(x.amtfDate))vals.push(Number(x.amtfPrice));
   return vals.length?Math.max(...vals):null;
 }
 function currentAssetSnapshot(){
-  const cardAsset=(state.cards||[]).filter(x=>x.qty>0&&x.domestic!=null).reduce((s,x)=>s+x.domestic*x.qty,0);
+  const cardAsset=(state.cards||[]).filter(x=>x.qty>0&&x.domestic!=null&&isFreshAssetDate(x.marketDate)).reduce((s,x)=>s+x.domestic*x.qty,0);
   const boxAsset=(state.sealed||[]).filter(x=>x.qty>0&&currentBoxAssetUnit(x)!=null).reduce((s,x)=>s+currentBoxAssetUnit(x)*x.qty,0);
-  const packAsset=(state.loosePacks||[]).filter(x=>x.qty>0&&x.amtfPrice!=null).reduce((s,x)=>s+Number(x.amtfPrice)*Number(x.qty),0);
+  const packAsset=(state.loosePacks||[]).filter(x=>x.qty>0&&x.amtfPrice!=null&&isFreshAssetDate(x.amtfDate)).reduce((s,x)=>s+Number(x.amtfPrice)*Number(x.qty),0);
   return {cardAsset,boxAsset,packAsset,total:cardAsset+boxAsset+packAsset};
 }
 function saveAssetSnapshot(){
@@ -2921,6 +2931,132 @@ window.addEventListener('load',()=>{
  }
  if(typeof renderAll==='function')renderAll();
 }catch(e){console.error('user-update-20260902-joshin-storm-inventory-asset-final',e)}})();
+</script>
+
+<!-- user-update-20260903-amtaf-sale -->
+<script id="user-update-20260903-amtaf-sale">
+(function(){try{
+ const KEY='tcg-master-v14';
+ if(typeof state==='undefined')return;
+ state.sealed=Array.isArray(state.sealed)?state.sealed:[];
+ state.sales=Array.isArray(state.sales)?state.sales:[];
+ state.dataFixes=state.dataFixes||{};
+
+ // AMTAF 9/3売却：管理対象はレシート7個のうちスタートデッキ100を4個、OP-17を1BOX。
+ let remaining=4,knownStarterCost=0,knownStarterQty=0;
+ for(const x of state.sealed){
+  if(remaining<=0)break;
+  if(x.name==='MEGA スタートデッキ100'&&Number(x.qty||0)>0){
+   const sold=Math.min(remaining,Number(x.qty||0));
+   if(!x.costUnknown){knownStarterCost+=Number(x.cost||0)*sold;knownStarterQty+=sold;}
+   x.qty=Number(x.qty||0)-sold;remaining-=sold;
+  }
+ }
+ const op17=state.sealed.find(x=>x.id==='sealed-op17-tape-attached-adjustment');
+ if(op17)op17.qty=Math.max(0,Number(op17.qty||0)-1);
+
+ const saleRows=[
+  {id:'sale-amtaf-start100-4-20260903',sourceId:'pooled-mega-start100',type:'sealed',name:'MEGA スタートデッキ100',qty:4,date:'2026-09-03',price:3200,fee:0,ship:0,place:'AMTAF',cost:knownStarterCost,profit:0,costUnknown:true,note:'800円×4個。ファイル上で取得原価確認済みは'+knownStarterQty+'個（'+knownStarterCost.toLocaleString('ja-JP')+'円）、残り'+(4-knownStarterQty)+'個は取得情報未登録のため実現利益は未算定。レシート記載7個のうち管理対象4個のみ計上。'},
+  {id:'sale-amtaf-op17-1box-20260903',sourceId:'sealed-op17-tape-attached-adjustment',type:'sealed',name:'世界最強の戦士 OP-17（テープ付き）',qty:1,date:'2026-09-03',price:16000,fee:0,ship:0,place:'AMTAF',cost:0,profit:0,costUnknown:true,note:'16,000円×1BOX。取得原価未登録のため実現利益は未算定。'}
+ ];
+ for(const r of saleRows){const i=state.sales.findIndex(x=>x.id===r.id);if(i>=0)state.sales[i]=Object.assign({},state.sales[i],r);else state.sales.push(r);}
+ state.dataFixes.amtaf_sale_20260903=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof SEED!=='undefined'){SEED.sealed=JSON.parse(JSON.stringify(state.sealed));SEED.sales=JSON.parse(JSON.stringify(state.sales));}
+ renderSales=function(){
+  const revenue=state.sales.reduce((s,x)=>s+Number(x.price||0),0),fees=state.sales.reduce((s,x)=>s+Number(x.fee||0)+Number(x.ship||0),0);
+  const known=state.sales.filter(x=>!x.costUnknown),profit=known.reduce((s,x)=>s+Number(x.profit||0),0),pending=state.sales.filter(x=>x.costUnknown).length;
+  $('#salesSummary').innerHTML=`<span class="badge">売上 ${yen(revenue)}</span><span class="badge">手数料・送料 ${yen(fees)}</span><span class="badge">実現利益 <b>${yen(profit)}</b></span>${pending?`<span class="badge">利益未算定 ${pending}件</span>`:''}`;
+  $('#salesList').innerHTML=state.sales.slice().reverse().map(x=>`<div class="item"><div class="title">${esc(x.name)} ×${x.qty}</div><div class="meta">${fmtDate(x.date)}｜${esc(x.place||'売却先不明')}｜売却 ${yen(x.price)}｜経費 ${yen(Number(x.fee||0)+Number(x.ship||0))}${x.costUnknown?'｜取得原価未登録｜利益未算定':`｜原価 ${yen(x.cost)}｜利益 ${yen(x.profit)}`}</div>${x.note?`<div class="small">${esc(x.note)}</div>`:''}</div>`).join('')||'<div class="small">売却データなし</div>';
+ };
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('user-update-20260903-amtaf-sale',e)}})();
+</script>
+
+<!-- user-update-20260903-amtaf-sale-cost-confirmed -->
+<script id="user-update-20260903-amtaf-sale-cost-confirmed">
+(function(){try{
+ const KEY='tcg-master-v14';
+ if(typeof state==='undefined')return;
+ state.sealed=Array.isArray(state.sealed)?state.sealed:[];
+ state.sales=Array.isArray(state.sales)?state.sales:[];
+ state.purchaseLedger=Array.isArray(state.purchaseLedger)?state.purchaseLedger:[];
+ state.dataFixes=state.dataFixes||{};
+
+ // スタートデッキ100の4個目（すでに売却済み）を購入履歴へ補完。
+ const fourth={id:'sealed-start100-history-adjustment-4th',name:'MEGA スタートデッキ100',qty:0,cost:891,store:'購入先未特定',purchaseDate:'',shrink:'不明',category:'その他',domestic:null,overseas:null,marketDate:'',note:'定価891円で購入｜9/3 AMTAFへ売却済み',mimiPrice:null,mimiDate:'',amtfPrice:null,amtfDate:''};
+ let i=state.sealed.findIndex(x=>x.id===fourth.id);if(i<0)state.sealed.push(fourth);
+ const fourthLedger={id:'pl-sealed-start100-history-adjustment-4th',date:'',name:'MEGA スタートデッキ100',store:'購入先未特定',qty:1,unitCost:891,type:'未開封',opened:0,total:891,note:'定価891円で購入｜4個目の履歴補完｜9/3売却済み'};
+ i=state.purchaseLedger.findIndex(x=>x.id===fourthLedger.id);if(i>=0)state.purchaseLedger[i]=Object.assign({},state.purchaseLedger[i],fourthLedger);else state.purchaseLedger.push(fourthLedger);
+
+ // テープ付きOP-17はGEO香芝購入分、定価5,760円。
+ const op17=state.sealed.find(x=>x.id==='sealed-op17-tape-attached-adjustment');
+ if(op17)Object.assign(op17,{qty:0,cost:5760,costUnknown:false,store:'GEO香芝',purchaseDate:'2026-08-22',note:'GEO香芝で定価5,760円購入｜テープ付き1BOX｜9/3 AMTAFへ売却済み'});
+ const op17Ledger={id:'pl-sealed-op17-geo-kashiba-20260822',date:'2026-08-22',name:'世界最強の戦士 OP-17',store:'GEO香芝',qty:1,unitCost:5760,type:'未開封',opened:0,total:5760,note:'定価5,760円｜テープ付き1BOX｜9/3売却済み'};
+ i=state.purchaseLedger.findIndex(x=>x.id===op17Ledger.id);if(i>=0)state.purchaseLedger[i]=Object.assign({},state.purchaseLedger[i],op17Ledger);else state.purchaseLedger.push(op17Ledger);
+
+ const starterSale=state.sales.find(x=>x.id==='sale-amtaf-start100-4-20260903');
+ if(starterSale)Object.assign(starterSale,{cost:3564,profit:-364,costUnknown:false,note:'800円×4個＝3,200円。取得原価891円×4個＝3,564円。実現損益 −364円。レシート記載7個のうち管理対象4個のみ計上。'});
+ const op17Sale=state.sales.find(x=>x.id==='sale-amtaf-op17-1box-20260903');
+ if(op17Sale)Object.assign(op17Sale,{sourceId:'sealed-op17-tape-attached-adjustment',cost:5760,profit:10240,costUnknown:false,note:'GEO香芝で定価5,760円購入。16,000円で売却、実現利益10,240円。'});
+
+ state.dataFixes.amtaf_sale_cost_confirmed_20260903=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof SEED!=='undefined'){SEED.sealed=JSON.parse(JSON.stringify(state.sealed));SEED.sales=JSON.parse(JSON.stringify(state.sales));SEED.purchaseLedger=JSON.parse(JSON.stringify(state.purchaseLedger));}
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('user-update-20260903-amtaf-sale-cost-confirmed',e)}})();
+</script>
+
+<!-- user-update-20260903-market-and-singles -->
+<script id="user-update-20260903-market-and-singles">
+(function(){try{
+ const KEY='tcg-master-v14',D='2026-09-03',MIMI_D='2026-09-02';
+ if(typeof state==='undefined')return;
+ state.sealed=Array.isArray(state.sealed)?state.sealed:[];state.cards=Array.isArray(state.cards)?state.cards:[];state.loosePacks=Array.isArray(state.loosePacks)?state.loosePacks:[];
+ state.marketHistory=state.marketHistory||{};state.boxMarketHistory=state.boxMarketHistory||{};state.boxMarketMaster=state.boxMarketMaster||{};state.dataFixes=state.dataFixes||{};
+ const none=x=>String(x.shrink||'').includes('なし');
+ const setBox=(x,src,value,date)=>{const pk=src+'Price',dk=src+'Date';x[pk]=value;x[dk]=date;state.boxMarketHistory[x.id]=state.boxMarketHistory[x.id]||{mimi:[],amtf:[]};const a=state.boxMarketHistory[x.id][src]=state.boxMarketHistory[x.id][src]||[];if(!a.some(p=>p.date===date&&p.value===value))a.push({date,value});};
+ for(const x of state.sealed){
+  if(x.name==='ストームエメラルダ'){if(none(x)){setBox(x,'amtf',10000,D);x.assetOverride=null;x.assetOverrideDate='';}else{setBox(x,'mimi',12000,MIMI_D);setBox(x,'amtf',12500,D);}}
+  if(x.name==='メガシンフォニア'){if(none(x))setBox(x,'amtf',6000,D);else{setBox(x,'mimi',8500,MIMI_D);setBox(x,'amtf',7000,D);}}
+  if(x.name==='インフェルノX'){setBox(x,'mimi',none(x)?12500:18000,MIMI_D);setBox(x,'amtf',none(x)?12000:16200,D);}
+  if(x.name==='MEGAドリームex'){setBox(x,'mimi',none(x)?11600:12800,MIMI_D);setBox(x,'amtf',none(x)?11600:13000,D);}
+  if(x.name==='アビスアイ'){setBox(x,'amtf',none(x)?6200:7200,D);x.marketEstimateNote='9/3 AMTAF確定。9/2ミミは概算のため資産評価には不採用。';}
+  if(x.name==='MEGA スタートデッキ100')setBox(x,'amtf',800,D);
+  if(x.name.includes('世界最強の戦士')&&!String(x.shrink||'').includes('カット')){setBox(x,'mimi',16000,MIMI_D);setBox(x,'amtf',16000,D);}
+  if(x.name.includes('決戦の刻'))setBox(x,'mimi',9700,MIMI_D);
+ }
+ const master={
+  'ストームエメラルダ':{mimi:{'あり':12000},amtf:{'あり':12500,'なし':10000},pack:110},
+  'メガシンフォニア':{mimi:{'あり':8500},amtf:{'あり':7000,'なし':6000},pack:80},
+  'インフェルノX':{mimi:{'あり':18000,'なし':12500},amtf:{'あり':16200,'なし':12000},pack:130},
+  'MEGAドリームex':{mimi:{'あり':12800,'なし':11600},amtf:{'あり':13000,'なし':11600},pack:550},
+  'アビスアイ':{amtf:{'あり':7200,'なし':6200},pack:80},
+  'MEGA スタートデッキ100':{amtf:{'未開封':800}},
+  '世界最強の戦士 OP-17':{mimi:{'テープ付き':16000},amtf:{'テープ付き':16000}},
+  '決戦の刻 OP-16':{mimi:{'テープ付き':9700}}
+ };
+ for(const [name,v] of Object.entries(master))state.boxMarketMaster[name]=Object.assign({},state.boxMarketMaster[name]||{},v);
+ const packs={'ニンジャスピナー':100,'インフェルノX':130,'ストームエメラルダ':110,'メガブレイブ':90,'アビスアイ':80,'ムニキスゼロ':80,'メガシンフォニア':80,'MEGAドリームex':550};
+ for(const x of state.loosePacks)if(packs[x.name]!=null){x.amtfPrice=packs[x.name];x.amtfDate=D;}
+
+ const singles={
+  'card-001':6000,'card-002':900,'card-003':2700,'card-004':1500,'card-005':600,'card-006':800,'card-007':2500,'card-008':1100,
+  'card-009':2000,'card-010':1500,'card-011':2500,'card-013':4500,'card-014':2400,'card-015':4000,'card-016':1000,'card-019':100,'card-touko-sar-173086':4500
+ };
+ const urls={'card-touko-sar-173086':'https://altema.jp/pokemoncard/card/32440'};
+ for(const x of state.cards){
+  if(singles[x.id]!=null){const v=singles[x.id];x.domestic=v;x.marketDate=D;x.reviewNote='9/3 ポケカチ（カードラッシュ買取）確認';if(urls[x.id])x.pokekachiUrl=urls[x.id];const a=state.marketHistory[x.id]=state.marketHistory[x.id]||[];if(!a.some(p=>p.date===D&&p.value===v))a.push({date:D,value:v});}
+  else if(['card-012','card-017','card-018'].includes(x.id)){x.reviewNote='9/3 カード番号一致の買取価格を取得できず。旧価格は資産評価から除外。';}
+ }
+ state.marketSourceStatus=state.marketSourceStatus||{};state.marketSourceStatus.checkedAt=D;state.marketSourceStatus['買取ミミ']={latestListPostDate:MIMI_D,status:'9/3木曜定休・新規投稿なし'};state.marketSourceStatus['アムタフ']={latestListPostDate:D,status:'9/3買取表・価格変更反映済み'};
+ state.globalMimiDate=MIMI_D;state.globalAmtfDate=D;globalMimiDate=MIMI_D;globalAmtfDate=D;
+ state.dataFixes.market_and_singles_20260903=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ marketHistory=state.marketHistory;boxMarketHistory=state.boxMarketHistory;
+ if(typeof SEED!=='undefined'){for(const k of ['sealed','cards','loosePacks','marketHistory','boxMarketHistory','boxMarketMaster','marketSourceStatus'])SEED[k]=JSON.parse(JSON.stringify(state[k]||({})));}
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('user-update-20260903-market-and-singles',e)}})();
 </script>
 
 </body></html>
