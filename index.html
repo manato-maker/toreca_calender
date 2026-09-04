@@ -3143,4 +3143,249 @@ window.addEventListener('load',()=>{
 }catch(e){console.error('user-update-20260903-lottery-full-audit',e)}})();
 </script>
 
+<!-- user-update-20260904-hareruya2-lotteries -->
+<script id="user-update-20260904-hareruya2-lotteries">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  const rows=[
+    {
+      id:'lottery-hareruya2-allstores-30th-box-20260913',
+      date:'2026-09-13',time:'',
+      title:'MEGA 拡張パック 30th CELEBRATION BOX 購入権',
+      store:'晴れる屋2 各店（全国各地）',status:'unreported',receiptStatus:'',
+      note:'LivePocket｜結果発表 9/13｜引換 9/16〜9/23｜晴れる屋2 LINE会員登録・会員コード・身分証明書が必要'
+    },
+    {
+      id:'lottery-hareruya2-allstores-30th-premium-20260913',
+      date:'2026-09-13',time:'',
+      title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー 購入権',
+      store:'晴れる屋2 各店（全国各地）',status:'unreported',receiptStatus:'',
+      note:'LivePocket｜結果発表 9/13｜引換 9/16〜9/23｜晴れる屋2 LINE会員登録・会員コード・身分証明書が必要'
+    }
+  ];
+  rows.forEach(function(row){
+    const i=state.lotteries.findIndex(function(x){return x.id===row.id;});
+    if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);
+    else state.lotteries.push(row);
+  });
+  state.dataFixes.hareruya2_allstores_30th_20260904=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('晴れる屋2抽選データ更新失敗',e);}})();
+</script>
+<!-- user-update-20260904-hareruya2-premium-cancelled -->
+<script id="user-update-20260904-hareruya2-premium-cancelled">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  state.lotteries=state.lotteries.filter(function(x){
+    return x.id!=='lottery-hareruya2-allstores-30th-premium-20260913';
+  });
+  state.dataFixes.hareruya2_premium_cancelled_20260904=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('晴れる屋2中止データ更新失敗',e);}})();
+</script>
+<!-- user-update-20260904-biccamera-nipponbashi-lottery -->
+<script id="user-update-20260904-biccamera-nipponbashi-lottery">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  const row={
+    id:'lottery-biccamera-nipponbashi-pokemon-1741-20260915',
+    date:'2026-09-15',time:'',
+    title:'メガシンフォニア／メガブレイブ／ストームエメラルダ／アビスアイ 購入権',
+    store:'ビックカメラ日本橋店（大阪）',status:'unreported',receiptStatus:'',
+    note:'抽選番号 1741｜当選発表 9/15｜購入 9/16〜9/20｜対象4商品の合同抽選'
+  };
+  const i=state.lotteries.findIndex(function(x){return x.id===row.id;});
+  if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);
+  else state.lotteries.push(row);
+  state.dataFixes.biccamera_nipponbashi_1741_20260904=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('ビックカメラ日本橋店抽選データ更新失敗',e);}})();
+</script>
+<!-- user-update-20260904-biccamera-arioyao-lottery -->
+<script id="user-update-20260904-biccamera-arioyao-lottery">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  const row={
+    id:'lottery-biccamera-arioyao-30th-20260915',
+    date:'2026-09-15',time:'',
+    title:'MEGA 30th CELEBRATION BOX／プレミアムデッキセット 購入権',
+    store:'ビックカメラアリオ八尾店',status:'unreported',receiptStatus:'',
+    note:'店頭抽選｜当選発表 9/15｜購入 9/16〜9/20｜発表：店舗3Fトイ売場・店舗公式X'
+  };
+  const i=state.lotteries.findIndex(function(x){return x.id===row.id;});
+  if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);
+  else state.lotteries.push(row);
+  state.dataFixes.biccamera_arioyao_30th_20260904=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('ビックカメラアリオ八尾店抽選データ更新失敗',e);}})();
+</script>
+<!-- user-update-20260904-remove-recent-biccamera-lotteries -->
+<script id="user-update-20260904-remove-recent-biccamera-lotteries">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  const removeIds=new Set([
+    'lottery-biccamera-nipponbashi-pokemon-1741-20260915',
+    'lottery-biccamera-arioyao-30th-20260915'
+  ]);
+  state.lotteries=(Array.isArray(state.lotteries)?state.lotteries:[]).filter(function(x){return !removeIds.has(x.id);});
+  state.dataFixes=state.dataFixes||{};
+  state.dataFixes.remove_recent_biccamera_lotteries_20260904=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('ビックカメラ抽選2件削除失敗',e);}})();
+</script>
+<!-- user-update-20260904-cardbox-nipponbashi-storm-1741 -->
+<script id="user-update-20260904-cardbox-nipponbashi-storm-1741">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  const row={
+    id:'lottery-cardbox-nipponbashi-storm-1741-20260907',
+    date:'2026-09-07',time:'21:00',
+    title:'ストームエメラルダ 購入権',
+    store:'カードボックス日本橋店（大阪）',status:'unreported',receiptStatus:'',
+    note:'抽選番号 1741｜応募 9/4〜9/6｜結果発表 9/7 21:00予定｜当選後の店頭予約 9/8〜9/13｜本人確認書類・会員カード・当選画面が必要'
+  };
+  const i=state.lotteries.findIndex(function(x){return x.id===row.id;});
+  if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);
+  else state.lotteries.push(row);
+  state.dataFixes.cardbox_nipponbashi_storm_1741_20260904=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('カードボックス日本橋店抽選データ更新失敗',e);}})();
+</script>
+<!-- user-update-20260904-biccamera-arioyao-two-lotteries -->
+<script id="user-update-20260904-biccamera-arioyao-two-lotteries">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  const common='店頭抽選｜当選発表 9/15｜購入 9/16〜9/20｜発表：ビックカメラアリオ八尾店3Fトイ売場・店舗公式X';
+  const rows=[
+    {id:'lottery-biccamera-arioyao-30th-box-20260915',date:'2026-09-15',time:'',title:'MEGA 拡張パック 30th CELEBRATION 1BOX 購入権',store:'ビックカメラアリオ八尾店',status:'unreported',receiptStatus:'',note:common},
+    {id:'lottery-biccamera-arioyao-30th-premium-20260915',date:'2026-09-15',time:'',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー 購入権',store:'ビックカメラアリオ八尾店',status:'unreported',receiptStatus:'',note:common}
+  ];
+  rows.forEach(function(row){const i=state.lotteries.findIndex(function(x){return x.id===row.id;});if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);});
+  state.dataFixes.biccamera_arioyao_two_lotteries_20260904=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('ビックカメラアリオ八尾店抽選2件更新失敗',e);}})();
+</script>
+<!-- user-update-20260904-hareruya2-premium-rerun -->
+<script id="user-update-20260904-hareruya2-premium-rerun">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  const row={
+    id:'lottery-hareruya2-allstores-30th-premium-rerun-20260913',
+    date:'2026-09-13',time:'',
+    title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー 購入権（再抽選）',
+    store:'晴れる屋2 各店（全国各地）',status:'unreported',receiptStatus:'',
+    note:'LivePocket｜中止となった過去抽選の再実施｜結果発表 9/13｜引換 9/16〜9/23｜晴れる屋2 LINE会員登録・会員コード・身分証明書が必要'
+  };
+  const oldId='lottery-hareruya2-allstores-30th-premium-20260913';
+  state.lotteries=state.lotteries.filter(function(x){return x.id!==oldId;});
+  const i=state.lotteries.findIndex(function(x){return x.id===row.id;});
+  if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);
+  state.dataFixes.hareruya2_premium_rerun_20260904=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('晴れる屋2プレミアム再抽選更新失敗',e);}})();
+</script>
+<!-- user-update-20260904-dragonstar-storm-all-lose -->
+<script id="user-update-20260904-dragonstar-storm-all-lose">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  let updated=0;
+  state.lotteries.forEach(function(x){
+    const store=String(x.store||'');
+    const title=String(x.title||'');
+    if(/(ドラゴンスター|ドラスタ)/.test(store)&&/ストームエメラルダ/.test(title)&&x.status==='unreported'){
+      x.status='lose';x.receiptStatus='';
+      x.note='9/4 落選確認｜'+String(x.note||'').replace(/^9\/4 落選確認｜?/,'');
+      updated++;
+    }
+  });
+  state.dataFixes.dragonstar_storm_all_lose_20260904={updated:updated};
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('ドラゴンスター各店ストームエメラルダ落選更新失敗',e);}})();
+</script>
+<!-- user-update-20260904-toycomp-all-lose -->
+<script id="user-update-20260904-toycomp-all-lose">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  let updated=0;
+  state.lotteries.forEach(function(x){
+    if(/トイコンプ/.test(String(x.store||''))&&x.status==='unreported'){
+      x.status='lose';x.receiptStatus='';
+      x.note='9/4 落選確認｜'+String(x.note||'').replace(/^9\/4 落選確認｜?/,'');
+      updated++;
+    }
+  });
+  state.dataFixes.toycomp_all_lose_20260904={updated:updated};
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('トイコンプ各店落選更新失敗',e);}})();
+</script>
+<!-- user-update-20260904-hobbyzone-30th-lottery -->
+<script id="user-update-20260904-hobbyzone-30th-lottery">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  const row={
+    id:'lottery-hobbyzone-30th-box-premium-20260914',
+    date:'2026-09-14',time:'以降',
+    title:'MEGA 30th CELEBRATION BOX／プレミアムデッキセット',
+    store:'ホビーゾーン（購入希望店舗）',status:'unreported',receiptStatus:'',
+    note:'Googleフォーム抽選｜各1点まで｜当選者のみ9/14以降メール連絡｜9/16から引渡し｜同一商品の取置きは9/16閉店まで｜受取期限は当選メール記載'
+  };
+  const i=state.lotteries.findIndex(function(x){return x.id===row.id;});
+  if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);
+  state.dataFixes.hobbyzone_30th_lottery_20260904=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('ホビーゾーン抽選更新失敗',e);}})();
+</script>
 </body></html>
