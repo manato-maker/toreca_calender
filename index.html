@@ -3388,4 +3388,88 @@ window.addEventListener('load',()=>{
   if(typeof renderAll==='function')renderAll();
 }catch(e){console.error('ホビーゾーン抽選更新失敗',e);}})();
 </script>
+<!-- user-update-20260904-joshin-inherited-will-lose -->
+<script id="user-update-20260904-joshin-inherited-will-lose">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  let updated=0;
+  state.lotteries.forEach(function(x){
+    if(/(ジョーシン|Joshin)/i.test(String(x.store||''))&&/受け継がれる意志/.test(String(x.title||''))&&x.status==='unreported'){
+      x.status='lose';x.receiptStatus='';
+      x.note='9/4 落選確認｜'+String(x.note||'').replace(/^9\/4 落選確認｜?/,'');
+      updated++;
+    }
+  });
+  state.dataFixes.joshin_inherited_will_lose_20260904={updated:updated};
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('ジョーシン受け継がれる意志落選更新失敗',e);}})();
+</script>
+<!-- user-update-20260904-toycomp-force-lose -->
+<script id="user-update-20260904-toycomp-force-lose">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  let updated=0;
+  state.lotteries.forEach(function(x){
+    if(/トイ\s*コンプ/i.test(String(x.store||''))){
+      x.status='lose';x.receiptStatus='';delete x.stampChoice;
+      const old=String(x.note||'').replace(/^9\/4 落選確認｜?/,'');
+      x.note='9/4 落選確認'+(old?'｜'+old:'');updated++;
+    }
+  });
+  state.dataFixes.toycomp_force_lose_20260904={updated:updated};
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('トイコンプ落選強制更新失敗',e);}})();
+</script>
+<!-- user-update-20260904-explicit-lose-stamps -->
+<script id="user-update-20260904-explicit-lose-stamps">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.lotteries.forEach(function(x){
+    const isToycomp=/トイ\s*コンプ/i.test(String(x.store||''));
+    const isJoshinWill=/(ジョーシン|Joshin)/i.test(String(x.store||''))&&/受け継がれる意志/.test(String(x.title||''));
+    if(isToycomp||isJoshinWill){x.status='lose';x.receiptStatus='';x.stampChoice={status:'lose',index:0};}
+  });
+  state.dataFixes=state.dataFixes||{};state.dataFixes.explicit_lose_stamps_20260904=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('落選ハンコ更新失敗',e);}})();
+</script>
+<!-- user-update-20260904-itoyokado-higashisumiyoshi-lose -->
+<script id="user-update-20260904-itoyokado-higashisumiyoshi-lose">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  let itoyokado=0,higashisumiyoshi=0;
+  state.lotteries.forEach(function(x){
+    const store=String(x.store||'');
+    const isIto=/(イトーヨーカドー|イトーヨーカ堂)/.test(store);
+    const isHigashi=/東住吉/.test(store);
+    if((isIto&&x.status==='unreported')||isHigashi){
+      x.status='lose';x.receiptStatus='';x.stampChoice={status:'lose',index:0};
+      const old=String(x.note||'').replace(/^9\/4 落選確認｜?/,'');
+      x.note='9/4 落選確認'+(old?'｜'+old:'');
+      if(isIto)itoyokado++;if(isHigashi)higashisumiyoshi++;
+    }
+  });
+  state.dataFixes.itoyokado_higashisumiyoshi_lose_20260904={itoyokado:itoyokado,higashisumiyoshi:higashisumiyoshi};
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('イトーヨーカドー・東住吉落選更新失敗',e);}})();
+</script>
 </body></html>
