@@ -3472,4 +3472,22 @@ window.addEventListener('load',()=>{
   if(typeof renderAll==='function')renderAll();
 }catch(e){console.error('イトーヨーカドー・東住吉落選更新失敗',e);}})();
 </script>
+<!-- user-update-20260905-pokemoncenter-orders -->
+<script id="user-update-20260905-pokemoncenter-orders">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  const rows=[
+    {id:'lottery-pokemoncenter-30th-box-order-20260904',date:'2026-09-04',time:'22:02',title:'MEGA 拡張パック 30th CELEBRATION 1BOX',store:'ポケモンセンターオンライン',status:'win',receiptStatus:'pending',stampChoice:{status:'win',index:0},note:'9/4 当選・注文済｜価格 7,200円｜注文番号 3000016700432｜11/11〜11/20発送予定'},
+    {id:'lottery-pokemoncenter-30th-cardset9-order-20260905',date:'2026-09-05',time:'07:12',title:'MEGA 30th CELEBRATION カードセット（9種セット）',store:'ポケモンセンターオンライン',status:'win',receiptStatus:'pending',stampChoice:{status:'win',index:0},note:'9/5 当選・注文済｜価格 10,800円｜注文番号 3000016967888｜10/15までに発送予定'}
+  ];
+  rows.forEach(function(row){const i=state.lotteries.findIndex(function(x){return x.id===row.id;});if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);});
+  state.dataFixes.pokemoncenter_orders_20260905=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('ポケモンセンターオンライン注文更新失敗',e);}})();
+</script>
 </body></html>
