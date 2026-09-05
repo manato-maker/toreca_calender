@@ -3490,4 +3490,82 @@ window.addEventListener('load',()=>{
   if(typeof renderAll==='function')renderAll();
 }catch(e){console.error('ポケモンセンターオンライン注文更新失敗',e);}})();
 </script>
+<!-- user-update-20260905-girafull-30th-lotteries -->
+<script id="user-update-20260905-girafull-30th-lotteries">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  const common='LivePocket｜結果発表 9/12まで｜販売 9/16〜9/20';
+  const rows=[
+    {id:'lottery-girafull-otaroad-30th-box-20260912',date:'2026-09-12',time:'まで',title:'MEGA 拡張パック 30th CELEBRATION 1BOX',store:'GIRAFULLオタロード店',status:'unreported',receiptStatus:'',note:common},
+    {id:'lottery-girafull-namba-30th-box-20260912',date:'2026-09-12',time:'まで',title:'MEGA 拡張パック 30th CELEBRATION 1BOX',store:'GIRAFULLなんば店',status:'unreported',receiptStatus:'',note:common},
+    {id:'lottery-girafull-otaroad-30th-premium-20260912',date:'2026-09-12',time:'まで',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'GIRAFULLオタロード店',status:'unreported',receiptStatus:'',note:common},
+    {id:'lottery-girafull-namba-30th-premium-20260912',date:'2026-09-12',time:'まで',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'GIRAFULLなんば店',status:'unreported',receiptStatus:'',note:common}
+  ];
+  rows.forEach(function(row){const i=state.lotteries.findIndex(function(x){return x.id===row.id;});if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);});
+  state.dataFixes.girafull_30th_lotteries_20260905=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('GIRAFULL抽選更新失敗',e);}})();
+</script>
+<!-- user-update-20260905-edion-hiroshima-nine-lotteries -->
+<script id="user-update-20260905-edion-hiroshima-nine-lotteries">
+(function(){try{
+  const KEY='tcg-master-v14';
+  if(typeof state==='undefined')return;
+  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+  state.dataFixes=state.dataFixes||{};
+  const common='応募 9/4 10:00〜9/6 23:59｜当選者のみ9/10中にSMS連絡｜購入 9/11開店〜9/14閉店｜1BOX';
+  const products=[
+    ['white-flare','ポケモンカード ホワイトフレア 1BOX',5800],
+    ['rocket-glory','ポケモンカード ロケット団の栄光 1BOX',5400],
+    ['heat-wave-arena','ポケモンカード 熱風のアリーナ 1BOX',5400],
+    ['super-electric-breaker','ポケモンカード 超電ブレイカー 1BOX',5400],
+    ['black-flame-ruler','ポケモンカード 黒炎の支配者 1BOX',5400],
+    ['vstar-universe','ポケモンカード VSTARユニバース 1BOX',5500],
+    ['vmax-climax','ポケモンカード VMAXクライマックス 1BOX',5500],
+    ['anime25th','ONE PIECE Anime 25th collection 1BOX',5280],
+    ['manga-booster-02','ドラゴンボール MANGA BOOSTER 02 1BOX',7920]
+  ];
+  products.forEach(function(p){
+    const row={id:'lottery-edion-hiroshima-'+p[0]+'-20260910',date:'2026-09-10',time:'中',title:p[1],store:'エディオン広島本店',status:'unreported',receiptStatus:'',note:'価格 '+Number(p[2]).toLocaleString('ja-JP')+'円｜'+common};
+    const i=state.lotteries.findIndex(function(x){return x.id===row.id;});
+    if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);
+  });
+  state.dataFixes.edion_hiroshima_nine_lotteries_20260905=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('エディオン広島抽選更新失敗',e);}})();
+</script>
+<!-- user-update-20260905-single-market-all -->
+<script id="user-update-20260905-single-market-all">
+(function(){try{
+  const KEY='tcg-master-v14',D='2026-09-05';
+  if(typeof state==='undefined')return;
+  state.cards=Array.isArray(state.cards)?state.cards:[];
+  state.marketHistory=state.marketHistory||{};state.dataFixes=state.dataFixes||{};
+  const prices={
+    'card-001':6000,'card-002':900,'card-003':2700,'card-004':1500,'card-005':600,
+    'card-006':800,'card-007':2500,'card-008':1100,'card-009':2000,'card-010':1500,
+    'card-011':2500,'card-012':1000,'card-013':4500,'card-014':2400,'card-015':4000,
+    'card-016':1000,'card-017':800,'card-018':700,'card-019':100,'card-touko-sar-173086':4500
+  };
+  for(const x of state.cards){
+    if(prices[x.id]==null)continue;
+    const v=prices[x.id];x.domestic=v;x.marketDate=D;x.marketSource='ポケカチ・カードラッシュ買取';x.reviewNote='9/5 型番・仕様一致で確認';
+    const a=state.marketHistory[x.id]=state.marketHistory[x.id]||[];
+    if(!a.some(function(p){return p.date===D&&p.value===v;}))a.push({date:D,value:v});
+  }
+  state.cardMarketStatus={checkedAt:D,policy:'exact-card-number-and-variant-only',source:'国内: ポケカチ（カードラッシュ買取）',note:'登録20件を9/5時点で型番・仕様一致確認。モンスターボールミラー2件を含め全件更新済み。',unverifiedIds:[]};
+  state.dataFixes.single_market_update_20260905=true;
+  localStorage.setItem(KEY,JSON.stringify(state));
+  if(typeof marketHistory!=='undefined')marketHistory=state.marketHistory;
+  if(typeof SEED!=='undefined'){SEED.cards=JSON.parse(JSON.stringify(state.cards));SEED.marketHistory=JSON.parse(JSON.stringify(state.marketHistory));SEED.cardMarketStatus=JSON.parse(JSON.stringify(state.cardMarketStatus));}
+  if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('9/5シングル相場更新失敗',e);}})();
+</script>
 </body></html>
