@@ -3568,4 +3568,70 @@ window.addEventListener('load',()=>{
   if(typeof renderAll==='function')renderAll();
 }catch(e){console.error('9/5シングル相場更新失敗',e);}})();
 </script>
+<!-- user-update-20260905-box-and-pack-market -->
+<script id="user-update-20260905-box-and-pack-market">
+(function(){try{
+ const KEY='tcg-master-v14',D='2026-09-05';
+ if(typeof state==='undefined')return;
+ state.sealed=Array.isArray(state.sealed)?state.sealed:[];
+ state.loosePacks=Array.isArray(state.loosePacks)?state.loosePacks:[];
+ state.boxMarketHistory=state.boxMarketHistory||{};
+ state.boxMarketMaster=state.boxMarketMaster||{};
+ state.marketSourceStatus=state.marketSourceStatus||{};
+ state.dataFixes=state.dataFixes||{};
+ const none=x=>String(x.shrink||'').includes('なし');
+ const setBox=(x,src,value)=>{
+  x[src+'Price']=value;x[src+'Date']=D;
+  const h=state.boxMarketHistory[x.id]||(state.boxMarketHistory[x.id]={mimi:[],amtf:[]});
+  const a=h[src]||(h[src]=[]);
+  if(!a.some(p=>p.date===D&&Number(p.value)===value))a.push({date:D,value});
+ };
+ for(const x of state.sealed){
+  const n=String(x.name||''),cut=String(x.shrink||'').includes('カット');
+  if(n==='ストームエメラルダ'){
+   if(none(x))setBox(x,'amtf',10000);else{setBox(x,'mimi',13100);setBox(x,'amtf',13000);}
+  }
+  if(n==='メガシンフォニア'){
+   if(none(x))setBox(x,'amtf',6000);else{setBox(x,'mimi',8200);setBox(x,'amtf',7000);}
+  }
+  if(n==='インフェルノX'){setBox(x,'mimi',none(x)?12500:16400);setBox(x,'amtf',none(x)?12000:16200);}
+  if(n==='MEGAドリームex'){setBox(x,'mimi',none(x)?11600:12500);setBox(x,'amtf',none(x)?11500:12500);}
+  if(n==='アビスアイ'){
+   if(none(x)){setBox(x,'mimi',7000);setBox(x,'amtf',6200);x.marketEstimateNote='9/5 ミミWANTED 7,000円を確定値として採用。';}
+   else{setBox(x,'amtf',7200);x.marketEstimateNote='9/5 AMTAF 7,200円を採用。ミミ約7,500円は概算のため不採用。';}
+  }
+  if(n==='MEGA スタートデッキ100'){setBox(x,'mimi',1200);setBox(x,'amtf',800);}
+  if(n.includes('決戦の刻')&&!cut)setBox(x,'mimi',9700);
+  if(n.includes('世界最強の戦士')&&!cut){setBox(x,'mimi',16500);setBox(x,'amtf',16300);}
+ }
+ const master={
+  'ストームエメラルダ':{mimi:{'あり':13100},amtf:{'あり':13000,'なし':10000},pack:110},
+  'メガシンフォニア':{mimi:{'あり':8200},amtf:{'あり':7000,'なし':6000},pack:80},
+  'インフェルノX':{mimi:{'あり':16400,'なし':12500},amtf:{'あり':16200,'なし':12000},pack:130},
+  'MEGAドリームex':{mimi:{'あり':12500,'なし':11600},amtf:{'あり':12500,'なし':11500},pack:550},
+  'アビスアイ':{mimi:{'なし':7000},amtf:{'あり':7200,'なし':6200},pack:80},
+  'MEGA スタートデッキ100':{mimi:{'不明':1200,'未開封':1200},amtf:{'不明':800,'未開封':800}},
+  '決戦の刻 OP-16':{mimi:{'テープ付き':9700}},
+  '世界最強の戦士 OP-17':{mimi:{'テープ付き':16500},amtf:{'テープ付き':16300}}
+ };
+ for(const [name,v] of Object.entries(master)){
+  const dst=state.boxMarketMaster[name]||(state.boxMarketMaster[name]={});
+  for(const [k,val] of Object.entries(v))dst[k]=(val&&typeof val==='object')?Object.assign({},dst[k]||{},val):val;
+ }
+ const packs={'ニンジャスピナー':100,'インフェルノX':130,'ストームエメラルダ':110,'メガブレイブ':90,'アビスアイ':80,'ムニキスゼロ':80,'メガシンフォニア':80,'MEGAドリームex':550};
+ for(const x of state.loosePacks)if(packs[x.name]!=null){x.amtfPrice=packs[x.name];x.amtfDate=D;}
+ state.boxMarketMasterDate=D;state.globalMimiDate=D;state.globalAmtfDate=D;state.globalPackAmtfDate=D;
+ state.marketSourceStatus['買取ミミ']={latestListPostDate:D,applied:'9/5最新BOX一覧・WANTED（確定値のみ）'};
+ state.marketSourceStatus['アムタフ']={latestListPostDate:D,applied:'9/5最新BOX・バラパック買取表'};
+ state.marketSourceStatus.mimi='9/5確認。概算表示と取得不能は資産評価に不採用。';
+ state.marketSourceStatus.amtf='9/5確認。確定価格のみ反映。';
+ state.dataFixes.box_and_pack_market_20260905=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof boxMarketHistory!=='undefined')boxMarketHistory=state.boxMarketHistory;
+ if(typeof globalMimiDate!=='undefined')globalMimiDate=D;
+ if(typeof globalAmtfDate!=='undefined')globalAmtfDate=D;
+ if(typeof SEED!=='undefined')for(const k of ['sealed','loosePacks','boxMarketHistory','boxMarketMaster','marketSourceStatus'])SEED[k]=JSON.parse(JSON.stringify(state[k]||{}));
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('9/5 BOX・バラ相場更新失敗',e);}})();
+</script>
 </body></html>
