@@ -3634,4 +3634,63 @@ window.addEventListener('load',()=>{
  if(typeof renderAll==='function')renderAll();
 }catch(e){console.error('9/5 BOX・バラ相場更新失敗',e);}})();
 </script>
+<!-- user-update-20260905-torejaras-premium-only -->
+<script id="user-update-20260905-torejaras-premium-only">
+(function(){try{
+ const KEY='tcg-master-v14';
+ if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+ state.dataFixes=state.dataFixes||{};
+ const row={
+  id:'lottery-torejaras-bekkan-espeon-umbreon-20260914',
+  date:'2026-09-14',time:'16:00',
+  title:'30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',
+  store:'とれじゃらす別館',status:'unreported',receiptStatus:'',
+  note:'応募 9/5 12:00〜9/13 20:00｜当選者のみ9/14 16:00頃までにメール｜販売 9/16〜9/19 営業時間内｜税込6,200円｜プレミアムデッキセットのみ応募'
+ };
+ const i=state.lotteries.findIndex(x=>x.id===row.id);
+ if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);
+ state.dataFixes.torejaras_premium_only_20260905=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('とれじゃらす別館プレミアム抽選追加失敗',e);}})();
+</script>
+<!-- user-update-20260905-mint-umeda-30th -->
+<script id="user-update-20260905-mint-umeda-30th">
+(function(){try{
+ const KEY='tcg-master-v14';
+ if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+ state.dataFixes=state.dataFixes||{};
+ const common='応募締切 9/11 21:00｜当選者のみ9/15メール連絡予定｜取置期限 9/23｜オンライン受付のみ｜1人1BOXまで';
+ const rows=[
+  {id:'lottery-mint-umeda-30th-premium-20260915',date:'2026-09-15',time:'',title:'30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'MINT梅田店',status:'unreported',receiptStatus:'',note:'税込6,200円｜'+common},
+  {id:'lottery-mint-umeda-30th-box-20260915',date:'2026-09-15',time:'',title:'MEGA 拡張パック 30th CELEBRATION 1BOX',store:'MINT梅田店',status:'unreported',receiptStatus:'',note:'税込7,200円｜'+common}
+ ];
+ for(const row of rows){const i=state.lotteries.findIndex(x=>x.id===row.id);if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);}
+ state.dataFixes.mint_umeda_30th_20260905=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('MINT梅田店30th抽選追加失敗',e);}})();
+</script>
+<!-- user-update-20260905-furuichi-harayamadai-shonai -->
+<script id="user-update-20260905-furuichi-harayamadai-shonai">
+(function(){try{
+ const KEY='tcg-master-v14';
+ if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+ state.dataFixes=state.dataFixes||{};
+ const rows=[
+  {id:'lottery-furuichi-harayamadai-storm-20260908',date:'2026-09-08',time:'',title:'ストームエメラルダ',store:'古本市場 原山台店',status:'unreported',receiptStatus:'',note:'9/8以降順次発表｜販売 9/12〜9/13｜チケット当選者のみ購入可'},
+  {id:'lottery-furuichi-shonai-megadream-20260909',date:'2026-09-09',time:'',title:'MEGAドリームex',store:'古本市場 庄内店',status:'unreported',receiptStatus:'',note:'結果発表 9/9〜9/11｜販売 9/12〜9/14｜チケット当選者のみ購入可'}
+ ];
+ for(const row of rows){const i=state.lotteries.findIndex(x=>x.id===row.id);if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);}
+ state.dataFixes.furuichi_harayamadai_shonai_20260905=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('古本市場2件抽選追加失敗',e);}})();
+</script>
 </body></html>
