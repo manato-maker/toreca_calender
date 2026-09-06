@@ -1388,7 +1388,9 @@ if(!state.dataFixes.fullReconcile20260826_v2){
   localStorage.setItem(KEY,JSON.stringify(state));
 })();
 
-let marketHistory=state.marketHistory||{},boxMarketHistory=state.boxMarketHistory||{},globalMimiDate=state.globalMimiDate||'',globalAmtfDate=state.globalAmtfDate||'',hideLost=state.hideLost||false,viewMonth=new Date(2026,7,1),selectedDate=null,lfilter='all';
+const appToday=new Date();
+const appTodayKey=`${appToday.getFullYear()}-${String(appToday.getMonth()+1).padStart(2,'0')}-${String(appToday.getDate()).padStart(2,'0')}`;
+let marketHistory=state.marketHistory||{},boxMarketHistory=state.boxMarketHistory||{},globalMimiDate=state.globalMimiDate||'',globalAmtfDate=state.globalAmtfDate||'',hideLost=state.hideLost||false,viewMonth=new Date(appToday.getFullYear(),appToday.getMonth(),1),selectedDate=null,lfilter='all';
 const $=s=>document.querySelector(s),yen=n=>'¥'+Math.round(Number(n||0)).toLocaleString('ja-JP');
 function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function canonicalStoreName(s){
@@ -1630,7 +1632,7 @@ function renderLottery(){
  document.querySelectorAll('[data-summary-filter]').forEach(b=>b.onclick=()=>{lfilter=b.dataset.summaryFilter;document.querySelectorAll('[data-lfilter]').forEach(x=>x.classList.toggle('active',x.dataset.lfilter===lfilter));renderLottery();});
  renderLotteryStats();
  const y=viewMonth.getFullYear(),m=viewMonth.getMonth();$('#monthLabel').textContent=`${y}年${m+1}月`;const first=new Date(y,m,1),start=new Date(y,m,1-first.getDay());let h='';
- for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,rows=a.filter(x=>x.date===ds),dow=d.getDay();h+=`<div class="day ${d.getMonth()!==m?'muted':''} ${selectedDate===ds?'selected':''}" data-date="${ds}"><b class="${dow===0?'sun':dow===6?'sat':''}">${d.getDate()}</b>${rows.length?`<div class="count">${rows.length}件</div>`:''}</div>`;}
+ for(let i=0;i<42;i++){const d=new Date(start);d.setDate(start.getDate()+i);const ds=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`,rows=a.filter(x=>x.date===ds),dow=d.getDay();h+=`<div class="day ${d.getMonth()!==m?'muted':''} ${selectedDate===ds?'selected':''} ${appTodayKey===ds?'today':''}" data-date="${ds}"><b class="${dow===0?'sun':dow===6?'sat':''}">${d.getDate()}</b>${appTodayKey===ds?'<span class="today-label">今日</span>':''}${rows.length?`<div class="count">${rows.length}件</div>`:''}</div>`;}
  $('#calendar').innerHTML=h;document.querySelectorAll('.day').forEach(e=>e.onclick=()=>{selectedDate=selectedDate===e.dataset.date?null:e.dataset.date;renderLottery();});
  const q=$('#lotSearch').value.trim().toLowerCase();let rows=a.filter(x=>(!selectedDate||x.date===selectedDate)&&(lfilter==='all'||x.status===lfilter));if(q)rows=rows.filter(x=>(x.title+' '+canonicalStoreName(x.store)).toLowerCase().includes(q));{
    const mode=$('#lotSort')?.value||'date';
@@ -3693,4 +3695,141 @@ window.addEventListener('load',()=>{
  if(typeof renderAll==='function')renderAll();
 }catch(e){console.error('古本市場2件抽選追加失敗',e);}})();
 </script>
+<!-- user-update-20260905-fullcomp-osaka-nipponbashi -->
+<script id="user-update-20260905-fullcomp-osaka-nipponbashi">
+(function(){try{
+ const KEY='tcg-master-v14';
+ if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+ state.dataFixes=state.dataFixes||{};
+ const row={id:'lottery-fullcomp-osaka-nipponbashi-pokemon-new-20260909',date:'2026-09-09',time:'',title:'9/16発売 ポケモンカード新商品',store:'フルコンプ大阪日本橋店',status:'unreported',receiptStatus:'',note:'結果発表 9/9〜9/11｜販売 9/16〜9/23｜応募店舗：大阪日本橋店'};
+ const i=state.lotteries.findIndex(x=>x.id===row.id);
+ if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);
+ state.dataFixes.fullcomp_osaka_nipponbashi_20260905=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('フルコンプ大阪日本橋店抽選追加失敗',e);}})();
+</script>
+<!-- user-update-20260906-surugaya-takatsuki-premium -->
+<script id="user-update-20260906-surugaya-takatsuki-premium">
+(function(){try{
+ const KEY='tcg-master-v14';
+ if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+ state.dataFixes=state.dataFixes||{};
+ const row={
+  id:'lottery-surugaya-takatsuki-premium-20260913',date:'2026-09-13',time:'',
+  title:'30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',
+  store:'駿河屋高槻トレカ館',status:'unreported',receiptStatus:'',
+  note:'結果発表 9/13以降｜販売 9/16〜9/18｜営業時間：平日13:00〜21:00・土曜12:00〜21:00・日祝12:00〜19:00'
+ };
+ const i=state.lotteries.findIndex(x=>x.id===row.id);
+ if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);
+ state.dataFixes.surugaya_takatsuki_premium_20260906=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('駿河屋高槻トレカ館プレミアム抽選追加失敗',e);}})();
+</script>
+<!-- user-update-20260906-lottery-batch-images -->
+<script id="user-update-20260906-lottery-batch-images">
+(function(){try{
+ const KEY='tcg-master-v14';
+ if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];
+ state.dataFixes=state.dataFixes||{};
+ const rows=[
+  {id:'lottery-surugaya-takatsuki-30th-box-20260914',date:'2026-09-14',time:'',title:'MEGA 拡張パック 30th CELEBRATION',store:'駿河屋高槻トレカ館',status:'unreported',receiptStatus:'',note:'結果発表 9/14以降｜販売 9/16〜9/18｜営業時間：平日13:00〜21:00・土曜12:00〜21:00・日祝12:00〜19:00'},
+  {id:'lottery-tsutaya-abeno-dragonball-hope-20260911',date:'2026-09-11',time:'',title:'ドラゴンボールスーパーカードゲームFW BRIGHTNESS OF HOPE',store:'TSUTAYAあべの橋店',status:'unreported',receiptStatus:'',note:'9/12発売｜結果発表 9/11予定｜販売 9/12〜9/13｜2Fトレカ売場｜販売受付 9:00〜22:30'},
+  {id:'lottery-tsutaya-abeno-megabrave-resale-20260911',date:'2026-09-11',time:'',title:'メガブレイブ',store:'TSUTAYAあべの橋店',status:'unreported',receiptStatus:'',note:'再販分｜結果発表 9/11予定｜販売 9/12〜9/13｜2Fトレカ売場｜販売受付 9:00〜22:30'},
+  {id:'lottery-furuichi-midoribashi-megabrave-20260908',date:'2026-09-08',time:'',title:'メガブレイブ',store:'古本市場 緑橋店',status:'unreported',receiptStatus:'',note:'結果発表 9/8〜9/11｜販売 9/14〜9/16｜チケット当選者のみ購入可'},
+  {id:'lottery-furuichi-midoribashi-storm-20260908',date:'2026-09-08',time:'',title:'ストームエメラルダ',store:'古本市場 緑橋店',status:'unreported',receiptStatus:'',note:'結果発表 9/8〜9/11｜販売 9/14〜9/16｜チケット当選者のみ購入可'}
+ ];
+ for(const row of rows){const i=state.lotteries.findIndex(x=>x.id===row.id);if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);}
+ state.dataFixes.lottery_batch_images_20260906=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('9/6画像抽選一括追加失敗',e);}})();
+</script>
+<!-- user-update-20260906-single-market -->
+<script id="user-update-20260906-single-market">
+(function(){try{
+ const KEY='tcg-master-v14',D='2026-09-06';
+ if(typeof state==='undefined')return;
+ state.cards=Array.isArray(state.cards)?state.cards:[];
+ state.marketHistory=state.marketHistory||{};state.dataFixes=state.dataFixes||{};
+ const prices={
+  'card-001':6000,'card-002':900,'card-003':2700,'card-004':1500,'card-005':600,
+  'card-006':800,'card-007':2500,'card-008':1100,'card-009':2000,'card-010':1500,
+  'card-011':2500,'card-012':1000,'card-013':4500,'card-014':2400,'card-015':4000,
+  'card-016':1000,'card-017':800,'card-018':700,'card-019':100,'card-touko-sar-173086':4500
+ };
+ for(const x of state.cards){
+  if(prices[x.id]==null)continue;
+  const v=prices[x.id];x.domestic=v;x.marketDate=D;x.marketSource='ポケカチ・カードラッシュ買取';
+  x.reviewNote=D+' 型番・レアリティ一致で確認'+((x.id==='card-017'||x.id==='card-018')?'（モンスターボールミラー。マスターボール版と区別）':'');
+  const a=state.marketHistory[x.id]=state.marketHistory[x.id]||[];
+  if(!a.some(p=>p.date===D&&Number(p.value)===v))a.push({date:D,value:v});
+ }
+ state.cardMarketStatus={checkedAt:D,policy:'exact-card-number-and-variant-only',source:'ポケカチ（カードラッシュ買取）',note:'登録20件を9/6時点で確認。9/5登録値から価格変更なし。モンスターボールミラー2件はマスターボール版と区別。',unverifiedIds:[]};
+ state.dataFixes.single_market_update_20260906=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof marketHistory!=='undefined')marketHistory=state.marketHistory;
+ if(typeof SEED!=='undefined'){SEED.cards=JSON.parse(JSON.stringify(state.cards));SEED.marketHistory=JSON.parse(JSON.stringify(state.marketHistory));SEED.cardMarketStatus=JSON.parse(JSON.stringify(state.cardMarketStatus));}
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('9/6シングル相場更新失敗',e);}})();
+</script>
+<!-- user-update-20260906-box-and-pack-market -->
+<script id="user-update-20260906-box-and-pack-market">
+(function(){try{
+ const KEY='tcg-master-v14',D='2026-09-06';
+ if(typeof state==='undefined')return;
+ state.sealed=Array.isArray(state.sealed)?state.sealed:[];
+ state.loosePacks=Array.isArray(state.loosePacks)?state.loosePacks:[];
+ state.boxMarketHistory=state.boxMarketHistory||{};state.boxMarketMaster=state.boxMarketMaster||{};state.marketSourceStatus=state.marketSourceStatus||{};state.dataFixes=state.dataFixes||{};
+ const none=x=>String(x.shrink||'').includes('なし');
+ const setBox=(x,src,value)=>{x[src+'Price']=value;x[src+'Date']=D;const h=state.boxMarketHistory[x.id]||(state.boxMarketHistory[x.id]={mimi:[],amtf:[]});const a=h[src]||(h[src]=[]);if(!a.some(p=>p.date===D&&Number(p.value)===value))a.push({date:D,value});};
+ for(const x of state.sealed){
+  const n=String(x.name||''),cut=String(x.shrink||'').includes('カット');
+  if(n==='ストームエメラルダ'){if(none(x))setBox(x,'amtf',9000);else{setBox(x,'mimi',12700);setBox(x,'amtf',12000);}}
+  if(n==='メガシンフォニア'){if(none(x))setBox(x,'amtf',5500);else{setBox(x,'mimi',8100);setBox(x,'amtf',6500);}}
+  if(n==='インフェルノX'){setBox(x,'mimi',none(x)?12500:16400);setBox(x,'amtf',none(x)?11000:16000);}
+  if(n==='MEGAドリームex'){setBox(x,'mimi',none(x)?11300:12400);setBox(x,'amtf',none(x)?11000:12000);}
+  if(n==='アビスアイ'){if(none(x)){setBox(x,'mimi',7000);setBox(x,'amtf',6200);}else setBox(x,'amtf',7200);}
+  if(n==='MEGA スタートデッキ100'){setBox(x,'mimi',1000);setBox(x,'amtf',800);}
+  if(n.includes('決戦の刻')&&!cut)setBox(x,'mimi',10000);
+  if(n.includes('世界最強の戦士')&&!cut){setBox(x,'mimi',16600);setBox(x,'amtf',16300);}
+ }
+ const master={
+  'ストームエメラルダ':{mimi:{'あり':12700},amtf:{'あり':12000,'なし':9000},pack:110},
+  'メガシンフォニア':{mimi:{'あり':8100},amtf:{'あり':6500,'なし':5500},pack:80},
+  'インフェルノX':{mimi:{'あり':16400,'なし':12500},amtf:{'あり':16000,'なし':11000},pack:130},
+  'MEGAドリームex':{mimi:{'あり':12400,'なし':11300},amtf:{'あり':12000,'なし':11000},pack:550},
+  'アビスアイ':{mimi:{'なし':7000},amtf:{'あり':7200,'なし':6200},pack:80},
+  'MEGA スタートデッキ100':{mimi:{'不明':1000,'未開封':1000},amtf:{'不明':800,'未開封':800}},
+  '決戦の刻 OP-16':{mimi:{'テープ付き':10000}},
+  '世界最強の戦士 OP-17':{mimi:{'テープ付き':16600},amtf:{'テープ付き':16300}}
+ };
+ for(const [name,v] of Object.entries(master)){const dst=state.boxMarketMaster[name]||(state.boxMarketMaster[name]={});for(const [k,val] of Object.entries(v))dst[k]=(val&&typeof val==='object')?Object.assign({},dst[k]||{},val):val;}
+ const packs={'ニンジャスピナー':100,'インフェルノX':130,'ストームエメラルダ':110,'メガブレイブ':90,'アビスアイ':80,'ムニキスゼロ':80,'メガシンフォニア':80,'MEGAドリームex':550};
+ for(const x of state.loosePacks)if(packs[x.name]!=null){x.amtfPrice=packs[x.name];x.amtfDate=D;}
+ state.boxMarketMasterDate=D;state.globalMimiDate=D;state.globalAmtfDate=D;state.globalPackAmtfDate=D;
+ state.marketSourceStatus['買取ミミ']={latestListPostDate:D,applied:'9/6最新BOX一覧・WANTED（確定値のみ）'};
+ state.marketSourceStatus['アムタフ']={latestListPostDate:D,applied:'9/6最新BOX・バラパック買取表'};
+ state.marketSourceStatus.mimi='9/6確認。概算値・取得不能は資産評価に不採用。';state.marketSourceStatus.amtf='9/6確認。確定価格のみ反映。';
+ state.dataFixes.box_and_pack_market_20260906=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof boxMarketHistory!=='undefined')boxMarketHistory=state.boxMarketHistory;if(typeof globalMimiDate!=='undefined')globalMimiDate=D;if(typeof globalAmtfDate!=='undefined')globalAmtfDate=D;
+ if(typeof SEED!=='undefined')for(const k of ['sealed','loosePacks','boxMarketHistory','boxMarketMaster','marketSourceStatus'])SEED[k]=JSON.parse(JSON.stringify(state[k]||{}));
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('9/6 BOX・バラ相場更新失敗',e);}})();
+</script>
+<style id="today-calendar-style">
+.day.today{position:relative;background:#fff5f5;box-shadow:inset 0 0 0 3px #ef3340}
+.day.today.muted{background:#fff5f5;color:inherit}
+.today-label{display:inline-block;margin-left:4px;padding:1px 5px;border-radius:999px;background:#ef3340;color:#fff;font-size:10px;font-weight:800;vertical-align:2px}
+body.dark-mode .day.today{background:#3a2025!important;box-shadow:inset 0 0 0 3px #ff6370}
+</style>
 </body></html>
