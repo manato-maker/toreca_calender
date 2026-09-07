@@ -3813,6 +3813,8 @@ window.addEventListener('load',()=>{
   '世界最強の戦士 OP-17':{mimi:{'テープ付き':16600},amtf:{'テープ付き':16300}}
  };
  for(const [name,v] of Object.entries(master)){const dst=state.boxMarketMaster[name]||(state.boxMarketMaster[name]={});for(const [k,val] of Object.entries(v))dst[k]=(val&&typeof val==='object')?Object.assign({},dst[k]||{},val):val;}
+ if(state.boxMarketMaster['ストームエメラルダ']?.mimi)delete state.boxMarketMaster['ストームエメラルダ'].mimi['なし'];
+ if(state.boxMarketMaster['メガシンフォニア']?.mimi)delete state.boxMarketMaster['メガシンフォニア'].mimi['なし'];
  const packs={'ニンジャスピナー':100,'インフェルノX':130,'ストームエメラルダ':110,'メガブレイブ':90,'アビスアイ':80,'ムニキスゼロ':80,'メガシンフォニア':80,'MEGAドリームex':550};
  for(const x of state.loosePacks)if(packs[x.name]!=null){x.amtfPrice=packs[x.name];x.amtfDate=D;}
  state.boxMarketMasterDate=D;state.globalMimiDate=D;state.globalAmtfDate=D;state.globalPackAmtfDate=D;
@@ -3825,6 +3827,112 @@ window.addEventListener('load',()=>{
  if(typeof SEED!=='undefined')for(const k of ['sealed','loosePacks','boxMarketHistory','boxMarketMaster','marketSourceStatus'])SEED[k]=JSON.parse(JSON.stringify(state[k]||{}));
  if(typeof renderAll==='function')renderAll();
 }catch(e){console.error('9/6 BOX・バラ相場更新失敗',e);}})();
+</script>
+<!-- user-update-20260906-plant-kizugawa-30th -->
+<script id="user-update-20260906-plant-kizugawa-30th">
+(function(){try{
+ const KEY='tcg-master-v14';
+ if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const row={id:'lottery-plant-kizugawa-30th-20p-20260911',date:'2026-09-11',time:'',title:'MEGA 拡張パック 30th CELEBRATION 20パック',store:'PLANT木津川店',status:'unreported',receiptStatus:'',note:'応募締切 9/10 23:59｜結果発表 9/11〜9/14｜購入期間 9/16 9:00〜9/20｜受取希望日 9/20｜20パック応募'};
+ const i=state.lotteries.findIndex(x=>x.id===row.id);
+ if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);
+ state.dataFixes.plant_kizugawa_30th_20260906=true;
+ localStorage.setItem(KEY,JSON.stringify(state));if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('PLANT木津川店30th抽選追加失敗',e);}})();
+</script>
+<!-- user-update-20260906-furuichi-five -->
+<script id="user-update-20260906-furuichi-five">
+(function(){try{
+ const KEY='tcg-master-v14';
+ if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const rows=[
+  {id:'lottery-furuichi-tsurumi-megabrave-20260909',date:'2026-09-09',time:'',title:'メガブレイブ',store:'古本市場 鶴見店',status:'unreported',receiptStatus:'',note:'結果発表 9/9｜販売 9/12〜9/13｜チケット当選者のみ購入可'},
+  {id:'lottery-furuichi-tsurumi-storm-20260909',date:'2026-09-09',time:'',title:'ストームエメラルダ',store:'古本市場 鶴見店',status:'unreported',receiptStatus:'',note:'結果発表 9/9｜販売 9/12〜9/13｜チケット当選者のみ購入可'},
+  {id:'lottery-furuichi-hishie-storm-20260907',date:'2026-09-07',time:'',title:'ストームエメラルダ',store:'古本市場 菱江店',status:'unreported',receiptStatus:'',note:'結果発表 9/7〜9/9｜販売 9/12〜9/13｜チケット当選者のみ購入可'},
+  {id:'lottery-furuichi-kyuhoji-megabrave-20260907',date:'2026-09-07',time:'',title:'メガブレイブ',store:'古本市場 久宝寺店',status:'unreported',receiptStatus:'',note:'結果発表 9/7〜9/9｜販売 9/12〜9/13｜チケット当選者のみ購入可'},
+  {id:'lottery-furuichi-kyuhoji-storm-20260907',date:'2026-09-07',time:'',title:'ストームエメラルダ',store:'古本市場 久宝寺店',status:'unreported',receiptStatus:'',note:'結果発表 9/7〜9/9｜販売 9/12〜9/13｜チケット当選者のみ購入可'}
+ ];
+ for(const row of rows){const i=state.lotteries.findIndex(x=>x.id===row.id);if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);}
+ state.dataFixes.furuichi_five_20260906=true;
+ localStorage.setItem(KEY,JSON.stringify(state));if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('古本市場5件抽選追加失敗',e);}})();
+</script>
+<!-- user-update-20260907-vivamall-neyagawa-premium-result -->
+<script id="user-update-20260907-vivamall-neyagawa-premium-result">
+(function(){try{
+ const KEY='tcg-master-v14',ID='lottery-tsutaya-vivamall-neyagawa-30th-premium-20260907';
+ if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const row=state.lotteries.find(x=>x.id===ID);
+ if(row){row.status='lose';row.receiptStatus='';row.note='9/7 落選確認｜購入期間 9/16〜9/20｜LivePocket';}
+ state.dataFixes.vivamall_neyagawa_premium_result_20260907=true;
+ localStorage.setItem(KEY,JSON.stringify(state));if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('ビバモール寝屋川プレミアムデッキセット結果更新失敗',e);}})();
+</script>
+<!-- user-update-20260907-results-and-aeon-orders -->
+<script id="user-update-20260907-results-and-aeon-orders">
+(function(){try{
+ const KEY='tcg-master-v14';
+ if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.sealed=Array.isArray(state.sealed)?state.sealed:[];state.purchaseLedger=Array.isArray(state.purchaseLedger)?state.purchaseLedger:[];state.dataFixes=state.dataFixes||{};
+ const upsert=(arr,row)=>{const i=arr.findIndex(x=>x.id===row.id);if(i>=0)arr[i]=Object.assign({},arr[i],row);else arr.push(row);};
+ upsert(state.lotteries,{id:'lottery-premium-bandai-gundam-pb03-20260907',date:'2026-09-07',time:'',title:'ガンダムカードゲーム 1st Anniversary Set［PB03］',store:'プレミアムバンダイ',status:'win',receiptStatus:'',note:'9/7 当選確認｜3次・2027年4月発送分'});
+ upsert(state.lotteries,{id:'lottery-furuichi-aeonmall-takanohara-storm-20260907',date:'2026-09-07',time:'',title:'ストームエメラルダ',store:'ふるいち イオンモール高の原店',status:'lose',receiptStatus:'',note:'9/7 落選確認｜販売 9/11〜9/13｜LivePocket'});
+ const sealedRows=[
+  {id:'sealed-aeon-storm-30pack-20260907',name:'ストームエメラルダ',qty:1,cost:5973,store:'イオンスタイルオンライン',purchaseDate:'2026-09-07',shrink:'シュリンク付き',category:'BOX',domestic:null,overseas:null,marketDate:'',note:'イオンカード限定｜30パック入りBOX｜9/26頃お届け予定'},
+  {id:'sealed-aeon-dragonball-fb11-20260907',name:'BRIGHTNESS OF HOPE［FB11］',qty:1,cost:5755.2,store:'イオンスタイルオンライン',purchaseDate:'2026-09-07',shrink:'テープ付き',category:'BOX',domestic:null,overseas:null,marketDate:'',note:'イオンカード限定｜24パック入りBOX｜9/28頃お届け予定'}
+ ];
+ for(const row of sealedRows)upsert(state.sealed,row);
+ const ledgerRows=[
+  {id:'pl-aeon-storm-30pack-20260907',date:'2026-09-07',name:'ストームエメラルダ 30パックセット',store:'イオンスタイルオンライン',qty:1,unitCost:5973,type:'未開封',opened:0,total:5973,note:'イオンカード限定｜30パック｜9/26頃お届け予定'},
+  {id:'pl-aeon-dragonball-fb11-20260907',date:'2026-09-07',name:'BRIGHTNESS OF HOPE［FB11］24パックセット',store:'イオンスタイルオンライン',qty:1,unitCost:5755.2,type:'未開封',opened:0,total:5755.2,note:'イオンカード限定｜24パック｜9/28頃お届け予定'}
+ ];
+ for(const row of ledgerRows)upsert(state.purchaseLedger,row);
+ state.dataFixes.results_and_aeon_orders_20260907=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof SEED!=='undefined'){for(const k of ['lotteries','sealed','purchaseLedger'])SEED[k]=JSON.parse(JSON.stringify(state[k]));}
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('9/7抽選結果・イオン注文更新失敗',e);}})();
+</script>
+<!-- user-update-20260907-single-box-pack-market -->
+<script id="user-update-20260907-single-box-pack-market">
+(function(){try{
+ const KEY='tcg-master-v14',D='2026-09-07',M='2026-09-06';
+ if(typeof state==='undefined')return;
+ state.cards=Array.isArray(state.cards)?state.cards:[];state.sealed=Array.isArray(state.sealed)?state.sealed:[];state.loosePacks=Array.isArray(state.loosePacks)?state.loosePacks:[];
+ state.marketHistory=state.marketHistory||{};state.boxMarketHistory=state.boxMarketHistory||{};state.boxMarketMaster=state.boxMarketMaster||{};state.marketSourceStatus=state.marketSourceStatus||{};state.dataFixes=state.dataFixes||{};
+ const cardPrices={'card-001':6000,'card-002':900,'card-003':2700,'card-004':1500,'card-005':600,'card-006':800,'card-007':2500,'card-008':1100,'card-009':2000,'card-010':1500,'card-011':2500,'card-012':1000,'card-013':4500,'card-014':2400,'card-015':4000,'card-016':1000,'card-017':800,'card-018':700,'card-019':100,'card-touko-sar-173086':4500};
+ for(const x of state.cards){if(cardPrices[x.id]==null)continue;const v=cardPrices[x.id];x.domestic=v;x.marketDate=D;x.marketSource='ポケカチ・カードラッシュ買取';x.reviewNote=D+' 型番・レアリティ一致で確認'+((x.id==='card-017'||x.id==='card-018')?'（モンスターボールミラー。マスターボール版と区別）':'');const a=state.marketHistory[x.id]=state.marketHistory[x.id]||[];if(!a.some(p=>p.date===D&&Number(p.value)===v))a.push({date:D,value:v});}
+ state.cardMarketStatus={checkedAt:D,policy:'exact-card-number-and-variant-only',source:'ポケカチ（カードラッシュ買取）',note:'登録20件を9/7時点で確認。9/6登録値から価格変更なし。モンスターボールミラー2件はマスターボール版と区別。海外の未確認値は既存値を維持。',unverifiedIds:[]};
+ const none=x=>String(x.shrink||'').includes('なし');
+ const setBox=(x,src,value,date)=>{x[src+'Price']=value;x[src+'Date']=date;const h=state.boxMarketHistory[x.id]||(state.boxMarketHistory[x.id]={mimi:[],amtf:[]});const a=h[src]||(h[src]=[]);if(!a.some(p=>p.date===date&&Number(p.value)===value))a.push({date,value});};
+ for(const x of state.sealed){const n=String(x.name||''),cut=String(x.shrink||'').includes('カット');
+  if(n==='ストームエメラルダ'){if(none(x))setBox(x,'amtf',9000,D);else{setBox(x,'mimi',12200,M);setBox(x,'amtf',11500,D);}}
+  if(n==='メガシンフォニア'){if(none(x))setBox(x,'amtf',6000,D);else{setBox(x,'mimi',8100,M);setBox(x,'amtf',7200,D);}}
+  if(n==='インフェルノX'){setBox(x,'mimi',none(x)?12500:16400,M);setBox(x,'amtf',none(x)?11000:16000,D);}
+  if(n==='MEGAドリームex'){setBox(x,'mimi',none(x)?11300:12400,M);setBox(x,'amtf',none(x)?11000:12000,D);}
+  if(n==='アビスアイ'){if(none(x)){setBox(x,'mimi',7000,M);setBox(x,'amtf',6200,D);}else setBox(x,'amtf',7200,D);}
+  if(n==='MEGA スタートデッキ100'){setBox(x,'mimi',1000,M);setBox(x,'amtf',800,D);}
+  if(n.includes('決戦の刻')&&!cut)setBox(x,'mimi',10000,M);
+  if(n.includes('世界最強の戦士')&&!cut)setBox(x,'mimi',16600,M);
+ }
+ const master={'ストームエメラルダ':{mimi:{'あり':12200},amtf:{'あり':11500,'なし':9000},pack:110},'メガシンフォニア':{mimi:{'あり':8100},amtf:{'あり':7200,'なし':6000},pack:80},'インフェルノX':{mimi:{'あり':16400,'なし':12500},amtf:{'あり':16000,'なし':11000},pack:130},'MEGAドリームex':{mimi:{'あり':12400,'なし':11300},amtf:{'あり':12000,'なし':11000},pack:550},'アビスアイ':{mimi:{'なし':7000},amtf:{'あり':7200,'なし':6200},pack:80},'MEGA スタートデッキ100':{mimi:{'不明':1000,'未開封':1000},amtf:{'不明':800,'未開封':800}},'決戦の刻 OP-16':{mimi:{'テープ付き':10000}},'世界最強の戦士 OP-17':{mimi:{'テープ付き':16600}}};
+ for(const [name,v] of Object.entries(master)){const dst=state.boxMarketMaster[name]||(state.boxMarketMaster[name]={});for(const [k,val] of Object.entries(v))dst[k]=(val&&typeof val==='object')?Object.assign({},dst[k]||{},val):val;}
+ if(state.boxMarketMaster['ストームエメラルダ']?.mimi)delete state.boxMarketMaster['ストームエメラルダ'].mimi['なし'];
+ if(state.boxMarketMaster['メガシンフォニア']?.mimi)delete state.boxMarketMaster['メガシンフォニア'].mimi['なし'];
+ const packs={'ニンジャスピナー':100,'インフェルノX':130,'ストームエメラルダ':110,'メガブレイブ':90,'アビスアイ':80,'ムニキスゼロ':80,'メガシンフォニア':80,'MEGAドリームex':550};
+ for(const x of state.loosePacks)if(packs[x.name]!=null){x.amtfPrice=packs[x.name];x.amtfDate=D;}
+ state.boxMarketMasterDate=D;state.globalMimiDate=M;state.globalAmtfDate=D;state.globalPackAmtfDate=D;
+ state.marketSourceStatus['買取ミミ']={latestListPostDate:M,applied:'9/6最終値（9/7臨時休業）。ストームエメラルダは規定数到達後12,200円'};
+ state.marketSourceStatus['アムタフ']={latestListPostDate:D,applied:'9/7最新BOX・バラパック買取表'};state.marketSourceStatus.mimi='9/7臨時休業。9/6確定値を維持。概算値は不採用。';state.marketSourceStatus.amtf='9/7確認。確定価格のみ反映。';
+ state.dataFixes.single_box_pack_market_20260907=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+ if(typeof marketHistory!=='undefined')marketHistory=state.marketHistory;if(typeof boxMarketHistory!=='undefined')boxMarketHistory=state.boxMarketHistory;if(typeof globalMimiDate!=='undefined')globalMimiDate=M;if(typeof globalAmtfDate!=='undefined')globalAmtfDate=D;
+ if(typeof SEED!=='undefined')for(const k of ['cards','marketHistory','cardMarketStatus','sealed','loosePacks','boxMarketHistory','boxMarketMaster','marketSourceStatus'])SEED[k]=JSON.parse(JSON.stringify(state[k]||{}));
+ if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('9/7シングル・BOX・バラ相場更新失敗',e);}})();
 </script>
 <style id="today-calendar-style">
 .day.today{position:relative;background:#fff5f5;box-shadow:inset 0 0 0 3px #ef3340}
