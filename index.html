@@ -242,10 +242,18 @@ body.dark-mode #lotList .item{box-shadow:none}
 .store-stat-row .rate{font-weight:850;text-align:right}
 .unreceived-box{margin:10px 0 12px;border:1px solid #efb84b;border-radius:14px;background:#fff8e7;overflow:hidden}
 .unreceived-title{padding:11px 12px;font-weight:900;color:#7a4b00;display:flex;justify-content:space-between;gap:8px}
+.unreceived-columns{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;border-top:1px solid #efd9a8}
+.unreceived-column{min-width:0;border:1px solid #b9d8fb;border-radius:12px;background:#eef7ff;overflow:hidden}
+.unreceived-column.wife{border-color:#f4bfd1;background:#fff0f6}
+.unreceived-column-title{padding:9px 10px;font-weight:900;color:#155a9b;display:flex;justify-content:space-between;gap:6px}
+.unreceived-column.wife .unreceived-column-title{color:#a53b68}
 .unreceived-row{padding:10px 12px;border-top:1px solid #efd9a8;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center}
 .unreceived-row .name{font-weight:850}.unreceived-row .meta{font-size:12px;color:var(--muted);margin-top:3px}
 .unreceived-row button{white-space:nowrap;background:#fff;border:1px solid #d89a21;color:#7a4b00}
+.unreceived-column.self .unreceived-row{border-color:#cfe4fa}.unreceived-column.self .unreceived-row button{border-color:#6daee8;color:#155a9b}
+.unreceived-column.wife .unreceived-row{border-color:#f6d0dd}.unreceived-column.wife .unreceived-row button{border-color:#e48bad;color:#a53b68}
 .unreceived-empty{padding:11px 12px;border-top:1px solid #efd9a8;color:var(--muted);font-size:13px}
+@media(max-width:520px){.unreceived-columns{gap:7px;padding:7px}.unreceived-row{grid-template-columns:1fr;padding:8px}.unreceived-row button{width:100%;padding:7px 4px;font-size:11px}.unreceived-column-title{font-size:13px;padding:8px}.unreceived-row .name{font-size:12px}.unreceived-row .meta{font-size:10px}}
 .add-sealed-btn{margin-top:8px!important;min-height:32px!important;height:32px!important;padding:4px 10px!important;border-radius:9px!important;font-size:12px!important;font-weight:850!important;background:#eef6ff!important;border:1px solid #b8d4f6!important;color:#174a7a!important}
 .add-sealed-btn.done{background:#edf7ef!important;border-color:#b9dfc0!important;color:#2d6b3a!important}
 .lottery-stock-note{font-size:11px;color:var(--muted);margin-top:5px}
@@ -254,7 +262,7 @@ body.dark-mode #lotList .item{box-shadow:none}
 .quick-cost button{padding:7px 10px}
 body.dark-mode .lot-stat,body.dark-mode .store-stat-box{background:#151e2b!important;border-color:#2b394c!important}
 body.dark-mode .store-stat-title,body.dark-mode .store-stat-row{border-color:#2b394c!important}
-body.dark-mode .unreceived-box{background:#2b2417!important;border-color:#8e6825!important}body.dark-mode .unreceived-title{color:#ffd783!important}body.dark-mode .unreceived-row,body.dark-mode .unreceived-empty{border-color:#59451f!important}
+body.dark-mode .unreceived-box{background:#2b2417!important;border-color:#8e6825!important}body.dark-mode .unreceived-title{color:#ffd783!important}body.dark-mode .unreceived-columns{border-color:#59451f!important}body.dark-mode .unreceived-column.self{background:#172638!important;border-color:#315d87!important}body.dark-mode .unreceived-column.wife{background:#351c29!important;border-color:#82425e!important}body.dark-mode .unreceived-row,body.dark-mode .unreceived-empty{border-color:#59451f!important}
 body.dark-mode .add-sealed-btn{background:#172a3d!important;border-color:#34597d!important;color:#a9d2ff!important}
 body.dark-mode .add-sealed-btn.done{background:#183022!important;border-color:#3f7050!important;color:#b9efc8!important}
 @media(max-width:640px){
@@ -1640,10 +1648,22 @@ function renderLotteryStats(){
 function renderUnreceivedPanel(){
  const el=$('#unreceivedPanel');if(!el)return;
  const isFamilyOnly=x=>/嫁分|嫁のみ|奥さんのみ/.test(`${x.title||''} ${x.note||''}`);
- const rows=(state.lotteries||[]).filter(x=>x.status==='win'&&x.receiptStatus!=='received'&&!isFamilyOnly(x)).sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.store||'').localeCompare(b.store||'','ja'));
+ const isCouple=x=>/夫婦|本人・奥さんとも|本人と奥さん|本人・嫁とも/.test(`${x.title||''} ${x.note||''}`);
+ const deadlineKey=x=>{
+  const text=String(x.note||''),segments=text.split('｜').filter(s=>/受取期限|購入期限|予約期限|取置き|引取期限|販売期間|販売\s/.test(s));
+  if(!segments.length)return Number.MAX_SAFE_INTEGER;
+  const dates=[...segments.join(' ').matchAll(/(?:(\d{4})年)?(\d{1,2})[\/月](\d{1,2})日?/g)];
+  if(!dates.length)return Number.MAX_SAFE_INTEGER;
+  const m=dates[dates.length-1],year=Number(m[1]||String(x.date||'').slice(0,4)||new Date().getFullYear());
+  return new Date(year,Number(m[2])-1,Number(m[3]),23,59,59).getTime();
+ };
+ const deadlineLabel=x=>String(x.note||'').split('｜').find(s=>/受取期限|購入期限|予約期限|取置き|引取期限|販売期間|販売\s/.test(s))?.trim()||'';
+ const rows=(state.lotteries||[]).filter(x=>x.status==='win'&&x.receiptStatus!=='received').sort((a,b)=>deadlineKey(a)-deadlineKey(b)||(a.date||'').localeCompare(b.date||'')||(a.store||'').localeCompare(b.store||'','ja'));
+ const selfRows=rows.filter(x=>!isFamilyOnly(x)||isCouple(x)),wifeRows=rows.filter(x=>isFamilyOnly(x)||isCouple(x));
+ const renderColumn=(label,icon,list,kind)=>`<section class="unreceived-column ${kind}"><div class="unreceived-column-title"><span>${icon} ${label}</span><b>${list.length}件</b></div>${list.length?list.map(x=>`<div class="unreceived-row"><div><div class="name">${esc(x.title)}</div><div class="meta">${fmtDate(x.date)}｜${esc(canonicalStoreName(x.store))}${deadlineLabel(x)?`<br>⏰ ${esc(deadlineLabel(x))}`:(x.receiptStatus==='pending'?'｜受取待ち':'｜期限未登録')}</div></div><button onclick="setReceiptStatus('${x.id}','received')">✅ 受取済</button></div>`).join(''):'<div class="unreceived-empty">なし</div>'}</section>`;
  el.innerHTML=`<details class="unreceived-box" ${rows.length?'open':''}>
   <summary class="unreceived-title"><span>🛍️ 当選済み・未受取</span><b>${rows.length}件</b></summary>
-  ${rows.length?rows.map(x=>`<div class="unreceived-row"><div><div class="name">${esc(x.title)}</div><div class="meta">${fmtDate(x.date)}｜${esc(canonicalStoreName(x.store))}${x.receiptStatus==='pending'?'｜受取待ち':'｜受取状況未設定'}</div></div><button onclick="setReceiptStatus('${x.id}','received')">✅ 受取済にする</button></div>`).join(''):'<div class="unreceived-empty">未受取の商品はありません</div>'}
+  <div class="unreceived-columns">${renderColumn('本人分','👤',selfRows,'self')}${renderColumn('嫁分','👩',wifeRows,'wife')}</div>
  </details>`;
 }
 
