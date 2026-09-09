@@ -4263,7 +4263,11 @@ window.addEventListener('load',()=>{
  const KEY='tcg-master-v14';if(typeof state==='undefined')return;
  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
  const removeIds=new Set(['lottery-joshinweb-wife-30th-box-20260909','lottery-joshinweb-wife-30th-cardset9-20260909']);
- state.lotteries=state.lotteries.filter(x=>!removeIds.has(x.id));
+ state.lotteries=state.lotteries.filter(x=>{
+  if(removeIds.has(x.id))return false;
+  const falseFamilyRow=x.store==='Joshin web'&&String(x.note||'').includes('9/9 当選確認')&&(/（本人分）|（嫁分）/.test(String(x.title||''))||/本人分|嫁分/.test(String(x.note||'')));
+  return !falseFamilyRow;
+ });
  const restored={id:'lottery-joshinweb-30th-box-20260917',date:'2026-09-17',time:'午後以降',title:'MEGA 拡張パック 30th CELEBRATION',store:'Joshin web',status:'unreported',receiptStatus:'',note:'応募済｜当選者のみ9/17または9/24午後以降に順次メール・連絡帳で案内｜発表日の商品別対応は未記載'};
  const i=state.lotteries.findIndex(x=>x.id===restored.id);if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],restored);else state.lotteries.push(restored);
  state.dataFixes.joshin_family_count_misread_removed_20260909=true;
