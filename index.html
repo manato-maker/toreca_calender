@@ -1639,7 +1639,8 @@ function renderLotteryStats(){
 
 function renderUnreceivedPanel(){
  const el=$('#unreceivedPanel');if(!el)return;
- const rows=(state.lotteries||[]).filter(x=>x.status==='win'&&x.receiptStatus!=='received').sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.store||'').localeCompare(b.store||'','ja'));
+ const isFamilyOnly=x=>/嫁分|嫁のみ|奥さんのみ/.test(`${x.title||''} ${x.note||''}`);
+ const rows=(state.lotteries||[]).filter(x=>x.status==='win'&&x.receiptStatus!=='received'&&!isFamilyOnly(x)).sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.store||'').localeCompare(b.store||'','ja'));
  el.innerHTML=`<details class="unreceived-box" ${rows.length?'open':''}>
   <summary class="unreceived-title"><span>🛍️ 当選済み・未受取</span><b>${rows.length}件</b></summary>
   ${rows.length?rows.map(x=>`<div class="unreceived-row"><div><div class="name">${esc(x.title)}</div><div class="meta">${fmtDate(x.date)}｜${esc(canonicalStoreName(x.store))}${x.receiptStatus==='pending'?'｜受取待ち':'｜受取状況未設定'}</div></div><button onclick="setReceiptStatus('${x.id}','received')">✅ 受取済にする</button></div>`).join(''):'<div class="unreceived-empty">未受取の商品はありません</div>'}
@@ -2657,8 +2658,8 @@ window.addEventListener('load',()=>{
  let row=st.lotteries.find(x=>x.id==='lottery-recent-20260824-05')||st.lotteries.find(x=>x.date==='2026-09-01'&&(x.store==='Joshin 上牧店'||x.store==='ジョーシンアプリ（上牧店）')&&String(x.title||'').includes('30th CELEBRATION'));
  const update={date:'2026-09-01',time:'15:00',title:'MEGA 拡張パック 30th CELEBRATION',store:'ジョーシンアプリ（上牧店）',status:'win',receiptStatus:'',note:'ジョーシンアプリ抽選｜9/1 当選確認｜本人・奥さんとも当選（計2BOX）'};
  if(row)Object.assign(row,update);else{row=Object.assign({id:'lottery-recent-20260824-05'},update);st.lotteries.push(row);}
- let deck=st.lotteries.find(x=>x.id==='lottery-recent-20260824-06')||st.lotteries.find(x=>x.date==='2026-09-02'&&String(x.store||'').includes('Joshin')&&String(x.title||'').includes('エーフィ・ブラッキー'));
- const deckUpdate={date:'2026-09-02',time:'15:00',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'ジョーシンアプリ（外環八尾店）',status:'win',receiptStatus:'',note:'ジョーシンアプリ抽選｜9/2 当選確認｜奥さんのみ当選（1セット）'};
+ let deck=st.lotteries.find(x=>x.id==='lottery-recent-20260824-06')||st.lotteries.find(x=>x.date==='2026-09-02'&&(/Joshin|ジョーシンアプリ/.test(String(x.store||'')))&&String(x.title||'').includes('エーフィ・ブラッキー'));
+ const deckUpdate={date:'2026-09-02',time:'15:00',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'ジョーシンアプリ（上牧店）',status:'win',receiptStatus:'',note:'ジョーシンアプリ抽選｜9/2 当選確認｜奥さんのみ当選（1セット）'};
  if(deck)Object.assign(deck,deckUpdate);else{deck=Object.assign({id:'lottery-recent-20260824-06'},deckUpdate);st.lotteries.push(deck);}
  st.dataFixes.joshin_kamimaki_30th_couple_win_20260901=true;
  try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}
