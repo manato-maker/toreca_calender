@@ -2634,9 +2634,12 @@ window.addEventListener('load',()=>{
  const KEY='tcg-master-v14';
  const st=(typeof state!=='undefined'&&state)?state:JSON.parse(localStorage.getItem(KEY)||'{}');
  st.dataFixes=st.dataFixes||{}; st.lotteries=Array.isArray(st.lotteries)?st.lotteries:[];
- let row=st.lotteries.find(x=>x.id==='lottery-recent-20260824-05')||st.lotteries.find(x=>x.date==='2026-09-01'&&x.store==='Joshin 上牧店'&&String(x.title||'').includes('30th CELEBRATION'));
- const update={date:'2026-09-01',time:'15:00',title:'MEGA 拡張パック 30th CELEBRATION',store:'Joshin 上牧店',status:'win',receiptStatus:'',note:'9/1 当選確認｜本人・奥さんとも当選（計2BOX）'};
+ let row=st.lotteries.find(x=>x.id==='lottery-recent-20260824-05')||st.lotteries.find(x=>x.date==='2026-09-01'&&(x.store==='Joshin 上牧店'||x.store==='ジョーシンアプリ（上牧店）')&&String(x.title||'').includes('30th CELEBRATION'));
+ const update={date:'2026-09-01',time:'15:00',title:'MEGA 拡張パック 30th CELEBRATION',store:'ジョーシンアプリ（上牧店）',status:'win',receiptStatus:'',note:'ジョーシンアプリ抽選｜9/1 当選確認｜本人・奥さんとも当選（計2BOX）'};
  if(row)Object.assign(row,update);else{row=Object.assign({id:'lottery-recent-20260824-05'},update);st.lotteries.push(row);}
+ let deck=st.lotteries.find(x=>x.id==='lottery-recent-20260824-06')||st.lotteries.find(x=>x.date==='2026-09-02'&&String(x.store||'').includes('Joshin')&&String(x.title||'').includes('エーフィ・ブラッキー'));
+ const deckUpdate={date:'2026-09-02',time:'15:00',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'ジョーシンアプリ（外環八尾店）',status:'win',receiptStatus:'',note:'ジョーシンアプリ抽選｜9/2 当選確認｜奥さんのみ当選（1セット）'};
+ if(deck)Object.assign(deck,deckUpdate);else{deck=Object.assign({id:'lottery-recent-20260824-06'},deckUpdate);st.lotteries.push(deck);}
  st.dataFixes.joshin_kamimaki_30th_couple_win_20260901=true;
  try{localStorage.setItem(KEY,JSON.stringify(st));}catch(e){}
  try{if(typeof state!=='undefined'&&state!==st){state.lotteries=st.lotteries;state.dataFixes=st.dataFixes;}}catch(e){}
@@ -4254,20 +4257,18 @@ window.addEventListener('load',()=>{
  localStorage.setItem(KEY,JSON.stringify(state));if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));if(typeof renderAll==='function')renderAll();
 }catch(e){console.error('9/9イエローサブマリン再販抽選結果更新失敗',e);}})();
 </script>
-<!-- user-update-20260909-joshin-family-30th-wins -->
-<script id="user-update-20260909-joshin-family-30th-wins">
+<!-- correction-20260909-remove-misread-joshin-family-count -->
+<script id="correction-20260909-remove-misread-joshin-family-count">
 (function(){try{
  const KEY='tcg-master-v14';if(typeof state==='undefined')return;
  state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
- const rows=[
-  {id:'lottery-joshinweb-30th-box-20260917',date:'2026-09-09',time:'',title:'MEGA 拡張パック 30th CELEBRATION 1BOX（本人分）',store:'Joshin web',status:'win',receiptStatus:'',note:'9/9 当選確認｜本人分1BOX'},
-  {id:'lottery-joshinweb-wife-30th-box-20260909',date:'2026-09-09',time:'',title:'MEGA 拡張パック 30th CELEBRATION 1BOX（嫁分）',store:'Joshin web',status:'win',receiptStatus:'',note:'9/9 当選確認｜嫁分1BOX'},
-  {id:'lottery-joshinweb-wife-30th-cardset9-20260909',date:'2026-09-09',time:'',title:'MEGA 30th CELEBRATION カードセット（9種セット・嫁分）',store:'Joshin web',status:'win',receiptStatus:'',note:'9/9 当選確認｜嫁分1セット'}
- ];
- for(const row of rows){const i=state.lotteries.findIndex(x=>x.id===row.id);if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);}
- state.dataFixes.joshin_family_30th_wins_20260909=true;
+ const removeIds=new Set(['lottery-joshinweb-wife-30th-box-20260909','lottery-joshinweb-wife-30th-cardset9-20260909']);
+ state.lotteries=state.lotteries.filter(x=>!removeIds.has(x.id));
+ const restored={id:'lottery-joshinweb-30th-box-20260917',date:'2026-09-17',time:'午後以降',title:'MEGA 拡張パック 30th CELEBRATION',store:'Joshin web',status:'unreported',receiptStatus:'',note:'応募済｜当選者のみ9/17または9/24午後以降に順次メール・連絡帳で案内｜発表日の商品別対応は未記載'};
+ const i=state.lotteries.findIndex(x=>x.id===restored.id);if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],restored);else state.lotteries.push(restored);
+ state.dataFixes.joshin_family_count_misread_removed_20260909=true;
  localStorage.setItem(KEY,JSON.stringify(state));if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));if(typeof renderAll==='function')renderAll();
-}catch(e){console.error('9/9ジョーシン夫婦30th当選更新失敗',e);}})();
+}catch(e){console.error('ジョーシン30th集計誤登録の削除失敗',e);}})();
 </script>
 <!-- user-update-20260909-gmail-evening-results -->
 <script id="user-update-20260909-gmail-evening-results">
