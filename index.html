@@ -4505,6 +4505,30 @@ window.addEventListener('load',()=>{
 }catch(e){console.error('9/10シングルカード相場更新失敗',e);}})();
 </script>
 
+<!-- user-update-20260910-hareruyatwo-eevee-deck-loss -->
+<script id="user-update-20260910-hareruyatwo-eevee-deck-loss">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const row={id:'lottery-hareruyatwo-eevee-deck-20260910',date:'2026-09-10',time:'13:34',title:'30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'晴れる屋2 通販',status:'lose',receiptStatus:'',note:'9/10 落選確認｜オンライン｜イベント 9/16 00:00｜LivePocket｜申込番号 1042461563'};
+ const i=state.lotteries.findIndex(x=>x.id===row.id);if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);
+ state.dataFixes.hareruyatwo_eevee_deck_loss_20260910=true;
+ localStorage.setItem(KEY,JSON.stringify(state));if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('晴れる屋2通販30thデッキセット落選更新失敗',e);}})();
+</script>
+
+<!-- user-update-20260910-pokemoncenter-cardset9-wife-win -->
+<script id="user-update-20260910-pokemoncenter-cardset9-wife-win">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const row={id:'lottery-pokemoncenter-wife-cardset9-order-20260905',date:'2026-09-05',time:'',title:'MEGA 30th CELEBRATION カードセット（9種セット・嫁分）',store:'ポケモンセンターオンライン',status:'win',receiptStatus:'pending',stampChoice:{status:'win',index:0},note:'9/5 当選確認｜嫁分1セット｜価格 10,800円｜10/15までに発送予定'};
+ const i=state.lotteries.findIndex(x=>x.id===row.id);if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);
+ state.dataFixes.pokemoncenter_cardset9_wife_win_20260910=true;
+ localStorage.setItem(KEY,JSON.stringify(state));if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('ポケモンセンター9種セット嫁分当選更新失敗',e);}})();
+</script>
+
 <style id="today-calendar-style">
 .day.today{position:relative;background:#fff5f5;box-shadow:inset 0 0 0 3px #ef3340}
 .day.today.muted{background:#fff5f5;color:inherit}
