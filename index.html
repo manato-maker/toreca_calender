@@ -4529,6 +4529,29 @@ window.addEventListener('load',()=>{
 }catch(e){console.error('ポケモンセンター9種セット嫁分当選更新失敗',e);}})();
 </script>
 
+<!-- user-update-20260910-edion-hiroshima-all-loss -->
+<script id="user-update-20260910-edion-hiroshima-all-loss">
+(function(){try{
+ const KEY='tcg-master-v14',D='2026-09-10';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ let updated=0;
+ for(const x of state.lotteries){if(!String(x.id||'').startsWith('lottery-edion-hiroshima-')||!String(x.id||'').endsWith('-20260910'))continue;x.status='lose';x.date=D;x.time='';x.receiptStatus='';if(!String(x.note||'').includes('9/10 全商品落選確認'))x.note='9/10 全商品落選確認｜'+String(x.note||'');updated++;}
+ state.dataFixes.edion_hiroshima_all_loss_20260910={updated};
+ localStorage.setItem(KEY,JSON.stringify(state));if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('エディオン広島全落選更新失敗',e);}})();
+</script>
+
+<!-- user-update-20260910-famima-umamusume-pickup-deadline -->
+<script id="user-update-20260910-famima-umamusume-pickup-deadline">
+(function(){try{
+ const KEY='tcg-master-v14',ID='lottery-famima-kamimaki-katsuragidai-umamusume-20260909';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const x=state.lotteries.find(q=>q.id===ID);if(x){x.status='win';x.receiptStatus='pending';x.note='9/9 当選確認｜税込6,160円｜数量1｜注文 9/1 13:54｜受取期限 12/18 20:00';}
+ state.dataFixes.famima_umamusume_pickup_deadline_20260910=true;
+ localStorage.setItem(KEY,JSON.stringify(state));if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('ファミマオンラインウマ娘受取期限更新失敗',e);}})();
+</script>
+
 <style id="today-calendar-style">
 .day.today{position:relative;background:#fff5f5;box-shadow:inset 0 0 0 3px #ef3340}
 .day.today.muted{background:#fff5f5;color:inherit}
