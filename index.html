@@ -4593,6 +4593,21 @@ window.addEventListener('load',()=>{
  localStorage.setItem(KEY,JSON.stringify(state));
 }catch(e){console.error(e)}})();
 </script>
+<!-- user-update-20260910-aeonbig-tenri-30th-pending -->
+<script id="user-update-20260910-aeonbig-tenri-30th-pending">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const common='応募 9/11 00:00〜9/13 23:59｜当選発表 9/15 12:00頃｜イオンビッグ一部店舗限定｜受取店舗：ザ・ビッグエクストラ天理店';
+ const rows=[
+  {id:'lottery-aeonbig-tenri-30th-box-20260913',date:'2026-09-15',time:'12:00頃',title:'MEGA 拡張パック 30th CELEBRATION 1BOX',store:'ザ・ビッグエクストラ天理店',status:'unreported',receiptStatus:'',note:common},
+  {id:'lottery-aeonbig-tenri-eevee-deck-20260913',date:'2026-09-15',time:'12:00頃',title:'30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー 1個',store:'ザ・ビッグエクストラ天理店',status:'unreported',receiptStatus:'',note:common}
+ ];
+ for(const row of rows){const i=state.lotteries.findIndex(x=>x&&x.id===row.id);if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);}
+ state.dataFixes.aeonbig_tenri_30th_pending_20260910=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+}catch(e){console.error(e)}})();
+</script>
 <style id="today-calendar-style">
 .day.today{position:relative;background:#fff5f5;box-shadow:inset 0 0 0 3px #ef3340}
 .day.today.muted{background:#fff5f5;color:inherit}
