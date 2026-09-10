@@ -1606,6 +1606,7 @@ function setQuickCost(id,val){
 }
 function renderLotteryStats(){
  const el=$('#lotteryStats'); if(!el)return;
+ const storeStatsOpen=localStorage.getItem('tcg-store-stats-open')==='1';
  const allLots=state.lotteries||[];
  const isWifeOnly=x=>/嫁分|嫁のみ|奥さんのみ/.test(`${x.title||''} ${x.note||''}`);
  const lots=allLots.filter(x=>!isWifeOnly(x));
@@ -1634,7 +1635,7 @@ function renderLotteryStats(){
    <div class="lot-stat"><span>結果確定</span><b>${decided}件</b></div>
    <div class="lot-stat"><span>当選率</span><b>${rate==null?'—':rate.toFixed(1)+'%'}</b></div>
  </div>
- <details class="store-stat-box">
+ <details class="store-stat-box" ${storeStatsOpen?'open':''}>
    <summary class="store-stat-title">🏪 店舗別 当選実績を見る</summary>
    ${stores.map(s=>{const d=s.win+s.lose,rr=d?s.win/d*100:null;return `<div class="store-stat-row">
      <div class="store-name">${esc(s.store)}</div>
@@ -1643,6 +1644,10 @@ function renderLotteryStats(){
      <div class="rate">${rr==null?'—':rr.toFixed(1)+'%'}</div>
    </div>`}).join('')}
  </details>`;
+ const storeStatsBox=el.querySelector('.store-stat-box');
+ if(storeStatsBox)storeStatsBox.addEventListener('toggle',()=>{
+   localStorage.setItem('tcg-store-stats-open',storeStatsBox.open?'1':'0');
+ });
 }
 
 function renderUnreceivedPanel(){
@@ -4561,6 +4566,30 @@ window.addEventListener('load',()=>{
  const i=state.lotteries.findIndex(x=>x&&x.id===row.id);
  if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);
  state.dataFixes.tsutaya_abeno_fb11_loss_20260910=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+}catch(e){console.error(e)}})();
+</script>
+<!-- user-update-20260910-mintgames-shinsaibashi-eevee-deck-pending -->
+<script id="user-update-20260910-mintgames-shinsaibashi-eevee-deck-pending">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const row={id:'lottery-mintgames-shinsaibashi-eevee-deck-20260915',date:'2026-09-15',time:'ごろ',title:'30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'MINTGAMES心斎橋アメリカ村店',status:'unreported',receiptStatus:'',note:'応募締切 9/13 19:59｜当選者のみ9/15ごろメール連絡｜販売・受取 9/20〜9/22｜1個｜本人確認書類・当選メール画面が必要'};
+ const i=state.lotteries.findIndex(x=>x&&x.id===row.id);
+ if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);
+ state.dataFixes.mintgames_shinsaibashi_eevee_deck_pending_20260910=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+}catch(e){console.error(e)}})();
+</script>
+<!-- user-update-20260910-drasta-online-storm-pending -->
+<script id="user-update-20260910-drasta-online-storm-pending">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const row={id:'lottery-drasta-online-storm-20260913',date:'2026-09-13',time:'',title:'ストームエメラルダ 1BOX',store:'ドラスタ通販',status:'unreported',receiptStatus:'',note:'税込6,000円｜申込 9/10 22:00〜9/12 00:00｜当選発表 9/13｜注文受付 9/13〜9/20｜申込数量 1BOX'};
+ const i=state.lotteries.findIndex(x=>x&&x.id===row.id);
+ if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);
+ state.dataFixes.drasta_online_storm_pending_20260910=true;
  localStorage.setItem(KEY,JSON.stringify(state));
 }catch(e){console.error(e)}})();
 </script>
