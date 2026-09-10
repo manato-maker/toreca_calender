@@ -4552,6 +4552,18 @@ window.addEventListener('load',()=>{
 }catch(e){console.error('ファミマオンラインウマ娘受取期限更新失敗',e);}})();
 </script>
 
+<!-- user-update-20260910-tsutaya-abeno-fb11-loss -->
+<script id="user-update-20260910-tsutaya-abeno-fb11-loss">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const row={id:'lottery-tsutaya-abeno-bridge-fb11-20260910',date:'2026-09-10',time:'20:50',title:'ドラゴンボールスーパーカードゲーム FW ブースターパック BRIGHTNESS OF HOPE［FB11］ 1BOX',store:'TSUTAYAあべの橋店 2Fトレカ売場',status:'lose',receiptStatus:'',note:'9/10 落選確認｜販売 9/12〜9/13｜LivePocket｜申込番号 1042684470'};
+ const i=state.lotteries.findIndex(x=>x&&x.id===row.id);
+ if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);
+ state.dataFixes.tsutaya_abeno_fb11_loss_20260910=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+}catch(e){console.error(e)}})();
+</script>
 <style id="today-calendar-style">
 .day.today{position:relative;background:#fff5f5;box-shadow:inset 0 0 0 3px #ef3340}
 .day.today.muted{background:#fff5f5;color:inherit}
