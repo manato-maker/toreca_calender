@@ -4608,6 +4608,93 @@ window.addEventListener('load',()=>{
  localStorage.setItem(KEY,JSON.stringify(state));
 }catch(e){console.error(e)}})();
 </script>
+<!-- user-update-20260911-rakutenbooks-all-loss -->
+<script id="user-update-20260911-rakutenbooks-all-loss">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ let updated=0;
+ for(const row of state.lotteries){
+  if(!/楽天ブックス/.test(String(row.store||'')))continue;
+  row.status='lose';row.date='2026-09-11';row.time='';row.receiptStatus='';
+  const base=String(row.note||'').replace(/｜?9\/11 全件落選確認/g,'');
+  row.note=(base?base+'｜':'')+'9/11 全件落選確認';updated++;
+ }
+ state.dataFixes.rakutenbooks_all_loss_20260911={updated};
+ localStorage.setItem(KEY,JSON.stringify(state));
+}catch(e){console.error(e)}})();
+</script>
+<!-- user-update-20260911-aeonstyle-five-lotteries -->
+<script id="user-update-20260911-aeonstyle-five-lotteries">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const store='イオンスタイルオンライン（iAEON抽選）';
+ const common='9/11 本人応募済｜応募締切 9/21 23:59｜当選発表 10/10｜1商品につき1点';
+ const rows=[
+  {id:'lottery-aeonstyle-op17-20261010',date:'2026-10-10',time:'',title:'ONE PIECE 世界最強の戦士［OP-17］24パックセット',store,status:'unreported',receiptStatus:'',note:'税込5,755.20円｜'+common},
+  {id:'lottery-aeonstyle-eb03-20261010',date:'2026-10-10',time:'',title:'ONE PIECE Heroines Edition［EB-03］24パックセット',store,status:'unreported',receiptStatus:'',note:'税込5,280円｜'+common},
+  {id:'lottery-aeonstyle-megabrave-20261010',date:'2026-10-10',time:'',title:'メガブレイブ 30パックセット',store,status:'unreported',receiptStatus:'',note:'税込5,379円｜'+common},
+  {id:'lottery-aeonstyle-megasymphonia-20261010',date:'2026-10-10',time:'',title:'メガシンフォニア 30パックセット',store,status:'unreported',receiptStatus:'',note:'税込5,379円｜'+common},
+  {id:'lottery-aeonstyle-dragonball-st01-20261010',date:'2026-10-10',time:'',title:'ドラゴンボール フュージョンワールド STORY BOOSTER 01［ST01］20パックセット',store,status:'unreported',receiptStatus:'',note:'税込6,600円｜'+common}
+ ];
+ for(const row of rows){const i=state.lotteries.findIndex(x=>x&&x.id===row.id);if(i>=0)state.lotteries[i]=Object.assign({},state.lotteries[i],row);else state.lotteries.push(row);}
+ state.dataFixes.aeonstyle_five_lotteries_20260911=true;
+ localStorage.setItem(KEY,JSON.stringify(state));
+}catch(e){console.error(e)}})();
+</script>
+<!-- user-update-20260911-yellowsubmarine-brightness-loss -->
+<script id="user-update-20260911-yellowsubmarine-brightness-loss">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const appNo='1040990869';
+ let row=state.lotteries.find(r=>String(r.note||'').includes(appNo));
+ if(!row){
+  row={id:'lottery-yellowsubmarine-brightness-hope-20260911'};
+  state.lotteries.push(row);
+ }
+ Object.assign(row,{date:'2026-09-11',time:'15:51',title:'ドラゴンボールカードゲーム BRIGHTNESS OF HOPE［FB11］ 購入権',store:'イエローサブマリン',status:'lose',receiptStatus:'',note:'9/11 落選確認｜販売 9/12〜9/14｜LivePocket｜申込番号 '+appNo});
+ state.dataFixes.yellowsubmarine_brightness_hope_loss_20260911={applicationNo:appNo};
+ localStorage.setItem(KEY,JSON.stringify(state));
+}catch(e){console.error(e)}})();
+</script>
+
+<!-- user-update-20260911-pokemoncenter-30th-lotteries -->
+<script id="user-update-20260911-pokemoncenter-30th-lotteries">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const rows=[
+  {id:'lottery-pokemoncenter-30th-box-20260930',date:'2026-09-30',time:'13:00',title:'MEGA 拡張パック 30th CELEBRATION BOX',store:'ポケモンセンターオンライン',status:'unreported',receiptStatus:'',note:'本人分｜価格 7,200円｜応募 9/11 16:00〜9/16 16:59｜注文 9/30 13:00〜10/6 16:59｜発送予定 2027/1/18〜1/30'},
+  {id:'lottery-pokemoncenter-30th-cardset-20260930',date:'2026-09-30',time:'15:00',title:'MEGA 30th CELEBRATION カードセット（9種セット）',store:'ポケモンセンターオンライン',status:'unreported',receiptStatus:'',note:'本人分｜価格 10,800円｜応募 9/11 16:00〜9/16 16:59｜注文 9/30 15:00〜10/6 16:59｜発送予定 10/16〜11/9｜プレイヤーズクラブ本人認証・メール一致が条件'},
+  {id:'lottery-pokemoncenter-futuristic-box-20260930',date:'2026-09-30',time:'17:00',title:'MEGA 30th CELEBRATION FUTURISTIC BOX',store:'ポケモンセンターオンライン',status:'unreported',receiptStatus:'',note:'本人分｜価格 27,500円｜応募 9/11 16:00〜9/16 16:59｜注文 9/30 17:00〜10/6 16:59｜発送予定 2027/3/13〜3/31'}
+ ];
+ for(const incoming of rows){
+  const i=state.lotteries.findIndex(r=>r.id===incoming.id);
+  if(i>=0)Object.assign(state.lotteries[i],incoming);else state.lotteries.push(incoming);
+ }
+ state.dataFixes.pokemoncenter_30th_lotteries_20260911={count:rows.length};
+ localStorage.setItem(KEY,JSON.stringify(state));
+}catch(e){console.error(e)}})();
+</script>
+
+<!-- user-update-20260911-livepocket-pending-three -->
+<script id="user-update-20260911-livepocket-pending-three">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const rows=[
+  {id:'lottery-bookoff-sakai-kitahanada-30th-box-20260915',date:'2026-09-15',time:'',title:'MEGA 拡張パック 30th CELEBRATION 1BOX',store:'BOOKOFF あそビバ イオンモール堺北花田店',status:'unreported',receiptStatus:'',note:'本人分｜LivePocket｜販売 9/16〜9/18 10:00〜21:00｜クレジットカード当選時決済'},
+  {id:'lottery-bookoff-sakai-kitahanada-30th-deckset-20260915',date:'2026-09-15',time:'',title:'30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'BOOKOFF あそビバ イオンモール堺北花田店',status:'unreported',receiptStatus:'',note:'本人分｜LivePocket｜販売 9/16〜9/18 10:00〜21:00｜クレジットカード当選時決済'},
+  {id:'lottery-furuichi-habikino-starter100-20260914',date:'2026-09-14',time:'',title:'MEGA スタートデッキ100',store:'古本市場 羽曳野店',status:'unreported',receiptStatus:'',note:'本人分｜LivePocket｜結果発表 9/14〜9/17｜販売 9/18〜9/20'}
+ ];
+ for(const incoming of rows){const i=state.lotteries.findIndex(r=>r.id===incoming.id);if(i>=0)Object.assign(state.lotteries[i],incoming);else state.lotteries.push(incoming);}
+ state.dataFixes.livepocket_pending_three_20260911={count:rows.length};
+ localStorage.setItem(KEY,JSON.stringify(state));
+}catch(e){console.error(e)}})();
+</script>
+
 <style id="today-calendar-style">
 .day.today{position:relative;background:#fff5f5;box-shadow:inset 0 0 0 3px #ef3340}
 .day.today.muted{background:#fff5f5;color:inherit}
