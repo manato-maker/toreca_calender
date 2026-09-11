@@ -4768,6 +4768,17 @@ window.addEventListener('load',()=>{
 }catch(e){console.error('OP-16ミミ価格訂正失敗',e);}})();
 </script>
 
+<!-- user-update-20260911-edion-storm-2box-application -->
+<script id="user-update-20260911-edion-storm-2box-application">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const row={id:'lottery-edion-trecapital-storm-2box-20260924',date:'2026-09-24',time:'',title:'ストームエメラルダ 2BOX',store:'エディオン イオンモール橿原店',status:'unreported',receiptStatus:'',note:'本人分｜9/11応募済｜トレカキャピタル限定｜2BOXのみ応募｜税込12,000円（6,000円×2）｜当選者へSMS｜購入 9/25開店〜9/28閉店｜シュリンクを外して受取'};
+ const i=state.lotteries.findIndex(x=>x.id===row.id);if(i>=0)Object.assign(state.lotteries[i],row);else state.lotteries.push(row);
+ state.dataFixes.edion_trecapital_storm_2box_application_20260911=true;localStorage.setItem(KEY,JSON.stringify(state));if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('エディオン・ストームエメラルダ2BOX応募更新失敗',e);}})();
+</script>
+
 <style id="today-calendar-style">
 .day.today{position:relative;background:#fff5f5;box-shadow:inset 0 0 0 3px #ef3340}
 .day.today.muted{background:#fff5f5;color:inherit}
