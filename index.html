@@ -4695,6 +4695,79 @@ window.addEventListener('load',()=>{
 }catch(e){console.error(e)}})();
 </script>
 
+<!-- user-update-20260911-single-card-market -->
+<script id="user-update-20260911-single-card-market">
+(function(){try{
+ const KEY='tcg-master-v14',D='2026-09-11';if(typeof state==='undefined')return;
+ state.cards=Array.isArray(state.cards)?state.cards:[];state.marketHistory=state.marketHistory||{};state.dataFixes=state.dataFixes||{};
+ const prices={
+  'card-001':6000,'card-002':900,'card-003':2700,'card-004':1500,'card-005':600,'card-006':800,
+  'card-007':2500,'card-008':1100,'card-009':2000,'card-010':1500,'card-011':2500,'card-013':4500,
+  'card-014':2400,'card-015':4000,'card-016':1000,'card-019':100,'card-touko-sar-173086':6000
+ };
+ const unverified=['card-012','card-017','card-018'];
+ for(const x of state.cards){
+  if(prices[x.id]!=null){const v=prices[x.id];x.domestic=v;x.marketDate=D;x.marketSource='ポケカチ・カードラッシュ買取';x.reviewNote=D+'確認｜型番・レアリティ一致';const a=state.marketHistory[x.id]=state.marketHistory[x.id]||[];if(!a.some(p=>p.date===D&&Number(p.value)===v))a.push({date:D,value:v});}
+  else if(unverified.includes(x.id)){x.reviewNote=D+'確認｜型番・ミラー仕様が一致する最新買取価格を取得できず、前回価格を据え置き';}
+ }
+ state.cardMarketStatus={checkedAt:D,source:'ポケカチ（カードラッシュ買取）',policy:'型番・レアリティ・ミラー仕様の完全一致のみ反映',verifiedCount:17,unverifiedIds:unverified,note:'登録20枚中17枚を確認。トウコSAR 173/086は4,500円から6,000円へ上昇。レックウザVMAX 108/172、ピカチュウ 025/165 モンスターボールミラー、ミュウツー 150/165 モンスターボールミラーは前回価格を据え置き。'};
+ state.dataFixes.single_card_market_20260911=true;
+ localStorage.setItem(KEY,JSON.stringify(state));if(typeof marketHistory!=='undefined')marketHistory=state.marketHistory;if(typeof SEED!=='undefined'){SEED.cards=JSON.parse(JSON.stringify(state.cards));SEED.marketHistory=JSON.parse(JSON.stringify(state.marketHistory));SEED.cardMarketStatus=JSON.parse(JSON.stringify(state.cardMarketStatus));}if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('9/11シングルカード相場更新失敗',e);}})();
+</script>
+
+<!-- user-update-20260911-box-and-pack-market -->
+<script id="user-update-20260911-box-and-pack-market">
+(function(){try{
+ const KEY='tcg-master-v14',D='2026-09-11';if(typeof state==='undefined')return;
+ state.sealed=Array.isArray(state.sealed)?state.sealed:[];state.loosePacks=Array.isArray(state.loosePacks)?state.loosePacks:[];state.boxMarketHistory=state.boxMarketHistory||{};state.boxMarketMaster=state.boxMarketMaster||{};state.marketSourceStatus=state.marketSourceStatus||{};state.dataFixes=state.dataFixes||{};
+ const no=x=>String(x.shrink||'').includes('なし');
+ const setBox=(x,src,value,note)=>{x[src+'Price']=value;x[src+'Date']=D;if(note)x.marketEstimateNote=note;const h=state.boxMarketHistory[x.id]||(state.boxMarketHistory[x.id]={mimi:[],amtf:[]});const a=h[src]||(h[src]=[]);if(!a.some(p=>p.date===D&&Number(p.value)===value))a.push({date:D,value});};
+ for(const x of state.sealed){const n=String(x.name||'');
+  if(n==='ストームエメラルダ'){setBox(x,'mimi',no(x)?8200:11500);setBox(x,'amtf',no(x)?8000:11000);}
+  if(n==='メガシンフォニア'){if(no(x)){x.mimiPrice=null;x.mimiDate='';setBox(x,'amtf',6000,'9/11 ミミは取得できず。AMTAF確定値を採用。');}else{setBox(x,'mimi',7300);setBox(x,'amtf',7000);}}
+  if(n==='インフェルノX'){setBox(x,'mimi',no(x)?11800:16600);setBox(x,'amtf',no(x)?12000:16500);}
+  if(n==='MEGAドリームex'){setBox(x,'mimi',no(x)?11000:12000);setBox(x,'amtf',no(x)?11000:12000);}
+  if(n==='アビスアイ'){setBox(x,'mimi',no(x)?7000:7500,'9/11 ミミは前後表記の参考値。');setBox(x,'amtf',no(x)?6500:7500);}
+  if(n==='MEGA スタートデッキ100'){setBox(x,'mimi',1200);setBox(x,'amtf',800);}
+  if(n==='スペシャルBOX ポケモンセンターフクオカ')setBox(x,'mimi',16200,'9/11 ミミ16,200円前後の参考値。');
+  if(n==='スペシャルBOX ポケモンセンタートウホク')setBox(x,'mimi',14300,'9/11 ミミ14,300円前後の参考値。');
+  if(n.includes('決戦の刻')){setBox(x,'mimi',10000,'9/11 ミミ10,000円前後／AMTAF8,000円前後の参考値。');setBox(x,'amtf',8000);}
+  if(n.includes('世界最強の戦士')){setBox(x,'mimi',16600,'9/11 ミミ16,600円前後／AMTAF16,300円前後の参考値。');setBox(x,'amtf',16300);}
+ }
+ const master={
+  'ストームエメラルダ':{mimi:{'あり':11500,'なし':8200},amtf:{'あり':11000,'なし':8000},pack:100},
+  'メガシンフォニア':{mimi:{'あり':7300},amtf:{'あり':7000,'なし':6000},pack:80},
+  'インフェルノX':{mimi:{'あり':16600,'なし':11800},amtf:{'あり':16500,'なし':12000},pack:130},
+  'MEGAドリームex':{mimi:{'あり':12000,'なし':11000},amtf:{'あり':12000,'なし':11000},pack:550},
+  'アビスアイ':{mimi:{'あり':7500,'なし':7000},amtf:{'あり':7500,'なし':6500},pack:80},
+  'ニンジャスピナー':{amtf:{'あり':7700},pack:80},'ムニキスゼロ':{amtf:{'あり':7500},pack:80},
+  'MEGA スタートデッキ100':{mimi:{'不明':1200,'未開封':1200},amtf:{'不明':800,'未開封':800}},
+  'スペシャルBOX ポケモンセンターフクオカ':{mimi:{'未開封':16200}},'スペシャルBOX ポケモンセンタートウホク':{mimi:{'未開封':14300}},
+  '決戦の刻 OP-16':{mimi:{'テープ付き':10000,'不明':10000},amtf:{'テープ付き':8000,'不明':8000}},'世界最強の戦士 OP-17':{mimi:{'テープ付き':16600},amtf:{'テープ付き':16300}}
+ };
+ for(const [name,v] of Object.entries(master))state.boxMarketMaster[name]=JSON.parse(JSON.stringify(v));
+ const packs={'ニンジャスピナー':80,'インフェルノX':130,'ストームエメラルダ':100,'メガブレイブ':80,'アビスアイ':80,'ムニキスゼロ':80,'メガシンフォニア':80,'MEGAドリームex':550};
+ for(const x of state.loosePacks)if(packs[x.name]!=null){x.amtfPrice=packs[x.name];x.amtfDate=D;}
+ state.boxMarketMasterDate=D;state.globalMimiDate=D;state.globalAmtfDate=D;state.globalPackAmtfDate=D;
+ state.marketSourceStatus['買取ミミ']={latestListPostDate:D,applied:'9/11最新BOX買取表。前後表記は参考値'};state.marketSourceStatus['アムタフ']={latestListPostDate:D,applied:'9/11最新BOX・バラパック買取表'};state.marketSourceStatus.mimi='9/11確認。スペシャルBOX2種、アビスアイ、OP-16・OP-17は前後表記の参考値。';state.marketSourceStatus.amtf='9/11確認。ニンジャスピナーBOXは7,700円、バラは80円/P。OP-16・OP-17は参考値。';
+ state.marketUnverified={date:D,items:['スペシャルBOX ポケモンセンターフクオカ','スペシャルBOX ポケモンセンタートウホク','決戦の刻 OP-16','世界最強の戦士 OP-17'],unavailable:['マクドナルド プロモカードパック','メガシンフォニア シュリンクなし（ミミ）']};
+ state.dataFixes.box_and_pack_market_20260911=true;
+ localStorage.setItem(KEY,JSON.stringify(state));if(typeof boxMarketHistory!=='undefined')boxMarketHistory=state.boxMarketHistory;if(typeof globalMimiDate!=='undefined')globalMimiDate=D;if(typeof globalAmtfDate!=='undefined')globalAmtfDate=D;if(typeof SEED!=='undefined')for(const k of ['sealed','loosePacks','boxMarketHistory','boxMarketMaster','marketSourceStatus','marketUnverified'])SEED[k]=JSON.parse(JSON.stringify(state[k]||{}));if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('9/11 BOX・バラ相場更新失敗',e);}})();
+</script>
+
+<!-- user-correction-20260911-op16-mimi-10200 -->
+<script id="user-correction-20260911-op16-mimi-10200">
+(function(){try{
+ const KEY='tcg-master-v14',D='2026-09-11',V=10200;if(typeof state==='undefined')return;
+ state.sealed=Array.isArray(state.sealed)?state.sealed:[];state.boxMarketHistory=state.boxMarketHistory||{};state.boxMarketMaster=state.boxMarketMaster||{};state.dataFixes=state.dataFixes||{};
+ for(const x of state.sealed)if(String(x.name||'').includes('決戦の刻')){x.mimiPrice=V;x.mimiDate=D;x.marketEstimateNote='9/11 買取ミミ確定 10,200円。AMTAF 8,000円前後は参考値。';const h=state.boxMarketHistory[x.id]||(state.boxMarketHistory[x.id]={mimi:[],amtf:[]});const a=h.mimi||(h.mimi=[]);if(!a.some(p=>p.date===D&&Number(p.value)===V))a.push({date:D,value:V});}
+ state.boxMarketMaster['決戦の刻 OP-16']={mimi:{'テープ付き':V,'不明':V},amtf:{'テープ付き':8000,'不明':8000}};
+ state.dataFixes.op16_mimi_10200_20260911=true;localStorage.setItem(KEY,JSON.stringify(state));if(typeof boxMarketHistory!=='undefined')boxMarketHistory=state.boxMarketHistory;if(typeof SEED!=='undefined')for(const k of ['sealed','boxMarketHistory','boxMarketMaster'])SEED[k]=JSON.parse(JSON.stringify(state[k]||{}));if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('OP-16ミミ価格訂正失敗',e);}})();
+</script>
+
 <style id="today-calendar-style">
 .day.today{position:relative;background:#fff5f5;box-shadow:inset 0 0 0 3px #ef3340}
 .day.today.muted{background:#fff5f5;color:inherit}
