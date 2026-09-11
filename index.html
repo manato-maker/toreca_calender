@@ -4779,6 +4779,34 @@ window.addEventListener('load',()=>{
 }catch(e){console.error('エディオン・ストームエメラルダ2BOX応募更新失敗',e);}})();
 </script>
 
+<!-- user-update-20260911-pbandai-fb11-and-fullcomp-loss -->
+<script id="user-update-20260911-pbandai-fb11-and-fullcomp-loss">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const rows=[
+  {id:'lottery-pbandai-fb11-202610',date:'',time:'',title:'ドラゴンボール フュージョンワールド BRIGHTNESS OF HOPE［FB11］ 1BOX',store:'プレミアムバンダイ',status:'unreported',receiptStatus:'',note:'本人分｜9/11応募済｜税込5,760円｜2026年10月発送予定｜結果発表日未確認｜商品番号 item-1000257587'},
+  {id:'lottery-fullcomp-osaka-nipponbashi-eevee-deck-loss-20260911',date:'2026-09-11',time:'11:19',title:'30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'フルコンプ 大阪日本橋店',status:'lose',receiptStatus:'',note:'本人分｜9/11落選確認｜LivePocket｜販売 9/16〜9/23｜申込番号 1042095218'}
+ ];
+ for(const row of rows){let i=state.lotteries.findIndex(x=>x.id===row.id||String(x.note||'').includes('1042095218'));if(i>=0)Object.assign(state.lotteries[i],row);else state.lotteries.push(row);}
+ state.dataFixes.pbandai_fb11_and_fullcomp_loss_20260911=true;localStorage.setItem(KEY,JSON.stringify(state));if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('プレバンFB11・フルコンプ落選更新失敗',e);}})();
+</script>
+
+<!-- user-update-20260911-girafull-eevee-deck-losses -->
+<script id="user-update-20260911-girafull-eevee-deck-losses">
+(function(){try{
+ const KEY='tcg-master-v14';if(typeof state==='undefined')return;
+ state.lotteries=Array.isArray(state.lotteries)?state.lotteries:[];state.dataFixes=state.dataFixes||{};
+ const rows=[
+  {id:'lottery-girafull-otaroad-30th-premium-20260912',date:'2026-09-11',time:'18:49',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'GIRAFULLオタロード店',status:'lose',receiptStatus:'',note:'本人分｜9/11落選確認｜LivePocket｜販売 9/16〜9/20｜申込番号 1041694557'},
+  {id:'lottery-girafull-namba-30th-premium-20260912',date:'2026-09-11',time:'18:51',title:'MEGA 30th CELEBRATION プレミアムデッキセット エーフィ・ブラッキー',store:'GIRAFULLなんば店',status:'lose',receiptStatus:'',note:'本人分｜9/11落選確認｜LivePocket｜販売 9/16〜9/20｜申込番号 1041695121'}
+ ];
+ for(const row of rows){const i=state.lotteries.findIndex(x=>x.id===row.id||String(x.note||'').includes(row.note.match(/\d{10}$/)?.[0]||'__none__'));if(i>=0)Object.assign(state.lotteries[i],row);else state.lotteries.push(row);}
+ state.dataFixes.girafull_eevee_deck_losses_20260911=true;localStorage.setItem(KEY,JSON.stringify(state));if(typeof SEED!=='undefined')SEED.lotteries=JSON.parse(JSON.stringify(state.lotteries));if(typeof renderAll==='function')renderAll();
+}catch(e){console.error('GIRAFULLエーフィ・ブラッキー落選更新失敗',e);}})();
+</script>
+
 <style id="today-calendar-style">
 .day.today{position:relative;background:#fff5f5;box-shadow:inset 0 0 0 3px #ef3340}
 .day.today.muted{background:#fff5f5;color:inherit}
